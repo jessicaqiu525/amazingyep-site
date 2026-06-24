@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details - Amazing Yep Inc.</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet"="../style.css">
+  <style>
+    /* Product Detail Page Styles */
+    .pd-wrap {
+      padding: 120px 0 32px;
+      background: var(--white);
+    }
+
+    .pd-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    /* ---- Gallery ---- */
+    .pd-gallery {
+      position: sticky;
+      top: 80px;
+    }
+
+    .pd-main-img {
+      width: 100%;
+      aspect-ratio: 4/5;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--gray-50);
+      margin-bottom: 12px;
+    }
+
+    .pd-main-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+
+    .pd-main-img:hover img { transform: scale(1.03); }
+
+    .pd-thumbs {
+      display: flex;
+      gap: 8px;
+    }
+
+    .pd-thumb {
+      width: 72px;
+      height: 72px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: var(--transition);
+      background: var(--gray-50);
+    }
+
+    .pd-thumb:hover,
+    .pd-thumb.active {
+      border-color: var(--orange);
+    }
+
+    .pd-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ---- Info ---- */
+    .pd-info {
+      padding-top: 0;
+    }
+
+    .pd-breadcrumb {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: var(--text-light);
+    }
+
+    .pd-breadcrumb a { color: var(--text-light); transition: var(--transition); }
+    .pd-breadcrumb a:hover { color: var(--orange); }
+    .pd-breadcrumb .sep { color: var(--gray-400); }
+
+    .pd-category-tag {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 50px;
+      background: var(--gray-50);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--orange);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .pd-name {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .pd-desc {
+      font-size: 15px;
+      color: var(--text-light);
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    /* ---- Product Details Specs Table ---- */
+    .pd-details-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 24px;
+    }
+    .pd-details-table tr {
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .pd-details-table tr:last-child {
+      border-bottom: none;
+    }
+    .pd-details-table td {
+      padding: 14px 16px;
+      font-size: 14px;
+      color: var(--navy);
+      vertical-align: top;
+    }
+    .pd-details-table td:first-child {
+      font-weight: 700;
+      width: 35%;
+      color: var(--gray-600);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .pd-details-table td:last-child {
+      line-height: 1.6;
+    }
+
+    .pd-specs {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .pd-spec-item {
+      padding: 16px 24px;
+      background: var(--gray-50);
+      border-radius: var(--radius-sm);
+      min-width: 140px;
+    }
+
+    .pd-spec-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .pd-spec-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .pd-cta {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .btn-orange {
+      background: var(--orange);
+      color: var(--white);
+    }
+
+    .btn-orange:hover {
+      background: var(--orange-dark);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(242,101,34,0.3);
+    }
+
+    /* ---- Shipping Timeline ---- */
+    .pd-timeline {
+      padding: 32px 0 20px;
+      background: var(--white);
+      margin-bottom: 24px;
+    }
+
+    .pd-timeline-steps {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      margin-top: 16px;
+    }
+
+    .pd-tl-step {
+      flex: 1;
+      text-align: center;
+      position: relative;
+    }
+
+    .pd-tl-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--orange);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .pd-tl-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .pd-tl-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.5;
+    }
+
+    .pd-tl-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 14px;
+      flex-shrink: 0;
+      width: 40px;
+      color: var(--gray-300);
+    }
+
+    .pd-tl-arrow svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .pd-tl-notes {
+      text-align: center;
+      margin-top: 16px;
+      padding: 12px 24px;
+      background: var(--gray-50);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      color: var(--navy);
+    }
+
+    @media (max-width: 768px) {
+      .pd-timeline-steps {
+        flex-direction: column;
+        gap: 12px;
+      }
+      .pd-tl-arrow {
+        transform: rotate(90deg);
+        padding-top: 0;
+        width: 100%;
+      }
+    }
+
+    /* ---- Related Products ---- */
+    .pd-related {
+      padding: 32px 0 20px;
+      background: var(--white);
+      margin-bottom: 24px;
+    }
+
+    .pd-related-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .pd-related-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.08);
+      transition: var(--transition);
+    }
+
+    .pd-related-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .pd-related-card-img {
+      aspect-ratio: 4/5;
+      overflow: hidden;
+    }
+
+    .pd-related-card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+
+    .pd-related-card:hover .pd-related-card-img img { transform: scale(1.05); }
+
+    .pd-related-card-body {
+      padding: 16px;
+    }
+
+    .pd-related-card-body h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .pd-related-card-body .pd-price-sm {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--orange);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .pd-layout { grid-template-columns: 1fr; gap: 24px; }
+      .pd-gallery { position: static; }
+      .pd-related-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 640px) {
+      .pd-wrap { padding: 100px 0 24px; }
+      .pd-name { font-size: 22px; }
+      .pd-specs { flex-direction: column; gap: 12px; }
+      .pd-related-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo"><img src="../assets/logo.png" alt="Amazing Yep Inc."></a>
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="plush-mascots.html">Plush &amp; Mascots</a></li>
+        <li><a href="keychains.html">Keychains</a></li>
+        <li><a href="drinkware.html">Drinkware</a></li>
+        <li><a href="bags.html">Bags</a></li>
+        <li><a href="../case-studies/index.html">Ideas &amp; Use Cases</a></li>
+        <li><a href="../solutions/index.html">Brand Programs</a></li>
+        <li class="has-dropdown">
+          <a href="index.html" class="dropdown-toggle active">Collections <svg class="dropdown-arrow" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <ul class="nav-dropdown">
+            <li><a href="bags.html">Bags</a></li>
+            <li><a href="drinkware.html">Drinkware</a></li>
+            <li><a href="keychains.html">Keychains &amp; Accessories</a></li>
+            <li><a href="office.html">Office &amp; Stationery</a></li>
+            <li><a href="outdoor-leisure.html">Outdoor &amp; Leisure</a></li>
+            <li><a href="plush-mascots.html">Plush &amp; Mascots</a></li>
+            <li><a href="technology.html">Technology</a></li>
+            <li><a href="trade-show.html">Trade Show</a></li>
+            <li><a href="apparel.html">Wearables</a></li>
+          </ul>
+        </li>
+      </ul>
+      <div class="nav-cta">
+        <div class="nav-contact">
+          <a href="tel:7326928285">
+            <svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            732-692-8285
+          </a>
+          <a href="mailto:info@amazingyep.com">
+            <svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            info@amazingyep.com
+          </a>
+        </div>
+        <a href="../contact/index.html" class="btn btn-primary btn-sm">Start a Project</a>
+        <button class="nav-mobile-toggle" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Product Detail -->
+  <section class="pd-wrap">
+    <div class="container">
+      <div id="productLoading" style="text-align:center; padding:80px 0;">
+        <div style="width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--orange);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px;"></div>
+        <p style="font-size:14px;color:var(--text-light);">Loading product details...</p>
+      </div>
+
+      <div id="productContent" style="display:none;">
+        <div class="pd-layout">
+          <!-- Gallery -->
+          <div class="pd-gallery">
+            <div class="pd-main-img" id="mainImageWrap">
+              <img id="mainImage" src="" alt="">
+            </div>
+            <div class="pd-thumbs" id="thumbList"></div>
+          </div>
+
+          <!-- Info -->
+          <div class="pd-info">
+            <div class="pd-breadcrumb">
+              <a href="../index.html">Home</a><span class="sep">/</span>
+              <a href="index.html">Collections</a><span class="sep">/</span>
+              <span id="bcCategory"></span><span class="sep">/</span>
+              <span id="bcName" style="color:var(--navy);font-weight:600;"></span>
+            </div>
+
+            <div class="pd-category-tag" id="categoryTag"></div>
+            <h1 class="pd-name" id="productName"></h1>
+            <p class="pd-desc" id="productDesc"></p>
+
+            <div class="pd-specs" id="specsWrap">
+              <div class="pd-spec-item" id="moqSpec">
+                <div class="pd-spec-label">MOQ</div>
+                <div class="pd-spec-value" id="moqValue"></div>
+              </div>
+              <div class="pd-spec-item" id="priceSpec">
+                <div class="pd-spec-label">Price Range</div>
+                <div class="pd-spec-value" id="priceValue"></div>
+              </div>
+            </div>
+
+            <div class="pd-cta">
+              <a href="../contact/index.html" class="btn btn-orange">Start a Project</a>
+              <a href="index.html" class="btn btn-outline btn-sm">Back to Collections</a>
+            </div>
+
+            <!-- Product Details Specs -->
+            <div id="productDetailsWrap" class="pd-details-wrap" style="display:none;">
+              <span class="section-label" style="margin-bottom:8px;display:block;">PRODUCT DETAILS</span>
+              <table class="pd-details-table" id="productDetailsTable">
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="productNotFound" style="display:none; text-align:center; padding:80px 0;">
+        <h3 style="font-size:20px; font-weight:700; color:var(--navy); margin-bottom:8px;">Product Not Found</h3>
+        <p style="font-size:14px; color:var(--text-light); margin-bottom:24px;">The product you're looking for doesn't exist or has been removed.</p>
+        <a href="index.html" class="btn btn-primary btn-sm">Back to Collections</a>
+      </div>
+    </div>
+  </section>
+
+  <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+
+  <!-- Related Products -->
+  <section class="pd-related" id="relatedSection" style="display:none;">
+    <div class="container">
+      <span class="section-label">Related Products</span>
+      <h2 class="section-title" style="margin-bottom:16px;">You Might Also Like</h2>
+      <div class="pd-related-grid" id="relatedGrid"></div>
+    </div>
+  </section>
+
+  <!-- Production & Shipping Timeline -->
+  <section class="pd-timeline" id="timelineSection" style="display:none;">
+    <div class="container">
+      <span class="section-label">PRODUCTION &amp; SHIPPING TIMELINE</span>
+      <h2 class="section-title" style="margin-bottom:8px;">Estimated Lead Times</h2>
+      <div class="pd-timeline-steps" id="timelineSteps"></div>
+      <div class="pd-tl-notes" id="timelineNotes" style="display:none;"></div>
+    </div>
+  </section>
+
+  <!-- HOW WE WORK -->
+  <section class="hww-section">
+    <div class="container">
+      <div class="hww-header">
+        <span class="section-label">HOW WE WORK</span>
+        <h2 class="section-title">Simple, Fast, Reliable</h2>
+        <p class="section-subtitle">A straightforward process designed to get you from idea to delivery with minimal friction.</p>
+      </div>
+      <div class="hww-steps">
+        <div class="hww-step">
+          <div class="hww-num">1</div>
+          <h3>Share Your Idea</h3>
+          <p>Send us your design, sketch, or concept. Tell us about your brand, audience, and goals.</p>
+        </div>
+        <div class="hww-arrow">
+          <svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg>
+        </div>
+        <div class="hww-step">
+          <div class="hww-num">2</div>
+          <h3>Receive Mockup &amp; Pricing</h3>
+          <p>Within 24 hours, receive a free digital mockup and detailed pricing options.</p>
+        </div>
+        <div class="hww-arrow">
+          <svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg>
+        </div>
+        <div class="hww-step">
+          <div class="hww-num">3</div>
+          <h3>Sampling &amp; Approval</h3>
+          <p>Review physical samples, request adjustments, and approve before full production.</p>
+        </div>
+        <div class="hww-arrow">
+          <svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg>
+        </div>
+        <div class="hww-step">
+          <div class="hww-num">4</div>
+          <h3>Production &amp; Delivery</h3>
+          <p>We handle manufacturing and worldwide shipping. Track your order every step.</p>
+        </div>
+      </div>
+      <div style="text-align:center; margin-top:24px;">
+        <a href="../contact/index.html" class="btn btn-primary">Start a Project</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="../assets/logo-white.png" alt="Amazing Yep Inc.">
+          <p>Custom merchandise solutions for brands,<br>events, retail programs and promotional campaigns.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="LinkedIn">in</a>
+            <a href="#" aria-label="Instagram">ig</a>
+            <a href="#" aria-label="Facebook">fb</a>
+          </div>
+          <div class="footer-newsletter">
+            <h4>Start a Project</h4>
+            <form action="mailto:info@amazingyep.com" method="post" enctype="text/plain" class="footer-email-form">
+              <div class="footer-email-wrap">
+                <input type="email" name="email" placeholder="Enter your email address" required>
+                <button type="submit" class="footer-email-btn">JOIN</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Ideas &amp; Use Cases</h4>
+          <ul>
+            <li><a href="../case-studies/index.html">Conference &amp; Event Swag</a></li>
+            <li><a href="../case-studies/index.html">Employee Engagement Kits</a></li>
+            <li><a href="../case-studies/index.html">Character &amp; Mascot Programs</a></li>
+            <li><a href="../case-studies/index.html">Schools, Teams &amp; Communities</a></li>
+            <li><a href="../case-studies/index.html">Brand Loyalty Programs</a></li>
+            <li><a href="../case-studies/index.html">Travel &amp; Adventure Collection</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Collections</h4>
+          <ul>
+            <li><a href="../collections/index.html">Plush &amp; Mascots</a></li>
+            <li><a href="../collections/index.html">Keychains</a></li>
+            <li><a href="../collections/index.html">Drinkware</a></li>
+            <li><a href="../collections/index.html">Bags</a></li>
+            <li><a href="../collections/index.html">Apparel</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="../about/index.html">About Us</a></li>
+            <li><a href="../contact/index.html">Contact</a></li>
+            <li><a href="mailto:info@amazingyep.com">info@amazingyep.com</a></li>
+            <li><a href="tel:7326928285">732-692-8285</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Amazing Yep Inc.</p>
+        <p>Bringing Custom Merchandise Ideas to Life. Built for Brands, Events &amp; Promotional Programs.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../script.js"></script>
+
+  <script src="../api-config.js"></script>
+  <script>
+  const API_BASE = (window.API_CONFIG && window.API_CONFIG.BASE_URL) || 'https://amazingyep-backend.onrender.com';
+  let currentProduct = null;
+
+  function getProductId() {
+    const params = new URLSearchParams(window.location.search);
+    return parseInt(params.get('id'));
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // Normalize image URLs — prefix API base for relative paths
+  function resolveImg(src) {
+    if (!src) return '';
+    if (src.startsWith('http') || src.startsWith('data:')) return src;
+    return API_BASE + src;
+  }
+
+  async function loadProduct() {
+    const id = getProductId();
+    if (!id) {
+      showNotFound();
+      return;
+    }
+
+    try {
+      const res = await fetch(API_BASE + '/api/products/' + id);
+      if (!res.ok) {
+        showNotFound();
+        return;
+      }
+      const product = await res.json();
+      currentProduct = product;
+      renderProduct(product);
+      loadRelated(product);
+    } catch (e) {
+      showNotFound();
+    }
+  }
+
+  function renderProduct(p) {
+    document.getElementById('productLoading').style.display = 'none';
+    document.getElementById('productContent').style.display = 'block';
+    document.title = escapeHtml(p.name) + ' - Amazing Yep Inc.';
+
+    // Breadcrumb
+    document.getElementById('bcCategory').textContent = p.category;
+    document.getElementById('bcName').textContent = p.name;
+
+    // Category tag
+    document.getElementById('categoryTag').textContent = p.category;
+
+    // Name & description
+    document.getElementById('productName').textContent = p.name;
+    document.getElementById('productDesc').textContent = p.description || 'Contact us for more details about this product.';
+
+    // Timeline
+    renderTimeline(p);
+
+    // Product Details Specs
+    renderProductDetails(p);
+
+    // Specs (MOQ/Price)
+    if (p.moq) {
+      document.getElementById('moqValue').textContent = p.moq;
+    } else {
+      document.getElementById('moqSpec').style.display = 'none';
+    }
+
+    if (p.priceRange) {
+      document.getElementById('priceValue').textContent = p.priceRange;
+    } else {
+      document.getElementById('priceSpec').style.display = 'none';
+    }
+
+    if (!p.moq && !p.priceRange) {
+      document.getElementById('specsWrap').style.display = 'none';
+    }
+
+    // Gallery: normalize image URLs
+    const images = (p.images || []).map(resolveImg);
+    if (images.length > 0) {
+      document.getElementById('mainImage').src = images[0];
+      document.getElementById('mainImage').alt = escapeHtml(p.name);
+
+      const thumbHtml = images.map((img, i) => `
+        <div class="pd-thumb ${i === 0 ? 'active' : ''}" onclick="switchImage('${img}', this)">
+          <img src="${img}" alt="${escapeHtml(p.name)} ${i + 1}">
+        </div>
+      `).join('');
+      document.getElementById('thumbList').innerHTML = thumbHtml;
+    } else {
+      document.getElementById('mainImageWrap').innerHTML = `
+        <div style="width:100%;height:100%;background:var(--gray-50);display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:14px;">
+          No Image Available
+        </div>
+      `;
+      document.getElementById('thumbList').innerHTML = '';
+    }
+  }
+
+  function switchImage(src, thumbEl) {
+    document.getElementById('mainImage').src = src;
+    document.querySelectorAll('.pd-thumb').forEach(t => t.classList.remove('active'));
+    thumbEl.classList.add('active');
+  }
+
+  function showNotFound() {
+    document.getElementById('productLoading').style.display = 'none';
+    document.getElementById('productNotFound').style.display = 'block';
+  }
+
+  function renderTimeline(p) {
+    const tl = p.shippingTimeline || {};
+    const steps = [
+      { num: 1, label: 'Custom Sample Time', value: tl.sample || '5-7 days after artwork approval' },
+      { num: 2, label: 'Production Time', value: tl.production || '12-18 days after sample approval' },
+      { num: 3, label: 'Shipping By Air', value: tl.shippingByAir || '10-20 days' },
+      { num: 4, label: 'Shipping By Sea', value: tl.shippingBySea || '22-30 days' }
+    ];
+
+    const stepsHtml = steps.map((s, i) => {
+      const arrow = i < steps.length - 1
+        ? `<div class="pd-tl-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>`
+        : '';
+      return `
+        <div class="pd-tl-step">
+          <div class="pd-tl-icon">${s.num}</div>
+          <div class="pd-tl-label">${s.label}</div>
+          <div class="pd-tl-value">${escapeHtml(s.value)}</div>
+        </div>
+        ${arrow}
+      `;
+    }).join('');
+
+    document.getElementById('timelineSteps').innerHTML = stepsHtml;
+
+    if (tl.notes) {
+      document.getElementById('timelineNotes').textContent = tl.notes;
+      document.getElementById('timelineNotes').style.display = 'block';
+    } else {
+      document.getElementById('timelineNotes').style.display = 'none';
+    }
+
+    document.getElementById('timelineSection').style.display = 'block';
+  }
+
+  function renderProductDetails(p) {
+    const details = p.productDetails;
+    const specs = (details && details.specs && details.specs.length > 0) ? details.specs : [];
+
+    const hasContent = specs.length > 0 || (details && details.description);
+
+    if (!hasContent) {
+      document.getElementById('productDetailsWrap').style.display = 'none';
+      return;
+    }
+
+    let rows = '';
+    if (details && details.description) {
+      rows += `<tr><td>Description</td><td>${escapeHtml(details.description)}</td></tr>`;
+    }
+    specs.forEach(s => {
+      let label = '', value = '';
+      if (typeof s === 'string') {
+        const idx = s.indexOf(':');
+        if (idx > 0) {
+          label = s.slice(0, idx).trim();
+          value = s.slice(idx + 1).trim();
+        } else {
+          value = s.trim();
+        }
+      } else if (typeof s === 'object') {
+        label = s.label || s.key || '';
+        value = s.value || '';
+      }
+      if (value) {
+        rows += `<tr><td>${escapeHtml(label)}</td><td>${escapeHtml(value)}</td></tr>`;
+      }
+    });
+
+    document.getElementById('productDetailsTable').innerHTML = rows;
+    document.getElementById('productDetailsWrap').style.display = 'block';
+  }
+
+  async function loadRelated(product) {
+    try {
+      const res = await fetch(API_BASE + '/api/products?category=' + encodeURIComponent(product.category));
+      const data = await res.json();
+      const related = (data.products || []).filter(p => p.id !== product.id).slice(0, 4);
+
+      if (related.length === 0) {
+        return;
+      }
+
+      document.getElementById('relatedSection').style.display = 'block';
+      const grid = document.getElementById('relatedGrid');
+      grid.innerHTML = related.map(p => {
+        const relImg = (p.images && p.images.length > 0)
+          ? resolveImg(p.images[0])
+          : null;
+        return `
+        <div class="pd-related-card">
+          <div class="pd-related-card-img">
+            ${relImg
+              ? `<img src="${relImg}" alt="${escapeHtml(p.name)}">`
+              : `<div style="width:100%;height:100%;background:var(--gray-50);display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>`}
+          </div>
+          <div class="pd-related-card-body">
+            <h4>${escapeHtml(p.name)}</h4>
+            ${p.moq ? `<div style="font-size:13px;color:var(--text-light);margin-bottom:10px;">MOQ: ${escapeHtml(p.moq)}</div>` : ''}
+            <a href="../contact/index.html" class="btn btn-primary btn-sm" style="display:block;width:100%;text-align:center;padding:8px 12px;font-size:13px;border-radius:50px;">Start a Project</a>
+          </div>
+        </div>
+      `;}).join('');
+    } catch (e) {
+      // Silently skip related products
+    }
+  }
+
+  loadProduct();
+  </script>
+
+</body>
+</html>

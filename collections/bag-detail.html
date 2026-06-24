@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solid Canvas Tote - Amazing Yep Inc.</title>
+  <meta name="description" content="Solid Canvas Tote — classic solid-color tote bag for your brand. MOQ 100 pcs, free mockup in 24 hours.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    /* ========== Breadcrumb ========== */
+    .bd-breadcrumb { padding: 16px 0 4px; background: #fff; }
+    .bd-breadcrumb-inner { max-width: 1440px; margin: 0 auto; padding: 0 32px; display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-light); }
+    .bd-breadcrumb-inner a { color: var(--text-light); text-decoration: none; display: flex; align-items: center; gap: 4px; transition: all 0.3s ease; }
+    .bd-breadcrumb-inner a:hover { color: var(--orange); }
+    .bd-breadcrumb-inner .sep { color: #ccc; }
+    .bd-breadcrumb-arrow { width: 16px; height: 16px; stroke: var(--text-light); }
+
+    /* ========== Product Detail Layout ========== */
+    .bd-detail { background: #fff; padding: 0 0 40px; }
+    .bd-layout { max-width: 1440px; margin: 0 auto; padding: 24px 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+
+    /* Left Gallery */
+    .bd-gallery { position: sticky; top: 100px; }
+    .bd-gallery-main { width: 100%; aspect-ratio: 4/5; border-radius: 16px; overflow: hidden; background: var(--gray-50); }
+    .bd-gallery-main img { width: 100%; height: 100%; object-fit: cover; }
+    .bd-gallery-thumbs { display: flex; gap: 8px; margin-top: 12px; }
+    .bd-gallery-thumb { width: 72px; height: 72px; border-radius: 10px; overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; background: var(--gray-50); }
+    .bd-gallery-thumb:hover, .bd-gallery-thumb.active { border-color: var(--orange); }
+    .bd-gallery-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Right Info Panel */
+    .bd-info { padding-top: 32px; }
+
+    /* ===== Section 1: Product Name ===== */
+    .bd-name { font-size: 33px; font-weight: 700; color: var(--navy); line-height: 1.25; margin-bottom: 8px; letter-spacing: -0.3px; }
+
+    /* ===== Section 2: Product Code ===== */
+    .bd-sku { font-size: 15px; font-weight: 500; color: var(--navy); letter-spacing: 0.3px; margin-bottom: 28px; }
+    .bd-sku span { color: var(--orange); font-weight: 700; }
+
+    /* ===== Section 3: Select a Color ===== */
+    .bd-color-section { margin-bottom: 24px; }
+    .bd-color-box { background: #f0f5ff; border-radius: 12px; overflow: hidden; border: 1px solid #dbe4f8; }
+    .bd-color-header { background: var(--navy); padding: 12px 20px; }
+    .bd-color-header h3 { font-size: 20px; font-weight: 700; color: #fff; margin: 0; letter-spacing: 0.3px; }
+    .bd-color-body { padding: 18px 20px 20px; }
+    .bd-color-hint { font-size: 14px; font-weight: 500; color: var(--navy); margin-bottom: 14px; }
+    .bd-color-carousel-wrapper { display: flex; align-items: center; gap: 10px; width: 100%; }
+    .bd-color-carousel-arrow { width: 34px; height: 34px; min-width: 34px; border: 1.5px solid #c8d0e0; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; padding: 0; flex-shrink: 0; }
+    .bd-color-carousel-arrow:hover { border-color: var(--navy); background: var(--navy); }
+    .bd-color-carousel-arrow:hover svg path { stroke: #fff; }
+    .bd-color-carousel-arrow.disabled { opacity: 0.25; cursor: default; pointer-events: none; }
+    .bd-color-carousel-arrow.disabled:hover { border-color: #c8d0e0; background: #fff; }
+    .bd-color-carousel-arrow.disabled:hover svg path { stroke: #667799; }
+    .bd-color-carousel { overflow: hidden; flex: 1; }
+    .bd-color-list { display: flex; gap: 12px; transition: transform 0.4s ease; }
+    .bd-color-option { min-width: 140px; width: 140px; text-align: center; cursor: pointer; }
+    .bd-color-option-img { width: 140px; height: 140px; border-radius: 8px; overflow: hidden; background: #fff; border: 2px solid #dbe4f8; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+    .bd-color-option:hover .bd-color-option-img { border-color: var(--orange); }
+    .bd-color-option.active .bd-color-option-img { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(255,127,40,0.2); }
+    .bd-color-option-img img { width: 100%; height: 100%; object-fit: cover; }
+    .bd-color-option-name { font-size: 12px; font-weight: 600; color: var(--navy); margin-top: 6px; line-height: 1.3; }
+    .bd-color-selected-text { margin-top: 14px; font-size: 14px; color: var(--navy); padding-top: 12px; border-top: 1px solid #dbe4f8; }
+    .bd-color-selected-text strong { color: var(--navy); }
+
+    /* Divider */
+    .bd-divider { height: 1px; background: #dbe4f8; margin: 0 0 24px 0; }
+
+    /* ===== Section 4: Pricing ===== */
+    .bd-pricing-card { background: #f0f5ff; border-radius: 12px; overflow: hidden; margin-bottom: 0; border: 1px solid #dbe4f8; }
+    .bd-pricing-header { background: var(--navy); padding: 12px 20px; }
+    .bd-pricing-header h3 { font-size: 20px; font-weight: 700; color: #fff; margin: 0; letter-spacing: 0.3px; }
+    .bd-pricing-body { padding: 18px 20px 20px; }
+    .bd-pricing-label { font-size: 20px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 18px; text-align: center; }
+    .bd-pricing-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-bottom: 20px; }
+    .bd-pricing-table th, .bd-pricing-table td { padding: 12px 18px; text-align: center; font-size: 14.5px; }
+    .bd-pricing-table thead th { background: #fff; color: var(--navy); font-weight: 700; font-size: 14.5px; letter-spacing: 0.3px; border-bottom: 2px solid #dbe4f8; }
+    .bd-pricing-table thead th:first-child { border-radius: 10px 0 0 0; }
+    .bd-pricing-table thead th:last-child { border-radius: 0 10px 0 0; }
+    .bd-pricing-table tbody td { background: #fff; border-bottom: 1px solid #e5ebf7; font-weight: 500; color: var(--navy); }
+    .bd-pricing-table tbody td:last-child { color: var(--orange); font-weight: 700; }
+    .bd-pricing-table tbody tr:last-child td:first-child { border-radius: 0 0 0 10px; }
+    .bd-pricing-table tbody tr:last-child td:last-child { border-radius: 0 0 10px 0; }
+    .bd-pricing-card .bd-cta { display: flex; justify-content: center; margin-top: 4px; }
+    .bd-pricing-card .btn { padding: 12px 28px; font-size: 14px; }
+
+    /* ===== Product Details + Timeline Tabs ===== */
+    .bd-pd { margin-top: 38px; }
+
+    .bd-tabs { display: flex; gap: 4px; border-bottom: 2px solid #e0e5f0; margin-bottom: 18px; }
+    .bd-tab-btn { flex: 1; padding: 12px 24px; border: 1px solid #b0b8c8; background: transparent; font-size: 18px; font-weight: 600; color: #556677; cursor: pointer; border-radius: 6px; position: relative; transition: all 0.25s ease; letter-spacing: -0.1px; }
+    .bd-tab-btn:hover { color: var(--navy); border-color: #8899b4; background: transparent; }
+    .bd-tab-btn.active { color: var(--navy); border-color: var(--navy); border-bottom: 3px solid var(--navy); background: transparent; }
+    .bd-tab-btn.active:hover { color: var(--navy); border-color: var(--navy); border-bottom: 3px solid var(--navy); background: transparent; }
+    .bd-tab-content { display: none; animation: fadeTabIn 0.35s ease; }
+    .bd-tab-content.active { display: block; }
+    @keyframes fadeTabIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+    .bd-pd-desc { font-size: 14px; line-height: 1.7; color: var(--navy); margin-bottom: 16px; }
+    .bd-pd-specs { list-style: none; padding: 0; margin: 0; }
+    .bd-pd-specs li { font-size: 13px; line-height: 1.8; color: var(--navy); padding: 4px 0; padding-left: 14px; position: relative; }
+    .bd-pd-specs li::before { content: '•'; position: absolute; left: 0; color: var(--orange); font-weight: 700; }
+
+    /* Timeline Visual */
+    .bd-timeline { position: relative; padding-left: 32px; }
+    .bd-timeline::before { content: ''; position: absolute; left: 11px; top: 4px; bottom: 4px; width: 2px; background: linear-gradient(to bottom, var(--orange), var(--orange) 25%, #dbe4f8 25%, #dbe4f8 50%, var(--orange) 50%, var(--orange) 75%, #dbe4f8 75%); }
+    .bd-tl-step { position: relative; margin-bottom: 20px; padding-left: 0; }
+    .bd-tl-step:last-child { margin-bottom: 0; }
+    .bd-tl-dot { position: absolute; left: -27px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--orange); border: 2px solid #fff; box-shadow: 0 0 0 2px var(--orange); z-index: 1; }
+    .bd-tl-step:nth-child(even) .bd-tl-dot { background: var(--navy); box-shadow: 0 0 0 2px var(--navy); }
+    .bd-tl-step-title { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 2px; }
+    .bd-tl-step-days { font-size: 11px; font-weight: 600; color: var(--orange); margin-bottom: 4px; }
+    .bd-tl-step-desc { font-size: 12px; line-height: 1.6; color: var(--navy); }
+
+    /* ===== You Might Also Like ===== */
+    .yml-section { background: #fff; padding: 0 0 40px; }
+    .yml-header { max-width: 1440px; margin: 0 auto 16px; padding: 0 32px; }
+    .yml-header .section-label { display: block; margin-bottom: 4px; }
+    .yml-wrap { max-width: 1440px; margin: 0 auto; padding: 0 32px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .yml-wrap::-webkit-scrollbar { display: none; }
+    .yml-track { display: flex; gap: 16px; padding-bottom: 8px; }
+    .yml-card { flex: 0 0 220px; border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s; background: var(--gray-50); }
+    .yml-card:hover { transform: translateY(-2px); }
+    .yml-card-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; background: var(--gray-100); }
+    .yml-card-body { padding: 12px; }
+    .yml-card-body h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin: 0 0 4px; }
+    .yml-card-body p { font-size: 12px; color: var(--text-light); margin: 0; }
+    .yml-pagination { max-width: 1440px; margin: 20px auto 0; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; }
+    .yml-pagination-bar { flex: 1; max-width: 400px; height: 2px; background: var(--gray-200); border-radius: 2px; position: relative; overflow: hidden; }
+    .yml-pagination-bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--navy); border-radius: 2px; transition: width 0.3s; }
+    .yml-pagination-arrows { display: flex; align-items: center; gap: 12px; }
+    .yml-pagination-arrow { width: 28px; height: 28px; border: 1px solid var(--gray-200); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; background: #fff; transition: all 0.2s; }
+    .yml-pagination-arrow:hover { border-color: var(--navy); background: var(--navy); }
+    .yml-pagination-arrow:hover svg { stroke: #fff; }
+    .yml-pagination-arrow svg { width: 12px; height: 12px; stroke: var(--text-light); transition: stroke 0.2s; }
+    .yml-pagination-num { font-size: 13px; color: var(--text-light); min-width: 28px; text-align: center; }
+
+    @media (max-width: 1024px) {
+      .bd-layout { grid-template-columns: 1fr; gap: 24px; }
+      .bd-gallery { position: static; }
+      .bd-color-list { gap: 8px; }
+      .bd-color-option { min-width: 100px; width: 100px; }
+      .bd-color-option-img { width: 100px; height: 100px; }
+      .bd-color-carousel-arrow { width: 30px; height: 30px; min-width: 30px; }
+      .bd-color-carousel-wrapper { gap: 6px; }
+    }
+    @media (max-width: 768px) {
+      .bags-you-may-like .section-label { padding: 0 20px; }
+      .yml-wrap { padding: 0 20px; }
+      .yml-card { flex: 0 0 160px; }
+      .yml-pagination { padding: 0 20px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo"><img src="../assets/logo.png" alt="Amazing Yep Inc."></a>
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="plush-mascots.html">Plush &amp; Mascots</a></li>
+        <li><a href="keychains.html">Keychains</a></li>
+        <li><a href="drinkware.html">Drinkware</a></li>
+        <li><a href="bags.html" class="active">Bags</a></li>
+        <li><a href="../case-studies/index.html">Ideas &amp; Use Cases</a></li>
+        <li><a href="../solutions/index.html">Brand Programs</a></li>
+        <li class="has-dropdown">
+          <a href="index.html" class="dropdown-toggle">Collections <svg class="dropdown-arrow" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <ul class="nav-dropdown">
+            <li><a href="bags.html">Bags</a></li>
+            <li><a href="drinkware.html">Drinkware</a></li>
+            <li><a href="keychains.html">Keychains &amp; Accessories</a></li>
+            <li><a href="office.html">Office &amp; Stationery</a></li>
+            <li><a href="outdoor-leisure.html">Outdoor &amp; Leisure</a></li>
+            <li><a href="plush-mascots.html">Plush &amp; Mascots</a></li>
+            <li><a href="technology.html">Technology</a></li>
+            <li><a href="trade-show.html">Trade Show</a></li>
+            <li><a href="apparel.html">Wearables</a></li>
+          </ul>
+        </li>
+      </ul>
+      <div class="nav-cta">
+        <div class="nav-contact">
+          <a href="tel:7326928285"><svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>732-692-8285</a>
+          <a href="mailto:info@amazingyep.com"><svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>info@amazingyep.com</a>
+        </div>
+        <a href="../contact/index.html" class="btn btn-primary btn-sm">Start a Project</a>
+        <button class="nav-mobile-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Breadcrumb -->
+  <div class="bd-breadcrumb">
+    <div class="bd-breadcrumb-inner">
+      <a href="../index.html"><svg class="bd-breadcrumb-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Home</a><span class="sep">/</span>
+      <a href="bags.html">Bags</a><span class="sep">/</span>
+      <span style="color:var(--navy);font-weight:600;">Solid Canvas Tote</span>
+    </div>
+  </div>
+
+  <!-- Product Detail -->
+  <section class="bd-detail">
+    <div class="bd-layout">
+
+      <!-- ========== LEFT: Gallery ========== -->
+      <div class="bd-gallery">
+        <div class="bd-gallery-main">
+          <img src="../assets/tote-canvas.png" alt="Solid Canvas Tote" id="mainImg">
+        </div>
+        <div class="bd-gallery-thumbs">
+          <div class="bd-gallery-thumb active" onclick="switchImg('../assets/tote-canvas.png', this)"><img src="../assets/tote-canvas.png" alt="Canvas Natural"></div>
+        </div>
+
+        <!-- Product Details + Timeline Tabs -->
+        <div class="bd-pd">
+          <div class="bd-tabs">
+            <button class="bd-tab-btn active" onclick="switchTab(this, 'details')">Product Details</button>
+            <button class="bd-tab-btn" onclick="switchTab(this, 'timeline')">Production &amp; Shipping Timeline</button>
+          </div>
+          <div class="bd-tab-content active" id="tab-details">
+            <p class="bd-pd-desc">This durable canvas tote bag is perfect for grocery shopping, daily errands, and promotional giveaways. The reusable tote features a large, open main compartment with gusseted sides and a sturdy bottom board for added durability. Lightweight yet strong, it's designed to carry heavy loads with ease.</p>
+            <ul class="bd-pd-specs">
+              <li>Your price includes a one-color imprint on the front of the bag</li>
+              <li>Set-up charge: $50</li>
+              <li>Imported, logo applied in USA</li>
+              <li>Maximum number of imprint colors: 1</li>
+              <li>Ready to ship in: 2 business days *</li>
+            </ul>
+            <p style="font-size:11px;color:var(--navy);margin-top:8px;line-height:1.5;">* Excludes art preparation time, applies only to orders of 3,000 items or fewer with 1 imprint color(s) and 1 imprint location(s).</p>
+          </div>
+          <div class="bd-tab-content" id="tab-timeline">
+            <p class="bd-pd-desc">Here's what to expect from order to delivery for your customized bags.</p>
+            <div class="bd-timeline">
+              <div class="bd-tl-step">
+                <div class="bd-tl-dot"></div>
+                <div class="bd-tl-step-title">1. Art Proof &amp; Approval</div>
+                <div class="bd-tl-step-days">1–2 Business Days</div>
+                <div class="bd-tl-step-desc">Our design team creates a digital proof of your imprint. You review and approve before production begins.</div>
+              </div>
+              <div class="bd-tl-step">
+                <div class="bd-tl-dot"></div>
+                <div class="bd-tl-step-title">2. Production</div>
+                <div class="bd-tl-step-days">5–7 Business Days</div>
+                <div class="bd-tl-step-desc">Your bags are printed using high-quality screen printing for vibrant, long-lasting results.</div>
+              </div>
+              <div class="bd-tl-step">
+                <div class="bd-tl-dot"></div>
+                <div class="bd-tl-step-title">3. Quality Inspection</div>
+                <div class="bd-tl-step-days">1 Business Day</div>
+                <div class="bd-tl-step-desc">Each order undergoes a thorough quality check to ensure your brand looks its best.</div>
+              </div>
+              <div class="bd-tl-step">
+                <div class="bd-tl-dot"></div>
+                <div class="bd-tl-step-title">4. Shipping &amp; Delivery</div>
+                <div class="bd-tl-step-days">3–5 Business Days</div>
+                <div class="bd-tl-step-desc">Orders ship via ground delivery. Expedited options are available — contact us for details.</div>
+              </div>
+            </div>
+            <p style="font-size:11px;color:var(--navy);margin-top:12px;line-height:1.5;">* Timeline estimates based on standard orders. Rush production available — ask your account manager.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== RIGHT: Info Panel ========== -->
+      <div class="bd-info">
+
+        <!-- 1. Product Name -->
+        <h1 class="bd-name">Solid Canvas Tote</h1>
+
+        <!-- 2. Product Code -->
+        <div class="bd-sku">Item #: <span>AYP-BG-001</span></div>
+
+        <!-- 3. Select a Color -->
+        <div class="bd-color-section">
+          <div class="bd-color-box">
+            <div class="bd-color-header"><h3>Select a Color:</h3></div>
+            <div class="bd-color-body">
+              <div class="bd-color-hint">Choose from available colors &amp; patterns below</div>
+              <div class="bd-color-carousel-wrapper">
+                <button class="bd-color-carousel-arrow disabled" id="colorPrevBtn" onclick="colorPagePrev()" title="Previous">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="bd-color-carousel" id="colorCarousel">
+                  <div class="bd-color-list" id="colorList">
+                    <div class="bd-color-option active" onclick="selectColor(this, 'Canvas Natural', '../assets/tote-canvas.png')">
+                      <div class="bd-color-option-img"><img src="../assets/tote-canvas.png" alt="Canvas Natural"></div>
+                      <div class="bd-color-option-name">Canvas Natural</div>
+                    </div>
+                    <div class="bd-color-option" onclick="selectColor(this, 'Navy Blue', null)">
+                      <div class="bd-color-option-img" style="background:linear-gradient(135deg,#1a2744,#2c4a7c,#5b8cc9);"><span style="color:#fff;font-size:13px;font-weight:600;">Navy Blue</span></div>
+                      <div class="bd-color-option-name">Navy Blue</div>
+                    </div>
+                  </div>
+                </div>
+                <button class="bd-color-carousel-arrow" id="colorNextBtn" onclick="colorPageNext()" title="Next">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </div>
+              <div class="bd-color-selected-text">
+                Product Color Selection: <strong id="selectedColorName">Canvas Natural</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Pricing -->
+        <div class="bd-pricing-card">
+          <div class="bd-pricing-header"><h3>Pricing</h3></div>
+          <div class="bd-pricing-body">
+          <table class="bd-pricing-table">
+            <thead>
+              <tr><th>Quantity（pcs）</th><th>Price Each</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>100</td><td>$4.99</td></tr>
+              <tr><td>250</td><td>$3.99</td></tr>
+              <tr><td>500</td><td>$3.29</td></tr>
+              <tr><td>1,000</td><td>$2.79</td></tr>
+              <tr><td>2,500</td><td>$2.39</td></tr>
+              <tr><td>5,000</td><td>$1.99</td></tr>
+            </tbody>
+          </table>
+          <div class="bd-cta">
+            <a href="../contact/index.html" class="btn btn-primary">Start a Project</a>
+          </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- YOU MIGHT ALSO LIKE -->
+  <section class="yml-section">
+    <div class="yml-header">
+      <span class="section-label">YOU MIGHT ALSO LIKE</span>
+    </div>
+    <div class="yml-wrap">
+      <div class="yml-track">
+        <a href="bag-detail-colorful.html" class="yml-card"><img class="yml-card-img" src="../assets/tote-yellow.png" alt="Colorful Tote"><div class="yml-card-body"><h4>Colorful Canvas Tote</h4><p>MOQ: 100</p></div></a>
+        <div class="yml-card"><img class="yml-card-img" src="../assets/bags-hero-bg.jpg" alt="Eco Tote"><div class="yml-card-body"><h4>Eco Tote</h4><p>MOQ: 100</p></div></div>
+        <div class="yml-card"><img class="yml-card-img" src="../assets/bags-hero-bg.jpg" alt="Jute Shopper"><div class="yml-card-body"><h4>Jute Shopper</h4><p>MOQ: 200</p></div></div>
+        <div class="yml-card"><img class="yml-card-img" src="../assets/bags-hero-bg.jpg" alt="Foldable Backpack"><div class="yml-card-body"><h4>Foldable Backpack</h4><p>MOQ: 300</p></div></div>
+        <div class="yml-card"><img class="yml-card-img" src="../assets/bags-hero-bg.jpg" alt="Gym Duffel"><div class="yml-card-body"><h4>Gym Duffel</h4><p>MOQ: 150</p></div></div>
+        <div class="yml-card"><img class="yml-card-img" src="../assets/bags-hero-bg.jpg" alt="Wine Tote"><div class="yml-card-body"><h4>Wine Tote</h4><p>MOQ: 100</p></div></div>
+        <div class="yml-card"><img class="yml-card-img" src="../assets/bags-hero-bg.jpg" alt="Kids Backpack"><div class="yml-card-body"><h4>Kids Backpack</h4><p>MOQ: 250</p></div></div>
+        <div class="yml-card"><img class="yml-card-img" src="../assets/bags-hero-bg.jpg" alt="Laptop Sleeve"><div class="yml-card-body"><h4>Laptop Sleeve</h4><p>MOQ: 200</p></div></div>
+      </div>
+    </div>
+    <div class="yml-pagination">
+      <div class="yml-pagination-bar"><div class="yml-pagination-bar-fill" id="ymlPaginationFill" style="width:50%;"></div></div>
+      <div class="yml-pagination-arrows">
+        <div class="yml-pagination-arrow" onclick="ymlPrev()">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+        </div>
+        <span class="yml-pagination-num" id="ymlPageNum">1/2</span>
+        <div class="yml-pagination-arrow" onclick="ymlNext()">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW WE WORK -->
+  <section class="hww-section">
+    <div class="container">
+      <div class="hww-header">
+        <span class="section-label">HOW WE WORK</span>
+        <h2 class="section-title">Simple, Fast, Reliable</h2>
+        <p class="section-subtitle">A straightforward process designed to get you from idea to delivery with minimal friction.</p>
+      </div>
+      <div class="hww-steps">
+        <div class="hww-step"><div class="hww-num">1</div><h3>Share Your Idea</h3><p>Send us your design, sketch, or concept. Tell us about your brand, audience, and goals.</p></div>
+        <div class="hww-arrow"><svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg></div>
+        <div class="hww-step"><div class="hww-num">2</div><h3>Receive Mockup &amp; Pricing</h3><p>Within 24 hours, receive a free digital mockup and detailed pricing options.</p></div>
+        <div class="hww-arrow"><svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg></div>
+        <div class="hww-step"><div class="hww-num">3</div><h3>Sampling &amp; Approval</h3><p>Review physical samples, request adjustments, and approve before full production.</p></div>
+        <div class="hww-arrow"><svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg></div>
+        <div class="hww-step"><div class="hww-num">4</div><h3>Production &amp; Delivery</h3><p>We handle manufacturing and worldwide shipping. Track your order every step.</p></div>
+      </div>
+      <div style="text-align:center; margin-top:24px;">
+        <a href="../contact/index.html" class="btn btn-primary">Start a Project</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="../assets/logo-white.png" alt="Amazing Yep Inc.">
+          <p>Custom merchandise solutions for brands,<br>events, retail programs and promotional campaigns.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="LinkedIn">in</a>
+            <a href="#" aria-label="Instagram">ig</a>
+            <a href="#" aria-label="Facebook">fb</a>
+          </div>
+          <div class="footer-newsletter">
+            <h4>Start a Project</h4>
+            <form action="mailto:info@amazingyep.com" method="post" enctype="text/plain" class="footer-email-form">
+              <div class="footer-email-wrap">
+                <input type="email" name="email" placeholder="Enter your email address" required>
+                <button type="submit" class="footer-email-btn">JOIN</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Ideas &amp; Use Cases</h4>
+          <ul>
+            <li><a href="../case-studies/index.html">Conference &amp; Event Swag</a></li>
+            <li><a href="../case-studies/index.html">Employee Engagement Kits</a></li>
+            <li><a href="../case-studies/index.html">Character &amp; Mascot Programs</a></li>
+            <li><a href="../case-studies/index.html">Schools, Teams &amp; Communities</a></li>
+            <li><a href="../case-studies/index.html">Brand Loyalty Programs</a></li>
+            <li><a href="../case-studies/index.html">Travel &amp; Adventure Collection</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Collections</h4>
+          <ul>
+            <li><a href="../collections/index.html">Plush &amp; Mascots</a></li>
+            <li><a href="../collections/index.html">Keychains</a></li>
+            <li><a href="../collections/index.html">Drinkware</a></li>
+            <li><a href="../collections/index.html">Bags</a></li>
+            <li><a href="../collections/index.html">Apparel</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="../about/index.html">About Us</a></li>
+            <li><a href="../contact/index.html">Contact</a></li>
+            <li><a href="mailto:info@amazingyep.com">info@amazingyep.com</a></li>
+            <li><a href="tel:7326928285">732-692-8285</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Amazing Yep Inc.</p>
+        <p>Bringing Custom Merchandise Ideas to Life. Built for Brands, Events &amp; Promotional Programs.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function switchImg(src, el) {
+      document.getElementById('mainImg').src = src;
+      document.querySelectorAll('.bd-gallery-thumb').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function selectColor(el, name, imgSrc) {
+      document.querySelectorAll('.bd-color-option').forEach(item => item.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('selectedColorName').textContent = name;
+      if (imgSrc) {
+        document.getElementById('mainImg').src = imgSrc;
+      }
+    }
+
+    function switchTab(btn, tab) {
+      document.querySelectorAll('.bd-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.bd-tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + tab).classList.add('active');
+    }
+
+    /* Carousel pagination */
+    let ymlPage = 1;
+    const ymlTotal = 2;
+    function ymlPrev() { if (ymlPage > 1) { ymlPage--; ymlUpdatePagination(); } }
+    function ymlNext() { if (ymlPage < ymlTotal) { ymlPage++; ymlUpdatePagination(); } }
+    function ymlUpdatePagination() {
+      document.getElementById('ymlPaginationFill').style.width = (ymlPage / ymlTotal * 100) + '%';
+      document.getElementById('ymlPageNum').textContent = ymlPage + '/' + ymlTotal;
+    }
+
+    /* Color Carousel */
+    const COLOR_PER_PAGE = 3;
+    const colorList = document.getElementById('colorList');
+    const colorItems = document.querySelectorAll('#colorList .bd-color-option');
+    const colorItemWidth = 140 + 12; // width + gap
+    let colorPage = 0;
+    const colorTotalPages = Math.ceil(colorItems.length / COLOR_PER_PAGE);
+
+    function colorPagePrev() {
+      if (colorPage > 0) { colorPage--; updateColorCarousel(); }
+    }
+    function colorPageNext() {
+      if (colorPage < colorTotalPages - 1) { colorPage++; updateColorCarousel(); }
+    }
+    function updateColorCarousel() {
+      const offset = -colorPage * COLOR_PER_PAGE * colorItemWidth;
+      colorList.style.transform = 'translateX(' + offset + 'px)';
+      document.getElementById('colorPrevBtn').classList.toggle('disabled', colorPage === 0);
+      document.getElementById('colorNextBtn').classList.toggle('disabled', colorPage >= colorTotalPages - 1);
+    }
+    // init arrows state
+    if (colorTotalPages <= 1) {
+      document.getElementById('colorPrevBtn').classList.add('disabled');
+      document.getElementById('colorNextBtn').classList.add('disabled');
+    }
+  </script>
+  <script src="../script.js"></script>
+</body>
+</html>

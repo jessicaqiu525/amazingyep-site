@@ -170,12 +170,7 @@
     <div class="bags-featured-header">
       <span class="section-label">FEATURED</span>
     </div>
-    <div class="bags-featured-grid" id="featuredGrid">
-      <!-- Products loaded dynamically from API -->
-      <div style="grid-column:1/-1;text-align:center;padding:40px;color:#999;">
-        <p>Loading products...</p>
-      </div>
-    </div>
+    <div class="bags-featured-grid" id="featuredGrid"></div>
   </section>
 
   <!-- YOU MAY LIKE -->
@@ -313,10 +308,7 @@
     </div>
   </footer>
 
-  <script src="../api-config.js"></script>
   <script>
-    window.API_CONFIG.initPage('Bags', 'featuredGrid', 'bags');
-
     // Filter toggle
     function toggleFilter() {
       const arrow = document.getElementById('filterArrow');
@@ -359,6 +351,11 @@
         card.style.display = (!query || name.includes(query)) ? '' : 'none';
       });
     }
+  </script>
+
+  <script src="../api-config.js"></script>
+  <script>
+    window.API_CONFIG.initPage('Bags', 'featuredGrid', 'bags');
   </script>
 
 </body>
