@@ -402,7 +402,7 @@
     <div class="container">
       <div id="productLoading" style="text-align:center; padding:80px 0;">
         <div style="width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--orange);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px;"></div>
-        <p style="font-size:14px;color:var(--text-light);">Loading product details...</p>
+        <p id="productLoadingMsg" style="font-size:14px;color:var(--text-light);">Loading product details...</p>
       </div>
 
       <div id="productContent" style="display:none;">
@@ -621,19 +621,43 @@
       return;
     }
 
-    try {
-      const res = await fetch(API_BASE + '/api/products/' + id);
-      if (!res.ok) {
-        showNotFound();
+    const loadingMsg = document.getElementById('productLoadingMsg');
+    const url = API_BASE + '/api/products/' + id;
+    let lastError = null;
+
+    // Retry up to 3 times (handles Render cold start)
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        if (attempt === 1) loadingMsg.textContent = 'Waking up server...';
+        if (attempt === 2) loadingMsg.textContent = 'Almost there...';
+
+        const controller = new AbortController();
+        const timeout = setTimeout(function() { controller.abort(); }, 40000);
+
+        const res = await fetch(url, { signal: controller.signal });
+        clearTimeout(timeout);
+
+        if (!res.ok) {
+          if (res.status === 404) { showNotFound(); return; }
+          throw new Error('Server error: ' + res.status);
+        }
+
+        const product = await res.json();
+        currentProduct = product;
+        renderProduct(product);
+        loadRelated(product);
         return;
+      } catch (e) {
+        lastError = e;
+        if (attempt < 2) {
+          // Exponential backoff: 1s, 3s
+          await new Promise(function(r) { setTimeout(r, 1000 * (attempt + 1) * (attempt + 1)); });
+        }
       }
-      const product = await res.json();
-      currentProduct = product;
-      renderProduct(product);
-      loadRelated(product);
-    } catch (e) {
-      showNotFound();
     }
+
+    // All retries exhausted
+    showNotFound();
   }
 
   function renderProduct(p) {
@@ -675,11 +699,15 @@
       document.getElementById('specsWrap').style.display = 'none';
     }
 
-    // Gallery: normalize image URLs
-    const images = (p.images || []).map(resolveImg);
+    // Gallery: normalize image URLs with fallback
+    const images = (p.images || []).map(resolveImg).filter(Boolean);
     if (images.length > 0) {
       document.getElementById('mainImage').src = images[0];
       document.getElementById('mainImage').alt = escapeHtml(p.name);
+      document.getElementById('mainImage').onerror = function() {
+        this.style.display = 'none';
+        document.getElementById('mainImageWrap').innerHTML = '<div style="width:100%;height:100%;background:var(--gray-50);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span style="font-size:13px;color:#999;">Image loading...</span></div>';
+      };
 
       const thumbHtml = images.map((img, i) => `
         <div class="pd-thumb ${i === 0 ? 'active' : ''}" onclick="switchImage('${img}', this)">
