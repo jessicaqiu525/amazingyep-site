@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trade Show - Amazing Yep Inc.</title>
+  <meta name="description" content="Custom trade show merchandise for your brand.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <script src="../api-config.js"></script>
+  <style>
+    /* Bags page specific styles */
+    .tradeshow-breadcrumb { padding: 16px 0 4px; background: #fff; }
+    .tradeshow-breadcrumb-inner { max-width: 1440px; margin: 0 auto; padding: 0 32px; display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-light); }
+    .tradeshow-breadcrumb-inner a { color: var(--text-light); text-decoration: none; display: flex; align-items: center; gap: 4px; transition: all 0.3s ease; transform-origin: left center; }
+    .tradeshow-breadcrumb-inner a:hover { color: var(--orange); transform: scale(1.08) translateZ(0); filter: drop-shadow(0 2px 4px rgba(242,101,34,0.3)); }
+    .tradeshow-breadcrumb-inner .sep { color: #ccc; }
+    .tradeshow-breadcrumb-arrow { width: 16px; height: 16px; stroke: var(--text-light); }
+
+    .tradeshow-header { max-width: 1440px; margin: 0 auto; padding: 16px 32px 20px; text-align: left; }
+    .tradeshow-title { font-size: 48px; font-weight: 900; color: var(--navy); letter-spacing: 1px; margin: 0 0 4px; }
+    .tradeshow-subtitle { font-size: 20px; font-weight: 500; color: var(--text-light); margin-left: 8px; letter-spacing: 0; }
+    .tradeshow-filter-wrap { display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
+    .tradeshow-filter-text { font-size: 18px; font-weight: 700; letter-spacing: 1px; color: var(--navy); text-transform: uppercase; }
+    .tradeshow-filter-arrow { width: 20px; height: 20px; transition: transform 0.3s; flex-shrink: 0; }
+    .tradeshow-filter-arrow.collapsed { transform: rotate(180deg); }
+    .tradeshow-type-content { overflow: hidden; max-height: 600px; transition: max-height 0.3s ease; }
+    .tradeshow-type-content.collapsed { max-height: 0; margin-bottom: 0; }
+
+    .tradeshow-product-type { max-width: 1440px; margin: 0 auto; padding: 0 32px 40px; text-align: left; border-bottom: 1px solid var(--gray-200); }
+    .tradeshow-type-label { font-size: 24px; font-weight: 700; letter-spacing: 1.5px; color: var(--navy); text-transform: uppercase; margin-bottom: 16px; text-decoration: underline; }
+    .tradeshow-type-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tradeshow-type-item { padding: 12px 24px; border: 1px solid var(--gray-200); border-radius: 50px; font-size: 15px; color: var(--navy); cursor: pointer; transition: all 0.2s; background: #fff; white-space: nowrap; }
+    .tradeshow-type-item:hover, .tradeshow-type-item.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+    .tradeshow-featured { background: #fff; padding: 32px 0 40px; }
+    .tradeshow-featured-header { max-width: 1440px; margin: 0 auto 16px; padding: 0 32px; }
+    .tradeshow-featured-header .section-label { display: block; margin-bottom: 4px; }
+    .tradeshow-featured-grid { max-width: 1440px; margin: 0 auto; padding: 0 32px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .tradeshow-featured-card { border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s; background: var(--gray-50); }
+    .tradeshow-featured-card:hover { transform: translateY(-2px); }
+    .tradeshow-featured-card-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; background: var(--gray-100); }
+    .tradeshow-featured-card-body { padding: 12px; }
+    .tradeshow-featured-card-body h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin: 0 0 4px; }
+    .tradeshow-featured-card-body p { font-size: 12px; color: var(--text-light); margin: 0; }
+
+    .tradeshow-you-may-like { background: #fff; padding: 0 0 40px; }
+    .tradeshow-carousel-header { max-width: 1440px; margin: 0 auto 16px; padding: 0 32px; }
+    .tradeshow-carousel-header .section-label { display: block; margin-bottom: 4px; }
+    .tradeshow-carousel-wrap { max-width: 1440px; margin: 0 auto; padding: 0 32px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .tradeshow-carousel-wrap::-webkit-scrollbar { display: none; }
+    .tradeshow-carousel-track { display: flex; gap: 16px; padding-bottom: 8px; }
+    .tradeshow-carousel-card { flex: 0 0 220px; border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s; background: var(--gray-50); }
+    .tradeshow-carousel-card:hover { transform: translateY(-2px); }
+    .tradeshow-carousel-card-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; background: var(--gray-100); }
+    .tradeshow-carousel-card-body { padding: 12px; }
+    .tradeshow-carousel-card-body h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin: 0 0 4px; }
+    .tradeshow-carousel-card-body p { font-size: 12px; color: var(--text-light); margin: 0; }
+
+    .tradeshow-carousel-pagination { max-width: 1440px; margin: 20px auto 0; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; }
+    .tradeshow-pagination-bar { flex: 1; max-width: 400px; height: 2px; background: var(--gray-200); border-radius: 2px; position: relative; overflow: hidden; }
+    .tradeshow-pagination-bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--navy); border-radius: 2px; transition: width 0.3s; }
+    .tradeshow-pagination-arrows { display: flex; align-items: center; gap: 12px; }
+    .tradeshow-pagination-arrow { width: 28px; height: 28px; border: 1px solid var(--gray-200); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; background: #fff; transition: all 0.2s; }
+    .tradeshow-pagination-arrow:hover { border-color: var(--navy); background: var(--navy); }
+    .tradeshow-pagination-arrow:hover svg { stroke: #fff; }
+    .tradeshow-pagination-arrow svg { width: 12px; height: 12px; stroke: var(--text-light); transition: stroke 0.2s; }
+    .tradeshow-pagination-num { font-size: 13px; color: var(--text-light); min-width: 28px; text-align: center; }
+
+    @media (max-width: 768px) {
+      .tradeshow-title { font-size: 30px; letter-spacing: 0; }
+      .tradeshow-subtitle { font-size: 14px; display: block; margin-left: 0; margin-top: 4px; }
+      .tradeshow-featured-grid { grid-template-columns: repeat(2, 1fr); }
+      .tradeshow-carousel-card { flex: 0 0 160px; }
+      .tradeshow-type-grid { gap: 6px; }
+      .tradeshow-type-item { padding: 8px 16px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo"><img src="../assets/logo.png" alt="Amazing Yep Inc."></a>
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="plush-mascots.html">Plush &amp; Mascots</a></li>
+        <li><a href="keychains.html">Keychains</a></li>
+        <li><a href="drinkware.html">Drinkware</a></li>
+        <li><a href="bags.html">Bags</a></li>
+        <li><a href="../case-studies/index.html">Ideas &amp; Use Cases</a></li>
+        <li><a href="../solutions/index.html">Brand Programs</a></li>
+        <li class="has-dropdown">
+          <a href="index.html" class="dropdown-toggle">Collections <svg class="dropdown-arrow" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <ul class="nav-dropdown">
+            <li><a href="bags.html">Bags</a></li>
+            <li><a href="drinkware.html">Drinkware</a></li>
+            <li><a href="keychains.html">Keychains &amp; Accessories</a></li>
+            <li><a href="office.html">Office &amp; Stationery</a></li>
+            <li><a href="outdoor-leisure.html">Outdoor &amp; Leisure</a></li>
+            <li><a href="plush-mascots.html">Plush &amp; Mascots</a></li>
+            <li><a href="technology.html">Technology</a></li>
+            <li><a href="trade-show.html">Trade Show</a></li>
+            <li><a href="apparel.html">Wearables</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <div class="nav-cta">
+        <div class="nav-contact">
+          <a href="tel:7326928285"><svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>732-692-8285</a>
+          <a href="mailto:info@amazingyep.com"><svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>info@amazingyep.com</a>
+        </div>
+        <a href="../contact/index.html" class="btn btn-primary btn-sm">Start a Project</a>
+        <button class="nav-mobile-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Image -->
+  <header style="background:none; padding:0; margin:0;">
+    <img src="../assets/tradeshow-hero-bg.jpg" alt="Bags" style="width:100%; height:auto; display:block; max-height:600px; object-fit:cover; object-position:center center;">
+  </header>
+
+  <!-- Breadcrumb -->
+  <div class="tradeshow-breadcrumb">
+    <div class="tradeshow-breadcrumb-inner">
+      <a href="../index.html"><svg class="tradeshow-breadcrumb-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Home</a><span class="sep">/</span><span>Trade Show</span>
+    </div>
+  </div>
+
+  <!-- ALL BAGS Title + Filter Icon -->
+  <div class="tradeshow-header">
+    <h1 class="tradeshow-title">ALL TRADE SHOW <span class="tradeshow-subtitle">Make a lasting impression at every event</span></h1>
+    <div class="tradeshow-filter-wrap" onclick="toggleFilter()">
+      <span class="tradeshow-filter-text">FILTER</span>
+      <svg class="tradeshow-filter-arrow" id="filterArrow" viewBox="0 0 24 24" fill="none" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </div>
+
+  <!-- Search Bar -->
+  <div style="max-width:1440px; margin:0 auto; padding:0 32px 24px;">
+    <div style="display:flex; align-items:center; gap:12px; max-width:600px;">
+      <div style="flex:1; display:flex; align-items:center; gap:8px; padding:14px 20px; border:2px solid #d0d5dd; border-radius:50px; background:#fff;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" id="searchInput" placeholder="Search trade show..." oninput="filterTradeshow()" style="border:none; outline:none; flex:1; font-size:15px; font-family:Inter,sans-serif; color:var(--navy); background:transparent;">
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT TYPE -->
+  <div class="tradeshow-product-type">
+    <div class="tradeshow-type-content" id="typeContent">
+      <div class="tradeshow-type-label">PRODUCT TYPE</div>
+      <div class="tradeshow-type-grid">
+        <span class="tradeshow-type-item active">Banners & Signs</span>
+        <span class="tradeshow-type-item">Table Covers</span>
+        <span class="tradeshow-type-item">Pop-Up Displays</span>
+        <span class="tradeshow-type-item">Lanyards & Badges</span>
+        <span class="tradeshow-type-item">Promotional Giveaways</span>
+        <span class="tradeshow-type-item">Brochure Holders</span>
+        <span class="tradeshow-type-item">Flags</span>
+        <span class="tradeshow-type-item">Booth Accessories</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURED -->
+  <section class="tradeshow-featured">
+    <div class="tradeshow-featured-header">
+      <span class="section-label">FEATURED</span>
+    </div>
+    <div class="tradeshow-featured-grid" id="featuredGrid"></div>
+  </section>
+
+  <!-- YOU MAY LIKE -->
+  <section class="tradeshow-you-may-like">
+    <div class="tradeshow-carousel-header">
+      <span class="section-label">YOU MIGHT ALSO LIKE</span>
+    </div>
+    <div class="tradeshow-carousel-wrap">
+      <div class="tradeshow-carousel-track">
+        <div class="tradeshow-carousel-card"><img class="tradeshow-carousel-card-img" src="../assets/trade-show-hero-bg.jpg" alt="Trade Show"><div class="tradeshow-carousel-card-body"><h4>A-Frame Sign</h4><p>MOQ: 50 pcs</p></div></div>
+        <div class="tradeshow-carousel-card"><img class="tradeshow-carousel-card-img" src="../assets/trade-show-hero-bg.jpg" alt="Trade Show"><div class="tradeshow-carousel-card-body"><h4>Custom Keychain</h4><p>MOQ: 500 pcs</p></div></div>
+        <div class="tradeshow-carousel-card"><img class="tradeshow-carousel-card-img" src="../assets/trade-show-hero-bg.jpg" alt="Trade Show"><div class="tradeshow-carousel-card-body"><h4>Stress Ball</h4><p>MOQ: 1000 pcs</p></div></div>
+        <div class="tradeshow-carousel-card"><img class="tradeshow-carousel-card-img" src="../assets/trade-show-hero-bg.jpg" alt="Trade Show"><div class="tradeshow-carousel-card-body"><h4>USB Drive</h4><p>MOQ: 250 pcs</p></div></div>
+        <div class="tradeshow-carousel-card"><img class="tradeshow-carousel-card-img" src="../assets/trade-show-hero-bg.jpg" alt="Trade Show"><div class="tradeshow-carousel-card-body"><h4>Power Bank</h4><p>MOQ: 200 pcs</p></div></div>
+        <div class="tradeshow-carousel-card"><img class="tradeshow-carousel-card-img" src="../assets/trade-show-hero-bg.jpg" alt="Trade Show"><div class="tradeshow-carousel-card-body"><h4>Fidget Spinner</h4><p>MOQ: 500 pcs</p></div></div>
+        <div class="tradeshow-carousel-card"><img class="tradeshow-carousel-card-img" src="../assets/trade-show-hero-bg.jpg" alt="Trade Show"><div class="tradeshow-carousel-card-body"><h4>Silicone Wristband</h4><p>MOQ: 2000 pcs</p></div></div>
+        <div class="tradeshow-carousel-card"><img class="tradeshow-carousel-card-img" src="../assets/trade-show-hero-bg.jpg" alt="Trade Show"><div class="tradeshow-carousel-card-body"><h4>Tent Canopy</h4><p>MOQ: 10 pcs</p></div></div>
+    </div>
+    </div>
+    <div class="tradeshow-carousel-pagination">
+      <div class="tradeshow-pagination-bar"><div class="tradeshow-pagination-bar-fill" id="paginationFill" style="width:50%;"></div></div>
+      <div class="tradeshow-pagination-arrows">
+        <div class="tradeshow-pagination-arrow" onclick="prevPage()">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+        </div>
+        <span class="tradeshow-pagination-num" id="pageNum">1/2</span>
+        <div class="tradeshow-pagination-arrow" onclick="nextPage()">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW WE WORK -->
+  <section class="hww-section">
+    <div class="container">
+      <div class="hww-header">
+        <span class="section-label">HOW WE WORK</span>
+        <h2 class="section-title">Simple, Fast, Reliable</h2>
+        <p class="section-subtitle">A straightforward process designed to get you from idea to delivery with minimal friction.</p>
+      </div>
+      <div class="hww-steps">
+        <div class="hww-step">
+          <div class="hww-num">1</div>
+          <h3>Share Your Idea</h3>
+          <p>Send us your design, sketch, or concept. Tell us about your brand, audience, and goals.</p>
+        </div>
+        <div class="hww-arrow">
+          <svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg>
+        </div>
+        <div class="hww-step">
+          <div class="hww-num">2</div>
+          <h3>Receive Mockup &amp; Pricing</h3>
+          <p>Within 24 hours, receive a free digital mockup and detailed pricing options.</p>
+        </div>
+        <div class="hww-arrow">
+          <svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg>
+        </div>
+        <div class="hww-step">
+          <div class="hww-num">3</div>
+          <h3>Sampling &amp; Approval</h3>
+          <p>Review physical samples, request adjustments, and approve before full production.</p>
+        </div>
+        <div class="hww-arrow">
+          <svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg>
+        </div>
+        <div class="hww-step">
+          <div class="hww-num">4</div>
+          <h3>Production &amp; Delivery</h3>
+          <p>We handle manufacturing and worldwide shipping. Track your order every step.</p>
+        </div>
+      </div>
+      <div style="text-align:center; margin-top:24px;">
+        <a href="../contact/index.html" class="btn btn-primary">Start a Project</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="../assets/logo-white.png" alt="Amazing Yep Inc.">
+          <p>Custom merchandise solutions for brands,<br>events, retail programs and promotional campaigns.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="LinkedIn">in</a>
+            <a href="#" aria-label="Instagram">ig</a>
+            <a href="#" aria-label="Facebook">fb</a>
+          </div>
+          <div class="footer-newsletter">
+            <h4>Start a Project</h4>
+            <form action="mailto:info@amazingyep.com" method="post" enctype="text/plain" class="footer-email-form">
+              <div class="footer-email-wrap">
+                <input type="email" name="email" placeholder="Enter your email address" required>
+                <button type="submit" class="footer-email-btn">JOIN</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Ideas &amp; Use Cases</h4>
+          <ul>
+            <li><a href="../case-studies/index.html">Conference &amp; Event Swag</a></li>
+            <li><a href="../case-studies/index.html">Employee Engagement Kits</a></li>
+            <li><a href="../case-studies/index.html">Character &amp; Mascot Programs</a></li>
+            <li><a href="../case-studies/index.html">Schools, Teams &amp; Communities</a></li>
+            <li><a href="../case-studies/index.html">Brand Loyalty Programs</a></li>
+            <li><a href="../case-studies/index.html">Travel &amp; Adventure Collection</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Collections</h4>
+          <ul>
+            <li><a href="../collections/index.html">Plush &amp; Mascots</a></li>
+            <li><a href="../collections/index.html">Keychains</a></li>
+            <li><a href="../collections/index.html">Drinkware</a></li>
+            <li><a href="../collections/index.html">Bags</a></li>
+            <li><a href="../collections/index.html">Apparel</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="../about/index.html">About Us</a></li>
+            <li><a href="../contact/index.html">Contact</a></li>
+            <li><a href="mailto:info@amazingyep.com">info@amazingyep.com</a></li>
+            <li><a href="tel:7326928285">732-692-8285</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Amazing Yep Inc.</p>
+        <p>Bringing Custom Merchandise Ideas to Life. Built for Brands, Events &amp; Promotional Programs.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Filter toggle
+    function toggleFilter() {
+      const arrow = document.getElementById('filterArrow');
+      const content = document.getElementById('typeContent');
+      arrow.classList.toggle('collapsed');
+      content.classList.toggle('collapsed');
+    }
+
+    // Category type click handler
+    document.querySelectorAll('.tradeshow-type-item').forEach(item => {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.tradeshow-type-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+        // Filter logic can be added here
+      });
+    });
+    // Carousel page navigation
+    let currentPage = 1;
+    const totalPages = 2;
+    function updatePagination() {
+      document.getElementById('paginationFill').style.width = (currentPage / totalPages * 100) + '%';
+      document.getElementById('pageNum').textContent = currentPage + '/' + totalPages;
+    }
+    function prevPage() {
+      if (currentPage > 1) { currentPage--; updatePagination(); }
+    }
+    function nextPage() {
+      if (currentPage < totalPages) { currentPage++; updatePagination(); }
+    }
+
+    // Search filter
+    function filterTradeshow() {
+      const query = (document.getElementById('searchInput').value || '').toLowerCase();
+      document.querySelectorAll('.tradeshow-featured-card').forEach(card => {
+        const name = (card.querySelector('h4')?.textContent || '').toLowerCase();
+        card.style.display = (!query || name.includes(query)) ? '' : 'none';
+      });
+      document.querySelectorAll('.tradeshow-carousel-card').forEach(card => {
+        const name = (card.querySelector('h4')?.textContent || '').toLowerCase();
+        card.style.display = (!query || name.includes(query)) ? '' : 'none';
+      });
+    }
+  </script>
+  <script>
+    // Load products from backend API
+    window.API_CONFIG.initPage('Trade Show', 'featuredGrid', 'tradeshow');
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Office - Amazing Yep Inc.</title>
+  <meta name="description" content="Custom office merchandise for your brand.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <script src="../api-config.js"></script>
+  <style>
+    /* Bags page specific styles */
+    .office-breadcrumb { padding: 16px 0 4px; background: #fff; }
+    .office-breadcrumb-inner { max-width: 1440px; margin: 0 auto; padding: 0 32px; display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-light); }
+    .office-breadcrumb-inner a { color: var(--text-light); text-decoration: none; display: flex; align-items: center; gap: 4px; transition: all 0.3s ease; transform-origin: left center; }
+    .office-breadcrumb-inner a:hover { color: var(--orange); transform: scale(1.08) translateZ(0); filter: drop-shadow(0 2px 4px rgba(242,101,34,0.3)); }
+    .office-breadcrumb-inner .sep { color: #ccc; }
+    .office-breadcrumb-arrow { width: 16px; height: 16px; stroke: var(--text-light); }
+
+    .office-header { max-width: 1440px; margin: 0 auto; padding: 16px 32px 20px; text-align: left; }
+    .office-title { font-size: 48px; font-weight: 900; color: var(--navy); letter-spacing: 1px; margin: 0 0 4px; }
+    .office-subtitle { font-size: 20px; font-weight: 500; color: var(--text-light); margin-left: 8px; letter-spacing: 0; }
+    .office-filter-wrap { display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
+    .office-filter-text { font-size: 18px; font-weight: 700; letter-spacing: 1px; color: var(--navy); text-transform: uppercase; }
+    .office-filter-arrow { width: 20px; height: 20px; transition: transform 0.3s; flex-shrink: 0; }
+    .office-filter-arrow.collapsed { transform: rotate(180deg); }
+    .office-type-content { overflow: hidden; max-height: 600px; transition: max-height 0.3s ease; }
+    .office-type-content.collapsed { max-height: 0; margin-bottom: 0; }
+
+    .office-product-type { max-width: 1440px; margin: 0 auto; padding: 0 32px 40px; text-align: left; border-bottom: 1px solid var(--gray-200); }
+    .office-type-label { font-size: 24px; font-weight: 700; letter-spacing: 1.5px; color: var(--navy); text-transform: uppercase; margin-bottom: 16px; text-decoration: underline; }
+    .office-type-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .office-type-item { padding: 12px 24px; border: 1px solid var(--gray-200); border-radius: 50px; font-size: 15px; color: var(--navy); cursor: pointer; transition: all 0.2s; background: #fff; white-space: nowrap; }
+    .office-type-item:hover, .office-type-item.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+    .office-featured { background: #fff; padding: 32px 0 40px; }
+    .office-featured-header { max-width: 1440px; margin: 0 auto 16px; padding: 0 32px; }
+    .office-featured-header .section-label { display: block; margin-bottom: 4px; }
+    .office-featured-grid { max-width: 1440px; margin: 0 auto; padding: 0 32px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .office-featured-card { border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s; background: var(--gray-50); }
+    .office-featured-card:hover { transform: translateY(-2px); }
+    .office-featured-card-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; background: var(--gray-100); }
+    .office-featured-card-body { padding: 12px; }
+    .office-featured-card-body h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin: 0 0 4px; }
+    .office-featured-card-body p { font-size: 12px; color: var(--text-light); margin: 0; }
+
+    .office-you-may-like { background: #fff; padding: 0 0 40px; }
+    .office-carousel-header { max-width: 1440px; margin: 0 auto 16px; padding: 0 32px; }
+    .office-carousel-header .section-label { display: block; margin-bottom: 4px; }
+    .office-carousel-wrap { max-width: 1440px; margin: 0 auto; padding: 0 32px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .office-carousel-wrap::-webkit-scrollbar { display: none; }
+    .office-carousel-track { display: flex; gap: 16px; padding-bottom: 8px; }
+    .office-carousel-card { flex: 0 0 220px; border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s; background: var(--gray-50); }
+    .office-carousel-card:hover { transform: translateY(-2px); }
+    .office-carousel-card-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; background: var(--gray-100); }
+    .office-carousel-card-body { padding: 12px; }
+    .office-carousel-card-body h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin: 0 0 4px; }
+    .office-carousel-card-body p { font-size: 12px; color: var(--text-light); margin: 0; }
+
+    .office-carousel-pagination { max-width: 1440px; margin: 20px auto 0; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; }
+    .office-pagination-bar { flex: 1; max-width: 400px; height: 2px; background: var(--gray-200); border-radius: 2px; position: relative; overflow: hidden; }
+    .office-pagination-bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--navy); border-radius: 2px; transition: width 0.3s; }
+    .office-pagination-arrows { display: flex; align-items: center; gap: 12px; }
+    .office-pagination-arrow { width: 28px; height: 28px; border: 1px solid var(--gray-200); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; background: #fff; transition: all 0.2s; }
+    .office-pagination-arrow:hover { border-color: var(--navy); background: var(--navy); }
+    .office-pagination-arrow:hover svg { stroke: #fff; }
+    .office-pagination-arrow svg { width: 12px; height: 12px; stroke: var(--text-light); transition: stroke 0.2s; }
+    .office-pagination-num { font-size: 13px; color: var(--text-light); min-width: 28px; text-align: center; }
+
+    @media (max-width: 768px) {
+      .office-title { font-size: 30px; letter-spacing: 0; }
+      .office-subtitle { font-size: 14px; display: block; margin-left: 0; margin-top: 4px; }
+      .office-featured-grid { grid-template-columns: repeat(2, 1fr); }
+      .office-carousel-card { flex: 0 0 160px; }
+      .office-type-grid { gap: 6px; }
+      .office-type-item { padding: 8px 16px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo"><img src="../assets/logo.png" alt="Amazing Yep Inc."></a>
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="plush-mascots.html">Plush &amp; Mascots</a></li>
+        <li><a href="keychains.html">Keychains</a></li>
+        <li><a href="drinkware.html">Drinkware</a></li>
+        <li><a href="bags.html">Bags</a></li>
+        <li><a href="../case-studies/index.html">Ideas &amp; Use Cases</a></li>
+        <li><a href="../solutions/index.html">Brand Programs</a></li>
+        <li class="has-dropdown">
+          <a href="index.html" class="dropdown-toggle">Collections <svg class="dropdown-arrow" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <ul class="nav-dropdown">
+            <li><a href="bags.html">Bags</a></li>
+            <li><a href="drinkware.html">Drinkware</a></li>
+            <li><a href="keychains.html">Keychains &amp; Accessories</a></li>
+            <li><a href="office.html">Office &amp; Stationery</a></li>
+            <li><a href="outdoor-leisure.html">Outdoor &amp; Leisure</a></li>
+            <li><a href="plush-mascots.html">Plush &amp; Mascots</a></li>
+            <li><a href="technology.html">Technology</a></li>
+            <li><a href="trade-show.html">Trade Show</a></li>
+            <li><a href="apparel.html">Wearables</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <div class="nav-cta">
+        <div class="nav-contact">
+          <a href="tel:7326928285"><svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>732-692-8285</a>
+          <a href="mailto:info@amazingyep.com"><svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>info@amazingyep.com</a>
+        </div>
+        <a href="../contact/index.html" class="btn btn-primary btn-sm">Start a Project</a>
+        <button class="nav-mobile-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Image -->
+  <header style="background:none; padding:0; margin:0;">
+    <img src="../assets/office-hero-bg.jpg" alt="Bags" style="width:100%; height:auto; display:block; max-height:600px; object-fit:cover; object-position:center center;">
+  </header>
+
+  <!-- Breadcrumb -->
+  <div class="office-breadcrumb">
+    <div class="office-breadcrumb-inner">
+      <a href="../index.html"><svg class="office-breadcrumb-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Home</a><span class="sep">/</span><span>Office</span>
+    </div>
+  </div>
+
+  <!-- ALL BAGS Title + Filter Icon -->
+  <div class="office-header">
+    <h1 class="office-title">ALL OFFICE <span class="office-subtitle">Essentials that elevate your workspace</span></h1>
+    <div class="office-filter-wrap" onclick="toggleFilter()">
+      <span class="office-filter-text">FILTER</span>
+      <svg class="office-filter-arrow" id="filterArrow" viewBox="0 0 24 24" fill="none" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </div>
+
+  <!-- Search Bar -->
+  <div style="max-width:1440px; margin:0 auto; padding:0 32px 24px;">
+    <div style="display:flex; align-items:center; gap:12px; max-width:600px;">
+      <div style="flex:1; display:flex; align-items:center; gap:8px; padding:14px 20px; border:2px solid #d0d5dd; border-radius:50px; background:#fff;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" id="searchInput" placeholder="Search office..." oninput="filterOffice()" style="border:none; outline:none; flex:1; font-size:15px; font-family:Inter,sans-serif; color:var(--navy); background:transparent;">
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT TYPE -->
+  <div class="office-product-type">
+    <div class="office-type-content" id="typeContent">
+      <div class="office-type-label">PRODUCT TYPE</div>
+      <div class="office-type-grid">
+        <span class="office-type-item active">Notebooks & Journals</span>
+        <span class="office-type-item">Pens & Writing</span>
+        <span class="office-type-item">Desk Accessories</span>
+        <span class="office-type-item">Sticky Notes</span>
+        <span class="office-type-item">Calendars & Planners</span>
+        <span class="office-type-item">Mouse Pads</span>
+        <span class="office-type-item">Desk Organizers</span>
+        <span class="office-type-item">Tech Accessories</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURED -->
+  <section class="office-featured">
+    <div class="office-featured-header">
+      <span class="section-label">FEATURED</span>
+    </div>
+    <div class="office-featured-grid" id="featuredGrid"></div>
+  </section>
+
+  <!-- YOU MAY LIKE -->
+  <section class="office-you-may-like">
+    <div class="office-carousel-header">
+      <span class="section-label">YOU MIGHT ALSO LIKE</span>
+    </div>
+    <div class="office-carousel-wrap">
+      <div class="office-carousel-track">
+        <div class="office-carousel-card"><img class="office-carousel-card-img" src="../assets/office-hero-bg.jpg" alt="Office"><div class="office-carousel-card-body"><h4>Wireless Charger</h4><p>MOQ: 300 pcs</p></div></div>
+        <div class="office-carousel-card"><img class="office-carousel-card-img" src="../assets/office-hero-bg.jpg" alt="Office"><div class="office-carousel-card-body"><h4>Laptop Stand</h4><p>MOQ: 200 pcs</p></div></div>
+        <div class="office-carousel-card"><img class="office-carousel-card-img" src="../assets/office-hero-bg.jpg" alt="Office"><div class="office-carousel-card-body"><h4>Sticky Flags</h4><p>MOQ: 1500 pcs</p></div></div>
+        <div class="office-carousel-card"><img class="office-carousel-card-img" src="../assets/office-hero-bg.jpg" alt="Office"><div class="office-carousel-card-body"><h4>Business Card Holder</h4><p>MOQ: 400 pcs</p></div></div>
+        <div class="office-carousel-card"><img class="office-carousel-card-img" src="../assets/office-hero-bg.jpg" alt="Office"><div class="office-carousel-card-body"><h4>Magazine File</h4><p>MOQ: 250 pcs</p></div></div>
+        <div class="office-carousel-card"><img class="office-carousel-card-img" src="../assets/office-hero-bg.jpg" alt="Office"><div class="office-carousel-card-body"><h4>USB Hub</h4><p>MOQ: 300 pcs</p></div></div>
+        <div class="office-carousel-card"><img class="office-carousel-card-img" src="../assets/office-hero-bg.jpg" alt="Office"><div class="office-carousel-card-body"><h4>Desk Clock</h4><p>MOQ: 200 pcs</p></div></div>
+        <div class="office-carousel-card"><img class="office-carousel-card-img" src="../assets/office-hero-bg.jpg" alt="Office"><div class="office-carousel-card-body"><h4>Memo Cube</h4><p>MOQ: 1000 pcs</p></div></div>
+    </div>
+    </div>
+    <div class="office-carousel-pagination">
+      <div class="office-pagination-bar"><div class="office-pagination-bar-fill" id="paginationFill" style="width:50%;"></div></div>
+      <div class="office-pagination-arrows">
+        <div class="office-pagination-arrow" onclick="prevPage()">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+        </div>
+        <span class="office-pagination-num" id="pageNum">1/2</span>
+        <div class="office-pagination-arrow" onclick="nextPage()">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW WE WORK -->
+  <section class="hww-section">
+    <div class="container">
+      <div class="hww-header">
+        <span class="section-label">HOW WE WORK</span>
+        <h2 class="section-title">Simple, Fast, Reliable</h2>
+        <p class="section-subtitle">A straightforward process designed to get you from idea to delivery with minimal friction.</p>
+      </div>
+      <div class="hww-steps">
+        <div class="hww-step">
+          <div class="hww-num">1</div>
+          <h3>Share Your Idea</h3>
+          <p>Send us your design, sketch, or concept. Tell us about your brand, audience, and goals.</p>
+        </div>
+        <div class="hww-arrow">
+          <svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg>
+        </div>
+        <div class="hww-step">
+          <div class="hww-num">2</div>
+          <h3>Receive Mockup &amp; Pricing</h3>
+          <p>Within 24 hours, receive a free digital mockup and detailed pricing options.</p>
+        </div>
+        <div class="hww-arrow">
+          <svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg>
+        </div>
+        <div class="hww-step">
+          <div class="hww-num">3</div>
+          <h3>Sampling &amp; Approval</h3>
+          <p>Review physical samples, request adjustments, and approve before full production.</p>
+        </div>
+        <div class="hww-arrow">
+          <svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg>
+        </div>
+        <div class="hww-step">
+          <div class="hww-num">4</div>
+          <h3>Production &amp; Delivery</h3>
+          <p>We handle manufacturing and worldwide shipping. Track your order every step.</p>
+        </div>
+      </div>
+      <div style="text-align:center; margin-top:24px;">
+        <a href="../contact/index.html" class="btn btn-primary">Start a Project</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="../assets/logo-white.png" alt="Amazing Yep Inc.">
+          <p>Custom merchandise solutions for brands,<br>events, retail programs and promotional campaigns.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="LinkedIn">in</a>
+            <a href="#" aria-label="Instagram">ig</a>
+            <a href="#" aria-label="Facebook">fb</a>
+          </div>
+          <div class="footer-newsletter">
+            <h4>Start a Project</h4>
+            <form action="mailto:info@amazingyep.com" method="post" enctype="text/plain" class="footer-email-form">
+              <div class="footer-email-wrap">
+                <input type="email" name="email" placeholder="Enter your email address" required>
+                <button type="submit" class="footer-email-btn">JOIN</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Ideas &amp; Use Cases</h4>
+          <ul>
+            <li><a href="../case-studies/index.html">Conference &amp; Event Swag</a></li>
+            <li><a href="../case-studies/index.html">Employee Engagement Kits</a></li>
+            <li><a href="../case-studies/index.html">Character &amp; Mascot Programs</a></li>
+            <li><a href="../case-studies/index.html">Schools, Teams &amp; Communities</a></li>
+            <li><a href="../case-studies/index.html">Brand Loyalty Programs</a></li>
+            <li><a href="../case-studies/index.html">Travel &amp; Adventure Collection</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Collections</h4>
+          <ul>
+            <li><a href="../collections/index.html">Plush &amp; Mascots</a></li>
+            <li><a href="../collections/index.html">Keychains</a></li>
+            <li><a href="../collections/index.html">Drinkware</a></li>
+            <li><a href="../collections/index.html">Bags</a></li>
+            <li><a href="../collections/index.html">Apparel</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="../about/index.html">About Us</a></li>
+            <li><a href="../contact/index.html">Contact</a></li>
+            <li><a href="mailto:info@amazingyep.com">info@amazingyep.com</a></li>
+            <li><a href="tel:7326928285">732-692-8285</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Amazing Yep Inc.</p>
+        <p>Bringing Custom Merchandise Ideas to Life. Built for Brands, Events &amp; Promotional Programs.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Filter toggle
+    function toggleFilter() {
+      const arrow = document.getElementById('filterArrow');
+      const content = document.getElementById('typeContent');
+      arrow.classList.toggle('collapsed');
+      content.classList.toggle('collapsed');
+    }
+
+    // Category type click handler
+    document.querySelectorAll('.office-type-item').forEach(item => {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.office-type-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+        // Filter logic can be added here
+      });
+    });
+    // Carousel page navigation
+    let currentPage = 1;
+    const totalPages = 2;
+    function updatePagination() {
+      document.getElementById('paginationFill').style.width = (currentPage / totalPages * 100) + '%';
+      document.getElementById('pageNum').textContent = currentPage + '/' + totalPages;
+    }
+    function prevPage() {
+      if (currentPage > 1) { currentPage--; updatePagination(); }
+    }
+    function nextPage() {
+      if (currentPage < totalPages) { currentPage++; updatePagination(); }
+    }
+
+    // Search filter
+    function filterOffice() {
+      const query = (document.getElementById('searchInput').value || '').toLowerCase();
+      document.querySelectorAll('.office-featured-card').forEach(card => {
+        const name = (card.querySelector('h4')?.textContent || '').toLowerCase();
+        card.style.display = (!query || name.includes(query)) ? '' : 'none';
+      });
+      document.querySelectorAll('.office-carousel-card').forEach(card => {
+        const name = (card.querySelector('h4')?.textContent || '').toLowerCase();
+        card.style.display = (!query || name.includes(query)) ? '' : 'none';
+      });
+    }
+  </script>
+  <script>
+    // Load products from backend API
+    window.API_CONFIG.initPage('Office & Stationery', 'featuredGrid', 'office');
+  </script>
+
+</body>
+</html>
