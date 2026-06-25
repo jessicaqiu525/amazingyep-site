@@ -146,26 +146,34 @@
 
   // Render a REAL product card from backend API
   function renderProductCard(product, cardClassPrefix) {
-    // Determine image: try images[] first, then gallery[], then fallback
-    let img = '../assets/tote-canvas.png'; // default fallback (always exists)
-    if (product.images && product.images.length > 0) {
-      const src = product.images[0];
-      img = src.startsWith('http') ? src : BASE_URL + src;
-    } else if (product.gallery && product.gallery.length > 0) {
-      img = product.gallery[0];
+    // Safe URL resolver: don't prefix site-relative (../ or ./) paths
+    function safeImg(src) {
+      if (!src) return '';
+      if (src.startsWith('http') || src.startsWith('data:')) return src;
+      if (src.startsWith('../') || src.startsWith('./')) return src;
+      return BASE_URL + src;
     }
-    // Fallback category-specific defaults for blank products
+
+    // Priority: images[0] > gallery[0] > colorOptions[0] > category fallback
+    let img = '';
+    if (product.images && product.images.length > 0) {
+      img = safeImg(product.images[0]);
+    }
+    if (!img && product.gallery && product.gallery.length > 0) {
+      img = safeImg(product.gallery[0]);
+    }
+    if (!img && product.colorOptions && product.colorOptions.length > 0 && product.colorOptions[0].image) {
+      img = safeImg(product.colorOptions[0].image);
+    }
+
+    // Fallback category-specific defaults if still no image
     const cat = product.category || '';
-    if (!product.images || product.images.length === 0) {
+    if (!img) {
       if (cat.includes('Bag')) img = '../assets/cat-bags.jpg';
       else if (cat.includes('Drink') || cat.includes('Tumbler') || cat.includes('Mug')) img = '../assets/drinkware-hero-bg.jpg';
       else if (cat.includes('Plush') || cat.includes('Mascot')) img = '../assets/cat-plush.jpg';
       else if (cat.includes('Keychain')) img = '../assets/cat-keychain.jpg';
-      else if (cat.includes('Outdoor') || cat.includes('Leisure')) img = '../assets/hero-banner.jpg';
-      else if (cat.includes('Office') || cat.includes('Stationery')) img = '../assets/hero-image.jpg';
-      else if (cat.includes('Technology')) img = '../assets/hero-image.jpg';
-      else if (cat.includes('Trade Show') || cat.includes('Tradeshow')) img = '../assets/hero-banner.jpg';
-      else if (cat.includes('Wearable') || cat.includes('T-Shirt') || cat.includes('Apparel')) img = '../assets/hero-image.jpg';
+      else img = '../assets/hero-image.jpg';
     }
     const name = product.name || 'Untitled Product';
     const moq = product.moq || '';

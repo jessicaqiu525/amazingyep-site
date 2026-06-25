@@ -621,10 +621,14 @@
     return div.innerHTML;
   }
 
-  // Normalize image URLs — prefix API base for relative paths
+  // Normalize image URLs
+  // - API paths (/uploads/, /img/) → prefix with API_BASE
+  // - Local paths (../, ./) → leave as-is (site-relative)
+  // - Full URLs (http, data:) → leave as-is
   function resolveImg(src) {
     if (!src) return '';
     if (src.startsWith('http') || src.startsWith('data:')) return src;
+    if (src.startsWith('../') || src.startsWith('./')) return src;
     return API_BASE + src;
   }
 
@@ -726,8 +730,19 @@
       document.getElementById('specsWrap').style.display = 'none';
     }
 
-    // Gallery: normalize image URLs with fallback
-    const images = (p.images || []).map(resolveImg).filter(Boolean);
+    // Gallery: normalize image URLs, cascade through all possible sources
+    // Priority: images[] → gallery[] → colorOptions images → no image
+    var images = (p.images || [])
+      .concat(p.gallery || [])
+      .map(resolveImg)
+      .filter(Boolean);
+
+    // If still no images, try color options as gallery
+    if (images.length === 0 && (p.colorOptions || []).length > 0) {
+      images = p.colorOptions
+        .map(function(c) { return resolveImg(c.image); })
+        .filter(Boolean);
+    }
     if (images.length > 0) {
       document.getElementById('mainImage').src = images[0];
       document.getElementById('mainImage').alt = escapeHtml(p.name);
