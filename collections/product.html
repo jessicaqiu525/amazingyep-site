@@ -426,6 +426,7 @@
 
             <div class="pd-category-tag" id="categoryTag"></div>
             <h1 class="pd-name" id="productName"></h1>
+            <div class="pd-sku" id="productSku" style="font-size:14px; color:var(--orange); font-weight:600; margin-bottom:16px;"></div>
             <p class="pd-desc" id="productDesc"></p>
 
             <div class="pd-specs" id="specsWrap">
@@ -442,6 +443,19 @@
             <div class="pd-cta">
               <a href="../contact/index.html" class="btn btn-orange">Start a Project</a>
               <a href="index.html" class="btn btn-outline btn-sm">Back to Collections</a>
+            </div>
+
+            <!-- Color Options -->
+            <div id="colorOptionsWrap" style="display:none; margin-bottom:24px;">
+              <span class="section-label" style="margin-bottom:8px;display:block;">SELECT A COLOR</span>
+              <div id="colorOptionsList" style="display:flex; flex-wrap:wrap; gap:10px;"></div>
+            </div>
+
+            <!-- Full Pricing Table -->
+            <div id="pricingTableWrap" style="display:none; margin-bottom:24px;">
+              <span class="section-label" style="margin-bottom:8px;display:block;">PRICING</span>
+              <table class="pd-details-table" id="pricingTable">
+              </table>
             </div>
 
             <!-- Product Details Specs -->
@@ -672,9 +686,22 @@
     // Category tag
     document.getElementById('categoryTag').textContent = p.category;
 
+    // SKU
+    if (p.sku) {
+      document.getElementById('productSku').textContent = 'Item #: ' + p.sku;
+    } else {
+      document.getElementById('productSku').style.display = 'none';
+    }
+
     // Name & description
     document.getElementById('productName').textContent = p.name;
     document.getElementById('productDesc').textContent = p.description || 'Contact us for more details about this product.';
+
+    // Color options
+    renderColors(p);
+
+    // Pricing table
+    renderPricing(p);
 
     // Timeline
     renderTimeline(p);
@@ -734,6 +761,45 @@
   function showNotFound() {
     document.getElementById('productLoading').style.display = 'none';
     document.getElementById('productNotFound').style.display = 'block';
+  }
+
+  function renderColors(p) {
+    const colors = p.colorOptions || [];
+    if (colors.length === 0) {
+      document.getElementById('colorOptionsWrap').style.display = 'none';
+      return;
+    }
+    document.getElementById('colorOptionsWrap').style.display = 'block';
+    const html = colors.map(function(c) {
+      const img = resolveImg(c.image);
+      const grad = c.gradient || '';
+      return '<div style="text-align:center;cursor:pointer;min-width:100px;" onclick="switchMainImage(\'' + img + '\')">' +
+        '<div style="width:80px;height:80px;border-radius:8px;overflow:hidden;margin:0 auto 6px;border:2px solid #ddd;background:' + (grad || 'var(--gray-50)') + ';">' +
+        (img ? '<img src="' + img + '" alt="' + escapeHtml(c.name) + '" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.style.background=\'var(--gray-50)\'">' : '') +
+        '</div>' +
+        '<span style="font-size:12px;color:var(--navy);font-weight:500;">' + escapeHtml(c.name) + '</span>' +
+      '</div>';
+    }).join('');
+    document.getElementById('colorOptionsList').innerHTML = html;
+  }
+
+  function switchMainImage(src) {
+    var img = document.getElementById('mainImage');
+    if (img) img.src = src;
+  }
+
+  function renderPricing(p) {
+    const pricing = p.pricing || [];
+    if (pricing.length === 0) {
+      document.getElementById('pricingTableWrap').style.display = 'none';
+      return;
+    }
+    document.getElementById('pricingTableWrap').style.display = 'block';
+    var rows = '<tr><td>Quantity (pcs)</td><td>Price Each</td></tr>';
+    pricing.forEach(function(row) {
+      rows += '<tr><td>' + (row.quantity || 0) + '</td><td>$' + (row.price || 0).toFixed(2) + '</td></tr>';
+    });
+    document.getElementById('pricingTable').innerHTML = rows;
   }
 
   function renderTimeline(p) {

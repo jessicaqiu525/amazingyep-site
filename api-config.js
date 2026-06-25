@@ -6,11 +6,8 @@
 (function() {
   const BASE_URL = 'https://amazingyep-backend.onrender.com';
 
-  // Map known products to their custom detail pages
-  const DETAIL_PAGE_MAP = {
-    'AYP-BG-001': 'bag-detail.html',
-    'AYP-BG-002': 'bag-detail-colorful.html'
-  };
+  // All products use the unified dynamic detail page
+  // (no more static per-product pages — everything is product.html?id=X)
 
   // Sample placeholder products (used to fill up to 12 cards)
   const SAMPLE_PRODUCTS = {
@@ -142,11 +139,8 @@
     ]
   };
 
-  // Get detail page URL for a product
+  // Get detail page URL for a product — always use unified dynamic page
   function getDetailPageUrl(product) {
-    if (DETAIL_PAGE_MAP[product.sku]) {
-      return DETAIL_PAGE_MAP[product.sku];
-    }
     return '../collections/product.html?id=' + product.id;
   }
 
