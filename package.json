@@ -1,0 +1,22 @@
+{
+  "name": "amazingyep-site",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node backend/server.js",
+    "build": "pnpm --dir backend install"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.10.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "pg": "^8.22.0",
+    "xlsx": "^0.18.5"
+  },
+  "engines": {
+    "node": "24.x"
+  }
+}
