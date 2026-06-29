@@ -113,6 +113,7 @@
           <button id="downloadBackupBtn" class="btn ghost" type="button">Download Backup</button>
           <button id="restoreBackupBtn" class="btn ghost warning" type="button">Restore Latest</button>
           <button id="viewProductBtn" class="btn ghost" type="button">View Website Page</button>
+          <button id="importSageBtn" class="btn ghost" type="button">Import SAGE</button>
           <button id="exportSageBtn" class="btn ghost" type="button">Export SAGE</button>
           <button id="deleteProductBtn" class="btn danger" type="button">Delete Product</button>
           <button id="saveBtn" class="btn primary" type="button">Save Product</button>
@@ -120,6 +121,36 @@
       </header>
 
       <div id="statusBar" class="status" hidden></div>
+      <section id="importPanel" class="panel span-2 import-panel" hidden>
+        <div class="panel-head">
+          <div>
+            <h2>Import SAGE Products</h2>
+            <p class="panel-note">Upload the SAGE Excel file. Optional ZIP images are matched by Item Number.</p>
+          </div>
+          <button id="closeImportBtn" class="btn ghost" type="button">Close</button>
+        </div>
+        <div class="import-grid">
+          <label>SAGE Excel File<input id="sageImportFile" type="file" accept=".xls,.xlsx"></label>
+          <label>Image ZIP (Optional)<input id="sageImageZipFile" type="file" accept=".zip"></label>
+        </div>
+        <div class="import-help">
+          <strong>ZIP folder rule</strong>
+          <pre>AK468/
+  main/
+    1.jpg
+    2-detail.jpg
+    3-scene.jpg
+  colors/
+    Blue.jpg
+    Green.jpg</pre>
+          <p>The first file in main becomes the main image. Other files become gallery images. Color file names become color names.</p>
+        </div>
+        <div class="import-actions">
+          <button id="sagePreviewBtn" class="btn ghost" type="button">Preview Import</button>
+          <button id="sageImportProductsBtn" class="btn primary" type="button">Import Products</button>
+        </div>
+        <div id="sageImportResult" class="import-result" hidden></div>
+      </section>
       <section id="productsView" class="panel span-2 catalog-panel">
         <div class="panel-head">
           <div>

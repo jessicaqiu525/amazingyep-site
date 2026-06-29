@@ -5,6 +5,8 @@ const cors = require('cors');
 const multer = require('multer');
 const { v2: cloudinary } = require('cloudinary');
 const { exportSageWorkbook } = require('./exporters/sageExport');
+const { parseSageWorkbook } = require('./importers/sageImport');
+const { importImageZip, normalizeSku, readImageZipManifest } = require('./importers/imageZip');
 const auditStore = require('./lib/auditStore');
 const productStore = require('./lib/productStore');
 const userStore = require('./lib/userStore');
@@ -58,6 +60,96 @@ const upload = multer({
 function removeTempUpload(filePath) {
   if (!filePath) return;
   fs.unlink(filePath, () => {});
+}
+
+const importUpload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => cb(null, UPLOAD_DIR),
+    filename: (req, file, cb) => {
+      const ext = path.extname(file.originalname || '').toLowerCase();
+      const base = path.basename(file.originalname || 'import', ext).replace(/[^a-z0-9_-]+/gi, '-').replace(/^-|-$/g, '');
+      cb(null, Date.now() + '-' + (base || 'import') + ext);
+    }
+  }),
+  limits: { fileSize: 180 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const ext = path.extname(file.originalname || '').toLowerCase();
+    if (!['.xls', '.xlsx', '.zip'].includes(ext)) {
+      cb(new Error('Only SAGE Excel files and image ZIP files are allowed.'));
+      return;
+    }
+    cb(null, true);
+  }
+});
+
+async function uploadImportedImage(file) {
+  if (CLOUDINARY_ENABLED) {
+    return uploadToCloudinary(file);
+  }
+  const ext = path.extname(file.originalname || file.path || '').toLowerCase() || '.jpg';
+  const base = path.basename(file.originalname || 'image', ext).replace(/[^a-z0-9_-]+/gi, '-').replace(/^-|-$/g, '');
+  const filename = Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '-' + (base || 'image') + ext;
+  const target = path.join(UPLOAD_DIR, filename);
+  await fs.promises.copyFile(file.path, target);
+  return {
+    url: '/uploads/' + filename,
+    filename,
+    originalName: file.originalname,
+    provider: 'local'
+  };
+}
+
+function importFiles(req) {
+  const files = req.files || {};
+  return {
+    excel: files.excel && files.excel[0],
+    imagesZip: files.imagesZip && files.imagesZip[0]
+  };
+}
+
+function cleanupImportFiles(req) {
+  Object.values(req.files || {}).flat().forEach((file) => removeTempUpload(file.path));
+}
+
+function mergeColorOptions(existingOptions, importedOptions, zipColors) {
+  const merged = new Map();
+  [...(existingOptions || []), ...(importedOptions || [])].forEach((option) => {
+    if (!option || !option.name) return;
+    merged.set(option.name.toLowerCase(), { name: option.name, image: option.image || '' });
+  });
+  (zipColors || []).forEach((option) => {
+    if (!option || !option.name) return;
+    merged.set(option.name.toLowerCase(), { name: option.name, image: option.image || '' });
+  });
+  return Array.from(merged.values());
+}
+
+function mergeImportedProduct(existing, imported, imagesForSku) {
+  const product = { ...(existing || {}), ...imported };
+  const uploadedMain = (imagesForSku && imagesForSku.main ? imagesForSku.main : []).map((item) => item.url).filter(Boolean);
+  if (uploadedMain.length) {
+    product.images = [uploadedMain[0]];
+    product.gallery = uploadedMain.slice(1);
+  } else if (existing && existing.images && existing.images.length && !imported.images.length) {
+    product.images = existing.images;
+    product.gallery = existing.gallery || [];
+  }
+  product.colorOptions = mergeColorOptions(existing && existing.colorOptions, imported.colorOptions, imagesForSku && imagesForSku.colors);
+  product.colors = Array.from(new Set([
+    ...(product.colors || []),
+    ...product.colorOptions.map((option) => option.name).filter(Boolean)
+  ]));
+  return product;
+}
+
+function importSummary(product, imagesForSku) {
+  return {
+    id: product.id,
+    sku: product.sku || product.itemNumber,
+    name: product.name,
+    mainImages: imagesForSku && imagesForSku.main ? imagesForSku.main.length : 0,
+    colorImages: imagesForSku && imagesForSku.colors ? imagesForSku.colors.length : 0
+  };
 }
 
 async function uploadToCloudinary(file) {
@@ -148,6 +240,71 @@ app.get('/api/products/:id', optionalAuth, async (req, res, next) => {
 });
 
 app.use('/api', requireAuth);
+
+app.post('/api/imports/sage/preview', importUpload.fields([
+  { name: 'excel', maxCount: 1 },
+  { name: 'imagesZip', maxCount: 1 }
+]), async (req, res, next) => {
+  try {
+    const { excel, imagesZip } = importFiles(req);
+    if (!excel) {
+      res.status(400).json({ error: 'Upload a SAGE Excel file first.' });
+      return;
+    }
+    const parsed = parseSageWorkbook(excel.path);
+    const manifest = imagesZip ? readImageZipManifest(imagesZip.path) : { items: {}, warnings: [] };
+    res.json({
+      products: parsed.products.slice(0, 25).map((product) => ({
+        sku: product.sku || product.itemNumber,
+        name: product.name,
+        category: product.category,
+        mainImages: manifest.items[normalizeSku(product.sku || product.itemNumber)]?.mainCount || 0,
+        colorImages: manifest.items[normalizeSku(product.sku || product.itemNumber)]?.colorCount || 0
+      })),
+      totalProducts: parsed.products.length,
+      totalImageSkus: Object.keys(manifest.items).length,
+      warnings: [...(parsed.warnings || []), ...(manifest.warnings || [])]
+    });
+  } catch (error) {
+    next(error);
+  } finally {
+    cleanupImportFiles(req);
+  }
+});
+
+app.post('/api/imports/sage/products', importUpload.fields([
+  { name: 'excel', maxCount: 1 },
+  { name: 'imagesZip', maxCount: 1 }
+]), async (req, res, next) => {
+  try {
+    const { excel, imagesZip } = importFiles(req);
+    if (!excel) {
+      res.status(400).json({ error: 'Upload a SAGE Excel file first.' });
+      return;
+    }
+    const parsed = parseSageWorkbook(excel.path);
+    const imageMap = imagesZip ? await importImageZip(imagesZip.path, { uploadImage: uploadImportedImage }) : {};
+    const saved = [];
+    for (const imported of parsed.products) {
+      const sku = normalizeSku(imported.sku || imported.itemNumber || imported.id);
+      const existing = await productStore.findProductAsync(sku);
+      const merged = mergeImportedProduct(existing, imported, imageMap[sku]);
+      const product = await productStore.saveProductAsync(merged);
+      saved.push(importSummary(product, imageMap[sku]));
+    }
+    auditStore.record(req, 'sage.imported', { productCount: saved.length, imageSkuCount: Object.keys(imageMap).length });
+    res.status(201).json({
+      imported: saved,
+      totalProducts: saved.length,
+      totalImageSkus: Object.keys(imageMap).length,
+      warnings: parsed.warnings || []
+    });
+  } catch (error) {
+    next(error);
+  } finally {
+    cleanupImportFiles(req);
+  }
+});
 
 app.get('/api/activity', requireAdmin, (req, res) => {
   res.json({ events: auditStore.listEvents(req.query.limit) });

@@ -44,6 +44,14 @@ const els = {
   downloadBackupBtn: document.getElementById('downloadBackupBtn'),
   restoreBackupBtn: document.getElementById('restoreBackupBtn'),
   viewProductBtn: document.getElementById('viewProductBtn'),
+  importSageBtn: document.getElementById('importSageBtn'),
+  importPanel: document.getElementById('importPanel'),
+  closeImportBtn: document.getElementById('closeImportBtn'),
+  sageImportFile: document.getElementById('sageImportFile'),
+  sageImageZipFile: document.getElementById('sageImageZipFile'),
+  sagePreviewBtn: document.getElementById('sagePreviewBtn'),
+  sageImportProductsBtn: document.getElementById('sageImportProductsBtn'),
+  sageImportResult: document.getElementById('sageImportResult'),
   exportSageBtn: document.getElementById('exportSageBtn'),
   deleteProductBtn: document.getElementById('deleteProductBtn'),
   teamPanel: document.getElementById('teamPanel'),
@@ -160,6 +168,7 @@ function setView(view) {
   els.title.textContent = showProducts
     ? 'Products'
     : ((state.selected && state.selected.name) || 'New Product');
+  if (!showProducts && els.importPanel) els.importPanel.hidden = true;
 }
 
 function clearSearchAutofill() {
@@ -1099,6 +1108,63 @@ async function uploadColorImage(row, file) {
   showStatus('Color image uploaded.');
 }
 
+function openImportPanel() {
+  setView('products');
+  els.importPanel.hidden = false;
+  els.sageImportResult.hidden = true;
+  els.importPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function closeImportPanel() {
+  els.importPanel.hidden = true;
+}
+
+function renderImportResult(data, preview) {
+  const rows = preview ? (data.products || []) : (data.imported || []);
+  const warnings = data.warnings || [];
+  els.sageImportResult.hidden = false;
+  els.sageImportResult.innerHTML = [
+    '<strong>' + (preview ? 'Preview' : 'Import Complete') + '</strong>',
+    '<p>' + (data.totalProducts || 0) + ' products, ' + (data.totalImageSkus || 0) + ' image folders matched.</p>',
+    warnings.length ? '<p class="import-warning">' + warnings.map(escapeHtml).join('<br>') + '</p>' : '',
+    rows.length ? '<ul>' + rows.slice(0, 12).map((item) => (
+      '<li><b>' + escapeHtml(item.sku || '') + '</b> ' + escapeHtml(item.name || '') +
+      ' - main images: ' + (item.mainImages || 0) + ', color images: ' + (item.colorImages || 0) + '</li>'
+    )).join('') + '</ul>' : ''
+  ].join('');
+}
+
+async function submitSageImport(preview) {
+  const excel = els.sageImportFile.files && els.sageImportFile.files[0];
+  if (!excel) {
+    showStatus('Choose a SAGE Excel file first.', true);
+    return;
+  }
+  const formData = new FormData();
+  formData.append('excel', excel);
+  const zip = els.sageImageZipFile.files && els.sageImageZipFile.files[0];
+  if (zip) formData.append('imagesZip', zip);
+  els.sagePreviewBtn.disabled = true;
+  els.sageImportProductsBtn.disabled = true;
+  try {
+    showStatus(preview ? 'Reading SAGE file...' : 'Importing products and images...');
+    const response = await authFetch(preview ? '/api/imports/sage/preview' : '/api/imports/sage/products', {
+      method: 'POST',
+      body: formData
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || 'SAGE import failed.');
+    renderImportResult(data, preview);
+    if (!preview) {
+      await loadProducts();
+      showStatus('SAGE products imported.');
+    }
+  } finally {
+    els.sagePreviewBtn.disabled = false;
+    els.sageImportProductsBtn.disabled = false;
+  }
+}
+
 async function exportSage() {
   const product = state.selected || collectProduct();
   const currentProduct = collectProduct();
@@ -1218,6 +1284,15 @@ els.catalogRows.addEventListener('click', (event) => {
 
 document.getElementById('saveBtn').addEventListener('click', () => {
   saveProduct().catch((error) => showStatus(error.message, true));
+});
+
+els.importSageBtn.addEventListener('click', openImportPanel);
+els.closeImportBtn.addEventListener('click', closeImportPanel);
+els.sagePreviewBtn.addEventListener('click', () => {
+  submitSageImport(true).catch((error) => showStatus(error.message, true));
+});
+els.sageImportProductsBtn.addEventListener('click', () => {
+  submitSageImport(false).catch((error) => showStatus(error.message, true));
 });
 
 document.getElementById('exportSageBtn').addEventListener('click', () => {
