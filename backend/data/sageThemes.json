@@ -1,0 +1,778 @@
+[
+  {
+    "value": "3D",
+    "label": "3D — 3D 立体"
+  },
+  {
+    "value": "50's",
+    "label": "50's — 五十年代复古风"
+  },
+  {
+    "value": "60's",
+    "label": "60's — 六十年代复古风"
+  },
+  {
+    "value": "70's",
+    "label": "70's — 七十年代复古风"
+  },
+  {
+    "value": "80's",
+    "label": "80's — 八十年代复古风"
+  },
+  {
+    "value": "90's",
+    "label": "90's — 九十年代复古风"
+  },
+  {
+    "value": "Agriculture",
+    "label": "Agriculture — 农业"
+  },
+  {
+    "value": "American",
+    "label": "American — 美式"
+  },
+  {
+    "value": "Amusement",
+    "label": "Amusement — 游乐"
+  },
+  {
+    "value": "Animal",
+    "label": "Animal — 动物"
+  },
+  {
+    "value": "Anniversary",
+    "label": "Anniversary — 周年纪念"
+  },
+  {
+    "value": "Automotive",
+    "label": "Automotive — 汽车行业"
+  },
+  {
+    "value": "Aviation",
+    "label": "Aviation — 航空"
+  },
+  {
+    "value": "Award",
+    "label": "Award — 奖项纪念"
+  },
+  {
+    "value": "Awareness",
+    "label": "Awareness — 公益宣传"
+  },
+  {
+    "value": "Baby",
+    "label": "Baby — 婴幼儿"
+  },
+  {
+    "value": "Banking",
+    "label": "Banking — 金融银行"
+  },
+  {
+    "value": "Barware",
+    "label": "Barware — 酒吧酒具"
+  },
+  {
+    "value": "Baseball",
+    "label": "Baseball — 棒球"
+  },
+  {
+    "value": "Basketball",
+    "label": "Basketball — 篮球"
+  },
+  {
+    "value": "Bathroom",
+    "label": "Bathroom — 卫浴"
+  },
+  {
+    "value": "Beach",
+    "label": "Beach — 海滩沙滩"
+  },
+  {
+    "value": "Beauty",
+    "label": "Beauty"
+  },
+  {
+    "value": "Beverage",
+    "label": "Beverage — 饮品酒水"
+  },
+  {
+    "value": "Biking",
+    "label": "Biking — 骑行"
+  },
+  {
+    "value": "Birthday",
+    "label": "Birthday — 生日"
+  },
+  {
+    "value": "Boating",
+    "label": "Boating — 划船游艇"
+  },
+  {
+    "value": "Bowling",
+    "label": "Bowling — 保龄球"
+  },
+  {
+    "value": "Boxing",
+    "label": "Boxing — 拳击"
+  },
+  {
+    "value": "Breast Cancer Awareness",
+    "label": "Breast Cancer Awareness — 乳腺癌防治宣传"
+  },
+  {
+    "value": "Business",
+    "label": "Business — 商务办公"
+  },
+  {
+    "value": "Camping",
+    "label": "Camping — 露营"
+  },
+  {
+    "value": "Canadian",
+    "label": "Canadian — 加拿大"
+  },
+  {
+    "value": "Cannabis",
+    "label": "Cannabis — 大麻主题（海外合规类目）"
+  },
+  {
+    "value": "Carnival",
+    "label": "Carnival — 狂欢节"
+  },
+  {
+    "value": "Carpentry",
+    "label": "Carpentry — 木工"
+  },
+  {
+    "value": "Celebration",
+    "label": "Celebration — 欢庆活动"
+  },
+  {
+    "value": "Chanukah",
+    "label": "Chanukah — 光明节"
+  },
+  {
+    "value": "Cheerleading",
+    "label": "Cheerleading — 啦啦队"
+  },
+  {
+    "value": "Children",
+    "label": "Children — 儿童"
+  },
+  {
+    "value": "Christmas",
+    "label": "Christmas — 圣诞节"
+  },
+  {
+    "value": "Church",
+    "label": "Church — 教会宗教"
+  },
+  {
+    "value": "Cinema",
+    "label": "Cinema — 电影影视"
+  },
+  {
+    "value": "Cleaning",
+    "label": "Cleaning"
+  },
+  {
+    "value": "Clothing",
+    "label": "Clothing — 服装服饰"
+  },
+  {
+    "value": "Club",
+    "label": "Club — 社团俱乐部"
+  },
+  {
+    "value": "College",
+    "label": "College — 高校校园"
+  },
+  {
+    "value": "Computer",
+    "label": "Computer — 数码电脑"
+  },
+  {
+    "value": "Concert",
+    "label": "Concert — 音乐会"
+  },
+  {
+    "value": "Construction",
+    "label": "Construction — 建筑工程"
+  },
+  {
+    "value": "Convention",
+    "label": "Convention — 行业大会"
+  },
+  {
+    "value": "Cooking",
+    "label": "Cooking — 烹饪厨具"
+  },
+  {
+    "value": "Country",
+    "label": "Country"
+  },
+  {
+    "value": "COVID-19",
+    "label": "COVID-19 — 新冠防疫"
+  },
+  {
+    "value": "Cutting",
+    "label": "Cutting — 切割工艺"
+  },
+  {
+    "value": "Cycling",
+    "label": "Cycling — 自行车运动"
+  },
+  {
+    "value": "Dancing",
+    "label": "Dancing — 舞蹈"
+  },
+  {
+    "value": "Decoration",
+    "label": "Decoration"
+  },
+  {
+    "value": "Dentist",
+    "label": "Dentist — 牙科医疗"
+  },
+  {
+    "value": "Drinking",
+    "label": "Drinking — 饮酒主题"
+  },
+  {
+    "value": "Earth Day",
+    "label": "Earth Day — 世界地球日"
+  },
+  {
+    "value": "Easter",
+    "label": "Easter — 复活节"
+  },
+  {
+    "value": "Eating",
+    "label": "Eating — 美食餐饮"
+  },
+  {
+    "value": "Education",
+    "label": "Education — 教育行业"
+  },
+  {
+    "value": "Emergency",
+    "label": "Emergency"
+  },
+  {
+    "value": "Entertainment",
+    "label": "Entertainment — 文娱休闲"
+  },
+  {
+    "value": "Environmental",
+    "label": "Environmental"
+  },
+  {
+    "value": "Executive",
+    "label": "Executive — 企业高管"
+  },
+  {
+    "value": "Exercise",
+    "label": "Exercise"
+  },
+  {
+    "value": "Eyewear",
+    "label": "Eyewear — 眼镜配饰"
+  },
+  {
+    "value": "Fall",
+    "label": "Fall — 秋季主题"
+  },
+  {
+    "value": "Fashion",
+    "label": "Fashion"
+  },
+  {
+    "value": "Fire",
+    "label": "Fire — 火焰主题"
+  },
+  {
+    "value": "Fishing",
+    "label": "Fishing — 垂钓"
+  },
+  {
+    "value": "Fitness",
+    "label": "Fitness — 健身"
+  },
+  {
+    "value": "Food",
+    "label": "Food — 食品周边"
+  },
+  {
+    "value": "Football",
+    "label": "Football — 美式橄榄球"
+  },
+  {
+    "value": "Footwear",
+    "label": "Footwear — 鞋履"
+  },
+  {
+    "value": "Formal Event",
+    "label": "Formal Event — 正式晚宴活动"
+  },
+  {
+    "value": "Fun",
+    "label": "Fun"
+  },
+  {
+    "value": "Fundraising",
+    "label": "Fundraising — 慈善募捐"
+  },
+  {
+    "value": "Funeral",
+    "label": "Funeral — 丧葬纪念"
+  },
+  {
+    "value": "Gambling",
+    "label": "Gambling — 棋牌博彩"
+  },
+  {
+    "value": "Games",
+    "label": "Games — 桌游游戏"
+  },
+  {
+    "value": "Gardening",
+    "label": "Gardening — 园艺"
+  },
+  {
+    "value": "Gift",
+    "label": "Gift — 礼品赠品"
+  },
+  {
+    "value": "Golf",
+    "label": "Golf — 高尔夫"
+  },
+  {
+    "value": "Graduation",
+    "label": "Graduation — 毕业纪念"
+  },
+  {
+    "value": "Gymnastics",
+    "label": "Gymnastics — 体操"
+  },
+  {
+    "value": "Halloween",
+    "label": "Halloween — 万圣节"
+  },
+  {
+    "value": "Handyman",
+    "label": "Handyman — 手工工匠"
+  },
+  {
+    "value": "Headwear",
+    "label": "Headwear — 帽子头饰"
+  },
+  {
+    "value": "Health",
+    "label": "Health — 健康养生"
+  },
+  {
+    "value": "Hiking",
+    "label": "Hiking — 徒步登山"
+  },
+  {
+    "value": "Hockey",
+    "label": "Hockey — 冰球 / 曲棍球"
+  },
+  {
+    "value": "Holiday",
+    "label": "Holiday — 通用假日"
+  },
+  {
+    "value": "Hospital",
+    "label": "Hospital"
+  },
+  {
+    "value": "Hotel",
+    "label": "Hotel — 酒店"
+  },
+  {
+    "value": "Household",
+    "label": "Household — 家居日用"
+  },
+  {
+    "value": "Hunting",
+    "label": "Hunting — 狩猎"
+  },
+  {
+    "value": "Hygiene",
+    "label": "Hygiene — 卫生防护"
+  },
+  {
+    "value": "Jogging",
+    "label": "Jogging — 慢跑"
+  },
+  {
+    "value": "July 4th",
+    "label": "July 4th — 美国独立日"
+  },
+  {
+    "value": "Kitchen",
+    "label": "Kitchen — 厨房"
+  },
+  {
+    "value": "Lacrosse",
+    "label": "Lacrosse — 长曲棍球"
+  },
+  {
+    "value": "Legal",
+    "label": "Legal — 法律行业"
+  },
+  {
+    "value": "Library",
+    "label": "Library — 图书馆"
+  },
+  {
+    "value": "Lifeguard",
+    "label": "Lifeguard — 救生员"
+  },
+  {
+    "value": "Light",
+    "label": "Light — 灯光灯饰"
+  },
+  {
+    "value": "Magic",
+    "label": "Magic — 魔术"
+  },
+  {
+    "value": "Mardi Gras",
+    "label": "Mardi Gras — 狂欢星期二"
+  },
+  {
+    "value": "Martial Arts",
+    "label": "Martial Arts — 武术格斗"
+  },
+  {
+    "value": "Masquerade",
+    "label": "Masquerade — 假面舞会"
+  },
+  {
+    "value": "Medical",
+    "label": "Medical — 医疗医药"
+  },
+  {
+    "value": "Medieval",
+    "label": "Medieval"
+  },
+  {
+    "value": "Military",
+    "label": "Military — 军事军旅"
+  },
+  {
+    "value": "Money",
+    "label": "Money — 钱币理财"
+  },
+  {
+    "value": "Motel",
+    "label": "Motel — 汽车旅馆"
+  },
+  {
+    "value": "Music",
+    "label": "Music — 音乐"
+  },
+  {
+    "value": "Nature",
+    "label": "Nature"
+  },
+  {
+    "value": "Nautical",
+    "label": "Nautical — 航海海事"
+  },
+  {
+    "value": "New Year",
+    "label": "New Year — 新年"
+  },
+  {
+    "value": "Newspaper",
+    "label": "Newspaper"
+  },
+  {
+    "value": "Non-Smoking",
+    "label": "Non-Smoking — 无烟宣传"
+  },
+  {
+    "value": "Office",
+    "label": "Office — 办公"
+  },
+  {
+    "value": "Oktoberfest",
+    "label": "Oktoberfest — 德国啤酒节"
+  },
+  {
+    "value": "Olympic",
+    "label": "Olympic — 奥林匹克赛事"
+  },
+  {
+    "value": "Organization",
+    "label": "Organization — 机构团体"
+  },
+  {
+    "value": "Outdoors",
+    "label": "Outdoors — 户外"
+  },
+  {
+    "value": "Party",
+    "label": "Party — 派对聚会"
+  },
+  {
+    "value": "Patio",
+    "label": "Patio — 庭院露台"
+  },
+  {
+    "value": "Patriotic",
+    "label": "Patriotic — 爱国主题"
+  },
+  {
+    "value": "Pet",
+    "label": "Pet — 宠物"
+  },
+  {
+    "value": "Pharmacy",
+    "label": "Pharmacy — 药房药店"
+  },
+  {
+    "value": "Phone",
+    "label": "Phone"
+  },
+  {
+    "value": "Photography",
+    "label": "Photography — 摄影"
+  },
+  {
+    "value": "Picnic",
+    "label": "Picnic — 户外野餐"
+  },
+  {
+    "value": "Pirate",
+    "label": "Pirate — 海盗主题"
+  },
+  {
+    "value": "Plumbing",
+    "label": "Plumbing — 管道水暖"
+  },
+  {
+    "value": "Police",
+    "label": "Police — 警务公安"
+  },
+  {
+    "value": "Politics",
+    "label": "Politics — 政务政治"
+  },
+  {
+    "value": "Pride",
+    "label": "Pride"
+  },
+  {
+    "value": "Racing",
+    "label": "Racing — 竞速赛车"
+  },
+  {
+    "value": "Reading",
+    "label": "Reading"
+  },
+  {
+    "value": "Real Estate",
+    "label": "Real Estate — 房地产"
+  },
+  {
+    "value": "Recycling",
+    "label": "Recycling — 环保回收"
+  },
+  {
+    "value": "Religion",
+    "label": "Religion — 宗教主题"
+  },
+  {
+    "value": "Resort",
+    "label": "Resort — 度假山庄"
+  },
+  {
+    "value": "Restaurant",
+    "label": "Restaurant — 餐厅酒吧"
+  },
+  {
+    "value": "Roaring 20's",
+    "label": "Roaring 20's — 咆哮二十年代"
+  },
+  {
+    "value": "Rugby",
+    "label": "Rugby — 橄榄球"
+  },
+  {
+    "value": "Running",
+    "label": "Running — 长跑"
+  },
+  {
+    "value": "Safety",
+    "label": "Safety — 安全防护"
+  },
+  {
+    "value": "Science",
+    "label": "Science — 科学科研"
+  },
+  {
+    "value": "Security",
+    "label": "Security — 安保安防"
+  },
+  {
+    "value": "Sewing",
+    "label": "Sewing — 缝纫手工"
+  },
+  {
+    "value": "Shopping",
+    "label": "Shopping — 购物"
+  },
+  {
+    "value": "Skating",
+    "label": "Skating — 轮滑 / 滑冰"
+  },
+  {
+    "value": "Skiing",
+    "label": "Skiing — 滑雪"
+  },
+  {
+    "value": "Smoking",
+    "label": "Smoking — 烟具"
+  },
+  {
+    "value": "Soccer",
+    "label": "Soccer — 足球"
+  },
+  {
+    "value": "Softball",
+    "label": "Softball — 垒球"
+  },
+  {
+    "value": "Spa",
+    "label": "Spa — 水疗会所"
+  },
+  {
+    "value": "Spanish",
+    "label": "Spanish — 西班牙语系"
+  },
+  {
+    "value": "Sports",
+    "label": "Sports — 综合运动"
+  },
+  {
+    "value": "Spring",
+    "label": "Spring — 春季"
+  },
+  {
+    "value": "St. Patrick's Day",
+    "label": "St. Patrick's Day — 圣帕特里克节"
+  },
+  {
+    "value": "State",
+    "label": "State — 州域主题"
+  },
+  {
+    "value": "Summer",
+    "label": "Summer — 夏季"
+  },
+  {
+    "value": "Sun",
+    "label": "Sun — 阳光主题"
+  },
+  {
+    "value": "Swimming",
+    "label": "Swimming — 游泳"
+  },
+  {
+    "value": "Tailgating",
+    "label": "Tailgating — 车尾派对"
+  },
+  {
+    "value": "Television",
+    "label": "Television — 电视综艺"
+  },
+  {
+    "value": "Tennis",
+    "label": "Tennis — 网球"
+  },
+  {
+    "value": "Thanksgiving",
+    "label": "Thanksgiving — 感恩节"
+  },
+  {
+    "value": "Time",
+    "label": "Time — 时光钟表"
+  },
+  {
+    "value": "Towing",
+    "label": "Towing — 拖车工具"
+  },
+  {
+    "value": "Trade Show",
+    "label": "Trade Show — 行业展会"
+  },
+  {
+    "value": "Transportation",
+    "label": "Transportation — 交通运输"
+  },
+  {
+    "value": "Travel",
+    "label": "Travel — 旅行出行"
+  },
+  {
+    "value": "Tropical",
+    "label": "Tropical — 热带风情"
+  },
+  {
+    "value": "Vacation",
+    "label": "Vacation"
+  },
+  {
+    "value": "Valentine's Day",
+    "label": "Valentine's Day — 情人节"
+  },
+  {
+    "value": "Vintage",
+    "label": "Vintage — 复古怀旧"
+  },
+  {
+    "value": "Volleyball",
+    "label": "Volleyball — 排球"
+  },
+  {
+    "value": "Walking",
+    "label": "Walking — 健走"
+  },
+  {
+    "value": "Water Sports",
+    "label": "Water Sports — 水上运动"
+  },
+  {
+    "value": "Weather",
+    "label": "Weather — 气象主题"
+  },
+  {
+    "value": "Wedding",
+    "label": "Wedding — 婚礼婚庆"
+  },
+  {
+    "value": "Western",
+    "label": "Western — 西部牛仔风"
+  },
+  {
+    "value": "Winter",
+    "label": "Winter — 冬季"
+  },
+  {
+    "value": "Wrestling",
+    "label": "Wrestling"
+  },
+  {
+    "value": "Writing",
+    "label": "Writing"
+  },
+  {
+    "value": "Yoga",
+    "label": "Yoga"
+  }
+]

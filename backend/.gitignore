@@ -1,0 +1,8 @@
+node_modules/
+.env
+exports/
+uploads/
+data/products.json
+data/activity-log.json
+data/backups/
+data/users.json

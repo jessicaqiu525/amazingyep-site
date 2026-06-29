@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apparel - Amazing Yep Inc.</title>
-  <meta name="description" content="Custom apparel merchandise for your brand.">
+  <title>Wearables - Amazing Yep Inc.</title>
+  <meta name="description" content="Custom wearables merchandise for your brand.">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style.css">
-  <script src="../api-config.js"></script>
+  <script src="../api-config.js?v=20260629a"></script>
   <style>
     /* Bags page specific styles */
     .apparel-breadcrumb { padding: 16px 0 4px; background: #fff; }
@@ -80,7 +80,7 @@
 <body>
   <nav class="nav">
     <div class="nav-inner">
-      <a href="../index.html" class="nav-logo"><img src="../assets/logo.png" alt="Amazing Yep Inc."></a>
+      <a href="../index.html" class="nav-logo"><img src="../assets/logo-2026.png" alt="Amazing Yep Inc."></a>
       <ul class="nav-links">
         <li><a href="../index.html">Home</a></li>
         <li><a href="plush-mascots.html">Plush &amp; Mascots</a></li>
@@ -106,10 +106,10 @@
       </ul>
 
       <div class="nav-cta">
-        <div class="nav-contact">
-          <a href="tel:7326928285"><svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>732-692-8285</a>
-          <a href="mailto:info@amazingyep.com"><svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>info@amazingyep.com</a>
-        </div>
+        <form class="nav-search" role="search" onsubmit="var q=(this.querySelector('input[name=q]').value||'').trim(); var p=location.pathname; var base=p.indexOf('/collections/')>-1?'index.html':(p.match(/\/(about|contact|solutions|case-studies)\//)?'../collections/index.html':'collections/index.html'); location.href=base+(q?'?search='+encodeURIComponent(q):''); return false;">
+          <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input type="search" name="q" placeholder="Search" aria-label="Search products" onkeydown="if(event.key==='Enter'){event.preventDefault(); var q=(this.value||'').trim(); var p=location.pathname; var base=p.indexOf('/collections/')>-1?'index.html':(p.match(/\/(about|contact|solutions|case-studies)\//)?'../collections/index.html':'collections/index.html'); location.href=base+(q?'?search='+encodeURIComponent(q):'');}">
+        </form>
         <a href="../contact/index.html" class="btn btn-primary btn-sm">Start a Project</a>
         <button class="nav-mobile-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
       </div>
@@ -124,13 +124,13 @@
   <!-- Breadcrumb -->
   <div class="apparel-breadcrumb">
     <div class="apparel-breadcrumb-inner">
-      <a href="../index.html"><svg class="apparel-breadcrumb-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Home</a><span class="sep">/</span><span>Apparel</span>
+      <a href="../index.html"><svg class="apparel-breadcrumb-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Home</a><span class="sep">/</span><span>Wearables</span>
     </div>
   </div>
 
   <!-- ALL BAGS Title + Filter Icon -->
   <div class="apparel-header">
-    <h1 class="apparel-title">ALL APPAREL <span class="apparel-subtitle">Custom branded apparel for every occasion</span></h1>
+    <h1 class="apparel-title">ALL WEARABLES <span class="apparel-subtitle">Custom branded wearables for every occasion</span></h1>
     <div class="apparel-filter-wrap" onclick="toggleFilter()">
       <span class="apparel-filter-text">FILTER</span>
       <svg class="apparel-filter-arrow" id="filterArrow" viewBox="0 0 24 24" fill="none" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
@@ -142,7 +142,7 @@
     <div style="display:flex; align-items:center; gap:12px; max-width:600px;">
       <div style="flex:1; display:flex; align-items:center; gap:8px; padding:14px 20px; border:2px solid #d0d5dd; border-radius:50px; background:#fff;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        <input type="text" id="searchInput" placeholder="Search apparel..." oninput="filterApparel()" style="border:none; outline:none; flex:1; font-size:15px; font-family:Inter,sans-serif; color:var(--navy); background:transparent;">
+        <input type="text" id="searchInput" placeholder="Search wearables..." oninput="filterWearables()" style="border:none; outline:none; flex:1; font-size:15px; font-family:Inter,sans-serif; color:var(--navy); background:transparent;">
       </div>
     </div>
   </div>
@@ -217,14 +217,14 @@
     </div>
     <div class="apparel-carousel-wrap">
       <div class="apparel-carousel-track">
-        <div class="apparel-carousel-card"><img class="apparel-carousel-card-img" src="../assets/apparel-hero-bg.jpg" alt="Apparel"><div class="apparel-carousel-card-body"><h4>V-Neck Tee</h4><p>MOQ: 100 pcs</p></div></div>
-        <div class="apparel-carousel-card"><img class="apparel-carousel-card-img" src="../assets/apparel-hero-bg.jpg" alt="Apparel"><div class="apparel-carousel-card-body"><h4>Trucker Hat</h4><p>MOQ: 250 pcs</p></div></div>
-        <div class="apparel-carousel-card"><img class="apparel-carousel-card-img" src="../assets/apparel-hero-bg.jpg" alt="Apparel"><div class="apparel-carousel-card-body"><h4>Bomber Jacket</h4><p>MOQ: 200 pcs</p></div></div>
-        <div class="apparel-carousel-card"><img class="apparel-carousel-card-img" src="../assets/apparel-hero-bg.jpg" alt="Apparel"><div class="apparel-carousel-card-body"><h4>Gym Shorts</h4><p>MOQ: 150 pcs</p></div></div>
-        <div class="apparel-carousel-card"><img class="apparel-carousel-card-img" src="../assets/apparel-hero-bg.jpg" alt="Apparel"><div class="apparel-carousel-card-body"><h4>Dad Cap</h4><p>MOQ: 300 pcs</p></div></div>
-        <div class="apparel-carousel-card"><img class="apparel-carousel-card-img" src="../assets/apparel-hero-bg.jpg" alt="Apparel"><div class="apparel-carousel-card-body"><h4>Rain Jacket</h4><p>MOQ: 100 pcs</p></div></div>
-        <div class="apparel-carousel-card"><img class="apparel-carousel-card-img" src="../assets/apparel-hero-bg.jpg" alt="Apparel"><div class="apparel-carousel-card-body"><h4>Quarter-Zip</h4><p>MOQ: 150 pcs</p></div></div>
-        <div class="apparel-carousel-card"><img class="apparel-carousel-card-img" src="../assets/apparel-hero-bg.jpg" alt="Apparel"><div class="apparel-carousel-card-body"><h4>Bucket Hat</h4><p>MOQ: 400 pcs</p></div></div>
+        <div class="apparel-carousel-card"><img class="apparel-carousel-card-img" src="../assets/apparel-hero-bg.jpg" alt="Wearables"><div class="apparel-carousel-card-body"><h4>V-Neck Tee</h4><p>MOQ: 100 pcs</p></div></div>
+        <div class="apparel-carousel-card"><img class="apparel-carousel-card-img" src="../assets/apparel-hero-bg.jpg" alt="Wearables"><div class="apparel-carousel-card-body"><h4>Trucker Hat</h4><p>MOQ: 250 pcs</p></div></div>
+        <div class="apparel-carousel-card"><img class="apparel-carousel-card-img" src="../assets/apparel-hero-bg.jpg" alt="Wearables"><div class="apparel-carousel-card-body"><h4>Bomber Jacket</h4><p>MOQ: 200 pcs</p></div></div>
+        <div class="apparel-carousel-card"><img class="apparel-carousel-card-img" src="../assets/apparel-hero-bg.jpg" alt="Wearables"><div class="apparel-carousel-card-body"><h4>Gym Shorts</h4><p>MOQ: 150 pcs</p></div></div>
+        <div class="apparel-carousel-card"><img class="apparel-carousel-card-img" src="../assets/apparel-hero-bg.jpg" alt="Wearables"><div class="apparel-carousel-card-body"><h4>Dad Cap</h4><p>MOQ: 300 pcs</p></div></div>
+        <div class="apparel-carousel-card"><img class="apparel-carousel-card-img" src="../assets/apparel-hero-bg.jpg" alt="Wearables"><div class="apparel-carousel-card-body"><h4>Rain Jacket</h4><p>MOQ: 100 pcs</p></div></div>
+        <div class="apparel-carousel-card"><img class="apparel-carousel-card-img" src="../assets/apparel-hero-bg.jpg" alt="Wearables"><div class="apparel-carousel-card-body"><h4>Quarter-Zip</h4><p>MOQ: 150 pcs</p></div></div>
+        <div class="apparel-carousel-card"><img class="apparel-carousel-card-img" src="../assets/apparel-hero-bg.jpg" alt="Wearables"><div class="apparel-carousel-card-body"><h4>Bucket Hat</h4><p>MOQ: 400 pcs</p></div></div>
     </div>
     </div>
     <div class="apparel-carousel-pagination">
@@ -290,8 +290,8 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <img src="../assets/logo-white.png" alt="Amazing Yep Inc.">
-          <p>Custom merchandise solutions for brands,<br>events, retail programs and promotional campaigns.</p>
+          <img src="../assets/logo-2026.png" alt="Amazing Yep Inc.">
+          <p>Custom merchandise and sourcing support for brands,<br>events, retail programs, and promotional campaigns.</p>
           <div class="footer-social">
             <a href="#" aria-label="LinkedIn">in</a>
             <a href="#" aria-label="Instagram">ig</a>
@@ -302,7 +302,7 @@
             <form action="mailto:info@amazingyep.com" method="post" enctype="text/plain" class="footer-email-form">
               <div class="footer-email-wrap">
                 <input type="email" name="email" placeholder="Enter your email address" required>
-                <button type="submit" class="footer-email-btn">JOIN</button>
+                <button type="submit" class="footer-email-btn">SEND</button>
               </div>
             </form>
           </div>
@@ -321,11 +321,11 @@
         <div class="footer-col">
           <h4>Collections</h4>
           <ul>
-            <li><a href="../collections/index.html">Plush &amp; Mascots</a></li>
-            <li><a href="../collections/index.html">Keychains</a></li>
-            <li><a href="../collections/index.html">Drinkware</a></li>
-            <li><a href="../collections/index.html">Bags</a></li>
-            <li><a href="../collections/index.html">Apparel</a></li>
+            <li><a href="../collections/plush-mascots.html">Plush &amp; Mascots</a></li>
+            <li><a href="../collections/keychains.html">Keychains</a></li>
+            <li><a href="../collections/drinkware.html">Drinkware</a></li>
+            <li><a href="../collections/bags.html">Bags</a></li>
+            <li><a href="../collections/apparel.html">Wearables</a></li>
           </ul>
         </div>
         <div class="footer-col">
@@ -377,7 +377,7 @@
     }
 
     // Search filter
-    function filterApparel() {
+    function filterWearables() {
       const query = (document.getElementById('searchInput').value || '').toLowerCase();
       document.querySelectorAll('.apparel-featured-card').forEach(card => {
         const name = (card.querySelector('h4')?.textContent || '').toLowerCase();

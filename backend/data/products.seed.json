@@ -1,0 +1,206 @@
+[
+  {
+    "id": 8,
+    "sku": "AK468",
+    "name": "Caribou 6-Can Clip Handle Cooler",
+    "category": "Bags",
+    "subcategory": "Cooler Bags",
+    "description": "Customize these lunch coolers with your brand or event design for a memorable touch. Made with high-quality foam insulation and a leak-resistant lining, they keep food fresh and simplify cleanup. Each cooler features an adjustable handle with a secure buckle for easy carrying. Ideal for promotions, events, or everyday use, these coolers combine style and practicality to suit your needs.",
+    "moq": "100 pcs",
+    "priceRange": "$3.62-$10.44",
+    "keywords": [
+      "Polyester Lunch Bag",
+      "Insulated Lunch Bag",
+      "Branded Lunch Bag",
+      "Food Cooler",
+      "Lunch Cooler",
+      "Leakproof Lunch Bag",
+      "Foam Insulated Cooler",
+      "School Lunch Bag",
+      "Corporate Gift",
+      "Employee Gift"
+    ],
+    "images": [
+      "../assets/tote-canvas.png"
+    ],
+    "gallery": [
+      "../assets/tote-canvas.png",
+      "../assets/tote-yellow.png"
+    ],
+    "colorOptions": [
+      {
+        "name": "Gray",
+        "image": "../assets/tote-canvas.png"
+      },
+      {
+        "name": "Yellow",
+        "image": "../assets/tote-yellow.png"
+      }
+    ],
+    "pricing": [
+      {
+        "quantity": 500,
+        "price": 10.44,
+        "piecesPerUnit": 1
+      },
+      {
+        "quantity": 1000,
+        "price": 6.45,
+        "piecesPerUnit": 1
+      },
+      {
+        "quantity": 3000,
+        "price": 6.33,
+        "piecesPerUnit": 1
+      },
+      {
+        "quantity": 5000,
+        "price": 4.82,
+        "piecesPerUnit": 1
+      },
+      {
+        "quantity": 10000,
+        "price": 4.66,
+        "piecesPerUnit": 1
+      },
+      {
+        "quantity": 50000,
+        "price": 3.62,
+        "piecesPerUnit": 1
+      }
+    ],
+    "setupCharge": 80,
+    "imprintLocation": "Front",
+    "imprintArea": "3 x 3 Inches",
+    "imprintMethod": "Screen printed",
+    "material": "Foam insulation with leak-resistant PEVA lining",
+    "productSize": "6-can capacity",
+    "packaging": "Bulk,Case,Box",
+    "productDetails": {
+      "specs": [
+        {
+          "label": "Material",
+          "value": "Foam insulation with leak-resistant PEVA lining"
+        },
+        {
+          "label": "Product Size",
+          "value": "6-can capacity"
+        },
+        {
+          "label": "Imprint Method",
+          "value": "One-color imprint"
+        },
+        {
+          "label": "Imprint Area",
+          "value": "Available on request"
+        }
+      ]
+    },
+    "shippingTimeline": {
+      "sample": "5-7 business days after artwork approval",
+      "production": "12-18 business days after sample approval",
+      "shippingByAir": "10-20 days",
+      "shippingBySea": "22-30 days"
+    },
+    "sagePictureUrl": "",
+    "sageCategory1": "Coolers",
+    "sageCategory2": "",
+    "catalogPage1": "",
+    "catalogPage2": "",
+    "expirationDate": "12/31/2026",
+    "verified": true,
+    "discontinued": false,
+    "notPictured": false,
+    "colors": [
+      "Pink",
+      "White",
+      "Purple",
+      "Light Blue",
+      "Yellow",
+      "Dark Green",
+      "Gray",
+      "Black"
+    ],
+    "themes": [
+      "Business",
+      "College",
+      "Office",
+      "Outdoors",
+      "Travel"
+    ],
+    "madeInCountry": "China",
+    "assembledInCountry": "China",
+    "decoratedInCountry": "China",
+    "dimensions": {
+      "length": 9.45,
+      "width": 5.51,
+      "height": 8.66,
+      "units": "Inches",
+      "lengthType": "L",
+      "widthType": "W",
+      "heightType": "H"
+    },
+    "imprint": {
+      "primaryWidth": 3,
+      "primaryHeight": 3,
+      "primaryLocation": "Front",
+      "units": "Inches",
+      "primaryWidthType": "W",
+      "primaryHeightType": "H"
+    },
+    "carton": {
+      "unitsPerCarton": 100,
+      "weight": 39.68,
+      "length": 26,
+      "width": 22,
+      "height": 18
+    },
+    "unitsPerCarton": 100,
+    "weightPerCarton": 39.68,
+    "production": {
+      "timeLo": 18,
+      "timeHi": 20,
+      "rushLo": 0,
+      "rushHi": 0
+    },
+    "shipPointCountry": "China",
+    "priceCode": "CCCCCC",
+    "priceIncludeColor": "1 color",
+    "priceIncludeSide": "1 side",
+    "priceIncludeLocation": "1 location",
+    "priceIncludes": {
+      "colors": "1 color",
+      "sides": "1 side",
+      "locations": "1 location"
+    },
+    "setupChargeCode": "C",
+    "options": [
+      {
+        "name": "Printing Method",
+        "pricingType": "upcharge",
+        "priceCode": "CCCCCC",
+        "quantities": [
+          500,
+          1000,
+          3000,
+          5000,
+          10000,
+          50000
+        ],
+        "rows": [
+          {
+            "label": "Heat Transfer 2 colors",
+            "upcharges": {
+              "500": "+0.4",
+              "1000": "+0.4",
+              "3000": "+0.4",
+              "5000": "+0.4",
+              "10000": "+0.4",
+              "50000": "+0.4"
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

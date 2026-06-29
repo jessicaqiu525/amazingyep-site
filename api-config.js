@@ -4,7 +4,10 @@
 // ============================================
 
 (function() {
-  const BASE_URL = 'https://amazingyep-backend.onrender.com';
+  const isLocalSite = ['127.0.0.1', 'localhost', '::1'].includes(window.location.hostname);
+  const BASE_URL = isLocalSite
+    ? window.location.origin
+    : 'https://amazingyep-backend.onrender.com';
 
   // All products use the unified dynamic detail page
   // (no more static per-product pages — everything is product.html?id=X)
@@ -176,8 +179,8 @@
       else img = '../assets/hero-image.jpg';
     }
     const name = product.name || 'Untitled Product';
-    const moq = product.moq || '';
-    const desc = product.description ? product.description.substring(0, 60) + '...' : '';
+    const sku = product.sku || '';
+    const priceRange = product.priceRange || '';
 
     const cardClass = cardClassPrefix + '-featured-card';
     const imgClass = cardClassPrefix + '-featured-card-img';
@@ -190,7 +193,10 @@
         '<img class="' + imgClass + '" src="' + img + '" alt="' + name + '" onerror="this.src=\'../assets/tote-canvas.png\'">' +
         '<div class="' + bodyClass + '">' +
           '<h4>' + name + '</h4>' +
-          '<p>' + desc + (moq ? ' &middot; MOQ: ' + moq : '') + '</p>' +
+          (sku ? '<p style="font-size:12px;font-weight:700;color:var(--orange);margin-bottom:4px;">Item #: ' + sku + '</p>' : '') +
+          '<p style="font-size:13px;font-weight:700;color:var(--navy);margin-top:8px;">' +
+            (priceRange ? priceRange : '') +
+          '</p>' +
         '</div>' +
       '</div></a>';
   }
@@ -221,11 +227,12 @@
       return;
     }
 
+    const apiCategory = category;
     const samples = (SAMPLE_PRODUCTS[category] || []).slice(0, 12);
 
     try {
       let url = BASE_URL + '/api/products';
-      if (category) url += '?category=' + encodeURIComponent(category);
+      if (apiCategory) url += '?category=' + encodeURIComponent(apiCategory);
       const res = await fetch(url);
       if (!res.ok) throw new Error('Failed to load products');
       const data = await res.json();

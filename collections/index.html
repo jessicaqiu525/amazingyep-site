@@ -3,371 +3,361 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Brand Programs - Amazing Yep Inc.</title>
-  <meta name="description" content="Custom merchandise solutions for distributors: Employee Welcome Kits, Event Merch, Custom Mascots, Retail Plush, and Packaging.">
+  <title>Collections - Amazing Yep Inc.</title>
+  <meta name="description" content="Browse Amazing Yep product collections including plush mascots, keychains, drinkware, bags, office items, trade show products, technology, outdoor products, and wearables.">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style.css">
   <style>
-    /* Brand Programs page specific styles */
-    .bp-breadcrumb { padding: 16px 0 4px; background: #fff; }
-    .bp-breadcrumb-inner { max-width: 1440px; margin: 0 auto; padding: 0 32px; display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-light); }
-    .bp-breadcrumb-inner a { color: var(--text-light); text-decoration: none; display: flex; align-items: center; gap: 4px; transition: all 0.3s ease; transform-origin: left center; }
-    .bp-breadcrumb-inner a:hover { color: var(--orange); transform: scale(1.08) translateZ(0); filter: drop-shadow(0 2px 4px rgba(242,101,34,0.3)); }
-    .bp-breadcrumb-inner .sep { color: #ccc; }
-    .bp-breadcrumb-arrow { width: 16px; height: 16px; stroke: var(--text-light); }
-
-    .bp-header { max-width: 1440px; margin: 0 auto; padding: 16px 32px 20px; text-align: left; }
-    .bp-title { font-size: 48px; font-weight: 900; color: var(--navy); letter-spacing: 1px; margin: 0 0 4px; }
-    .bp-subtitle { font-size: 20px; font-weight: 500; color: var(--text-light); margin-left: 8px; letter-spacing: 0; }
-    .bp-filter-wrap { display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
-    .bp-filter-text { font-size: 18px; font-weight: 700; letter-spacing: 1px; color: var(--navy); text-transform: uppercase; }
-    .bp-filter-arrow { width: 20px; height: 20px; transition: transform 0.3s; flex-shrink: 0; }
-    .bp-filter-arrow.collapsed { transform: rotate(180deg); }
-    .bp-type-content { overflow: hidden; max-height: 600px; transition: max-height 0.3s ease; }
-    .bp-type-content.collapsed { max-height: 0; margin-bottom: 0; }
-
-    .bp-product-type { max-width: 1440px; margin: 0 auto; padding: 0 32px 40px; text-align: left; border-bottom: 1px solid var(--gray-200); }
-    .bp-type-label { font-size: 24px; font-weight: 700; letter-spacing: 1.5px; color: var(--navy); text-transform: uppercase; margin-bottom: 16px; text-decoration: underline; }
-    .bp-type-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-    .bp-type-item { padding: 12px 24px; border: 1px solid var(--gray-200); border-radius: 50px; font-size: 15px; color: var(--navy); cursor: pointer; transition: all 0.2s; background: #fff; white-space: nowrap; }
-    .bp-type-item:hover, .bp-type-item.active { background: var(--navy); color: #fff; border-color: var(--navy); }
-
-    .bp-featured { background: #fff; padding: 32px 0 40px; }
-    .bp-featured-header { max-width: 1440px; margin: 0 auto 16px; padding: 0 32px; }
-    .bp-featured-header .section-label { display: block; margin-bottom: 4px; }
-    .bp-featured-grid { max-width: 1440px; margin: 0 auto; padding: 0 32px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-    .bp-featured-card { border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s; background: var(--gray-50); }
-    .bp-featured-card:hover { transform: translateY(-2px); }
-    .bp-featured-card-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; background: var(--gray-100); }
-    .bp-featured-card-body { padding: 12px; }
-    .bp-featured-card-body h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin: 0 0 4px; }
-    .bp-featured-card-body p { font-size: 12px; color: var(--text-light); margin: 0; }
-
-    .bp-you-may-like { background: #fff; padding: 0 0 40px; }
-    .bp-carousel-header { max-width: 1440px; margin: 0 auto 16px; padding: 0 32px; }
-    .bp-carousel-header .section-label { display: block; margin-bottom: 4px; }
-    .bp-carousel-wrap { max-width: 1440px; margin: 0 auto; padding: 0 32px; overflow: hidden; }
-    .bp-carousel-track { display: flex; gap: 16px; padding-bottom: 8px; scroll-snap-type: x mandatory; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; scroll-behavior: smooth; }
-    .bp-carousel-track::-webkit-scrollbar { display: none; }
-    .bp-carousel-card { flex: 0 0 calc((100% - 32px) / 3); min-width: 200px; border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s; background: var(--gray-50); scroll-snap-align: start; }
-    .bp-carousel-card:hover { transform: translateY(-2px); }
-    .bp-carousel-card-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; background: var(--gray-100); }
-    .bp-carousel-card-body { padding: 12px; }
-    .bp-carousel-card-body h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin: 0 0 4px; }
-    .bp-carousel-card-body p { font-size: 12px; color: var(--text-light); margin: 0; }
-
-    .bp-carousel-pagination { max-width: 1440px; margin: 20px auto 0; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; }
-    .bp-pagination-bar { flex: 1; max-width: 400px; height: 2px; background: var(--gray-200); border-radius: 2px; position: relative; overflow: hidden; }
-    .bp-pagination-bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--navy); border-radius: 2px; transition: width 0.3s; }
-    .bp-pagination-arrows { display: flex; align-items: center; gap: 12px; }
-    .bp-pagination-arrow { width: 28px; height: 28px; border: 1px solid var(--gray-200); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; background: #fff; transition: all 0.2s; }
-    .bp-pagination-arrow:hover { border-color: var(--navy); background: var(--navy); }
-    .bp-pagination-arrow:hover svg { stroke: #fff; }
-    .bp-pagination-arrow svg { width: 12px; height: 12px; stroke: var(--text-light); transition: stroke 0.2s; }
-    .bp-pagination-num { font-size: 13px; color: var(--text-light); min-width: 28px; text-align: center; }
-
+    .collections-hero {
+      position: relative;
+      min-height: 360px;
+      display: flex;
+      align-items: flex-end;
+      background: #f5f7fa url('../assets/collections-hero-bg.jpg') center / cover no-repeat;
+    }
+    .collections-hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(10, 30, 54, 0.08), rgba(10, 30, 54, 0.58));
+    }
+    .collections-hero-inner {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 56px 32px;
+      color: #fff;
+    }
+    .collections-kicker {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      color: rgba(255,255,255,0.86);
+    }
+    .collections-title {
+      margin: 0;
+      font-size: 56px;
+      line-height: 1;
+      font-weight: 900;
+      color: #fff;
+    }
+    .collections-copy {
+      max-width: 620px;
+      margin: 14px 0 0;
+      font-size: 18px;
+      line-height: 1.55;
+      color: rgba(255,255,255,0.9);
+    }
+    .collections-breadcrumb {
+      background: #fff;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .collections-breadcrumb-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-light);
+    }
+    .collections-breadcrumb-inner a {
+      color: var(--text-light);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    .collections-breadcrumb-inner a:hover { color: var(--orange); }
+    .collections-main {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 40px 32px 72px;
+    }
+    .collections-section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 22px;
+    }
+    .collections-section-head h2 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.15;
+      color: var(--navy);
+    }
+    .collections-section-head p {
+      margin: 0;
+      max-width: 520px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-light);
+    }
+    .collections-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+    .collection-card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .collection-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(242,101,34,0.35);
+      box-shadow: 0 14px 34px rgba(10, 30, 54, 0.1);
+    }
+    .collection-card-img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      display: block;
+      background: var(--gray-100);
+    }
+    .collection-card-body {
+      padding: 16px;
+    }
+    .collection-card h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      line-height: 1.25;
+      color: var(--navy);
+    }
+    .collection-card p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-light);
+    }
+    .collection-card-main h3 {
+      font-size: 20px;
+    }
+    .collections-cta-band {
+      margin-top: 48px;
+      padding: 28px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      background: var(--navy);
+      color: #fff;
+      border-radius: 8px;
+    }
+    .collections-cta-band h2 {
+      margin: 0 0 6px;
+      font-size: 24px;
+      color: #fff;
+    }
+    .collections-cta-band p {
+      margin: 0;
+      color: rgba(255,255,255,0.78);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    @media (max-width: 1100px) {
+      .collections-grid { grid-template-columns: repeat(3, 1fr); }
+    }
     @media (max-width: 768px) {
-      .bp-title { font-size: 30px; letter-spacing: 0; }
-      .bp-subtitle { font-size: 14px; display: block; margin-left: 0; margin-top: 4px; }
-      .bp-featured-grid { grid-template-columns: repeat(2, 1fr); }
-      .bp-carousel-card { flex: 0 0 calc((100% - 16px) / 2); min-width: 140px; }
-      .bp-type-grid { gap: 6px; }
-      .bp-type-item { padding: 8px 16px; font-size: 13px; }
+      .collections-hero { min-height: 300px; }
+      .collections-hero-inner { padding: 42px 20px; }
+      .collections-title { font-size: 38px; }
+      .collections-copy { font-size: 15px; }
+      .collections-main { padding: 28px 20px 56px; }
+      .collections-section-head { display: block; }
+      .collections-section-head h2 { font-size: 24px; margin-bottom: 8px; }
+      .collections-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+      .collection-card-body { padding: 12px; }
+      .collection-card h3 { font-size: 15px; }
+      .collection-card p { font-size: 12px; }
+      .collections-cta-band { display: block; padding: 24px; }
+      .collections-cta-band .btn { margin-top: 18px; }
     }
   </style>
 </head>
 <body>
   <nav class="nav">
     <div class="nav-inner">
-      <a href="../index.html" class="nav-logo"><img src="../assets/logo.png" alt="Amazing Yep Inc."></a>
+      <a href="../index.html" class="nav-logo"><img src="../assets/logo-2026.png" alt="Amazing Yep Inc."></a>
       <ul class="nav-links">
         <li><a href="../index.html">Home</a></li>
-        <li><a href="../collections/plush-mascots.html">Plush &amp; Mascots</a></li>
-        <li><a href="../collections/keychains.html">Keychains</a></li>
-        <li><a href="../collections/drinkware.html">Drinkware</a></li>
-        <li><a href="../collections/bags.html">Bags</a></li>
+        <li><a href="plush-mascots.html">Plush &amp; Mascots</a></li>
+        <li><a href="keychains.html">Keychains</a></li>
+        <li><a href="drinkware.html">Drinkware</a></li>
+        <li><a href="bags.html">Bags</a></li>
         <li><a href="../case-studies/index.html">Ideas &amp; Use Cases</a></li>
-        <li><a href="index.html" class="active">Brand Programs</a></li>
+        <li><a href="../solutions/index.html">Brand Programs</a></li>
         <li class="has-dropdown">
-          <a href="../collections/index.html" class="dropdown-toggle">Collections <svg class="dropdown-arrow" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a href="index.html" class="dropdown-toggle active">Collections <svg class="dropdown-arrow" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
           <ul class="nav-dropdown">
-            <li><a href="../collections/bags.html">Bags</a></li>
-            <li><a href="../collections/drinkware.html">Drinkware</a></li>
-            <li><a href="../collections/keychains.html">Keychains &amp; Accessories</a></li>
-            <li><a href="../collections/office.html">Office &amp; Stationery</a></li>
-            <li><a href="../collections/outdoor-leisure.html">Outdoor &amp; Leisure</a></li>
-            <li><a href="../collections/plush-mascots.html">Plush &amp; Mascots</a></li>
-            <li><a href="../collections/technology.html">Technology</a></li>
-            <li><a href="../collections/trade-show.html">Trade Show</a></li>
-            <li><a href="../collections/apparel.html">Wearables</a></li>
+            <li><a href="bags.html">Bags</a></li>
+            <li><a href="drinkware.html">Drinkware</a></li>
+            <li><a href="keychains.html">Keychains &amp; Accessories</a></li>
+            <li><a href="office.html">Office &amp; Stationery</a></li>
+            <li><a href="outdoor-leisure.html">Outdoor &amp; Leisure</a></li>
+            <li><a href="plush-mascots.html">Plush &amp; Mascots</a></li>
+            <li><a href="technology.html">Technology</a></li>
+            <li><a href="trade-show.html">Trade Show</a></li>
+            <li><a href="apparel.html">Wearables</a></li>
           </ul>
         </li>
       </ul>
       <div class="nav-cta">
-        <div class="nav-contact">
-          <a href="tel:7326928285"><svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>732-692-8285</a>
-          <a href="mailto:info@amazingyep.com"><svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>info@amazingyep.com</a>
-        </div>
+        <form class="nav-search" role="search" onsubmit="var q=(this.querySelector('input[name=q]').value||'').trim(); var p=location.pathname; var base=p.indexOf('/collections/')>-1?'index.html':(p.match(/\/(about|contact|solutions|case-studies)\//)?'../collections/index.html':'collections/index.html'); location.href=base+(q?'?search='+encodeURIComponent(q):''); return false;">
+          <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input type="search" name="q" placeholder="Search" aria-label="Search products" onkeydown="if(event.key==='Enter'){event.preventDefault(); var q=(this.value||'').trim(); var p=location.pathname; var base=p.indexOf('/collections/')>-1?'index.html':(p.match(/\/(about|contact|solutions|case-studies)\//)?'../collections/index.html':'collections/index.html'); location.href=base+(q?'?search='+encodeURIComponent(q):'');}">
+        </form>
         <a href="../contact/index.html" class="btn btn-primary btn-sm">Start a Project</a>
         <button class="nav-mobile-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
       </div>
     </div>
   </nav>
 
-  <!-- Hero Image -->
-  <header style="background:none; padding:0; margin:0;">
-    <img src="../assets/brand-programs-hero-bg.jpg" alt="Brand Programs" style="width:100%; height:auto; display:block; max-height:600px; object-fit:cover; object-position:center center;">
+  <header class="collections-hero">
+    <div class="collections-hero-inner">
+      <div class="collections-kicker">Product Collections</div>
+      <h1 class="collections-title">Collections</h1>
+      <p class="collections-copy">Browse our main product families and supporting categories for distributor programs, events, retail merchandise, and custom branded projects.</p>
+    </div>
   </header>
 
-  <!-- Breadcrumb -->
-  <div class="bp-breadcrumb">
-    <div class="bp-breadcrumb-inner">
-      <a href="../index.html"><svg class="bp-breadcrumb-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Home</a><span class="sep">/</span><span>Brand Programs</span>
+  <div class="collections-breadcrumb">
+    <div class="collections-breadcrumb-inner">
+      <a href="../index.html">Home</a><span>/</span><span>Collections</span>
     </div>
   </div>
 
-  <!-- Title + Filter -->
-  <div class="bp-header">
-    <h1 class="bp-title">BRAND PROGRAMS <span class="bp-subtitle">Complete solutions for your clients' needs</span></h1>
-    <div class="bp-filter-wrap" onclick="toggleFilter()">
-      <span class="bp-filter-text">FILTER</span>
-      <svg class="bp-filter-arrow" id="filterArrow" viewBox="0 0 24 24" fill="none" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  <main class="collections-main">
+    <div class="collections-section-head">
+      <h2>Explore By Product Type</h2>
+      <p>Start with a core category, then open a collection page to view available products, item numbers, and price ranges.</p>
     </div>
-  </div>
 
-  <!-- Search Bar -->
-  <div style="max-width:1440px; margin:0 auto; padding:0 32px 24px;">
-    <div style="display:flex; align-items:center; gap:12px; max-width:600px;">
-      <div style="flex:1; display:flex; align-items:center; gap:8px; padding:14px 20px; border:2px solid #d0d5dd; border-radius:50px; background:#fff;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        <input type="text" id="searchInput" placeholder="Search brand programs..." oninput="filterBrandPrograms()" style="border:none; outline:none; flex:1; font-size:15px; font-family:Inter,sans-serif; color:var(--navy); background:transparent;">
-      </div>
+    <div class="collections-grid">
+      <a class="collection-card collection-card-main" href="plush-mascots.html">
+        <img class="collection-card-img" src="../assets/cat-plush.jpg" alt="Plush and mascots">
+        <div class="collection-card-body">
+          <h3>Plush &amp; Mascots</h3>
+          <p>Custom plush, character items, and mascot merchandise.</p>
+        </div>
+      </a>
+      <a class="collection-card collection-card-main" href="keychains.html">
+        <img class="collection-card-img" src="../assets/cat-keychain.jpg" alt="Keychains">
+        <div class="collection-card-body">
+          <h3>Keychains</h3>
+          <p>Keychains and small accessories for promotional programs.</p>
+        </div>
+      </a>
+      <a class="collection-card collection-card-main" href="drinkware.html">
+        <img class="collection-card-img" src="../assets/cat-drinkware.jpg" alt="Drinkware">
+        <div class="collection-card-body">
+          <h3>Drinkware</h3>
+          <p>Bottles, tumblers, cups, and branded drinkware options.</p>
+        </div>
+      </a>
+      <a class="collection-card collection-card-main" href="bags.html">
+        <img class="collection-card-img" src="../assets/cat-bags.jpg" alt="Bags">
+        <div class="collection-card-body">
+          <h3>Bags</h3>
+          <p>Totes, coolers, backpacks, travel bags, and packaging bags.</p>
+        </div>
+      </a>
+      <a class="collection-card" href="office.html">
+        <img class="collection-card-img" src="../assets/collections-hero-bg.jpg" alt="Office and stationery">
+        <div class="collection-card-body">
+          <h3>Office &amp; Stationery</h3>
+          <p>Useful desk items, writing products, and office essentials.</p>
+        </div>
+      </a>
+      <a class="collection-card" href="outdoor-leisure.html">
+        <img class="collection-card-img" src="../assets/collections-hero-bg.jpg" alt="Outdoor and leisure">
+        <div class="collection-card-body">
+          <h3>Outdoor &amp; Leisure</h3>
+          <p>Products for travel, outdoor events, lifestyle, and recreation.</p>
+        </div>
+      </a>
+      <a class="collection-card" href="technology.html">
+        <img class="collection-card-img" src="../assets/collections-hero-bg.jpg" alt="Technology">
+        <div class="collection-card-body">
+          <h3>Technology</h3>
+          <p>Tech accessories and practical branded electronic items.</p>
+        </div>
+      </a>
+      <a class="collection-card" href="trade-show.html">
+        <img class="collection-card-img" src="../assets/collections-hero-bg.jpg" alt="Trade show">
+        <div class="collection-card-body">
+          <h3>Trade Show</h3>
+          <p>Giveaways and booth-ready merchandise for events.</p>
+        </div>
+      </a>
+      <a class="collection-card" href="apparel.html">
+        <img class="collection-card-img" src="../assets/collections-hero-bg.jpg" alt="Wearables">
+        <div class="collection-card-body">
+          <h3>Wearables</h3>
+          <p>Wearables and wearable branded pieces for teams and programs.</p>
+        </div>
+      </a>
     </div>
-  </div>
 
-  <!-- PRODUCT TYPE -->
-  <div class="bp-product-type">
-    <div class="bp-type-content" id="typeContent">
-      <div class="bp-type-label">PROGRAM TYPE</div>
-      <div class="bp-type-grid">
-        <span class="bp-type-item">Employee Welcome Kits</span>
-        <span class="bp-type-item">Conference &amp; Event Merch</span>
-        <span class="bp-type-item">Custom Mascot Programs</span>
-        <span class="bp-type-item">Retail Plush Development</span>
-        <span class="bp-type-item">Packaging Solutions</span>
-        <span class="bp-type-item">Corporate Gifting</span>
-        <span class="bp-type-item">Promotional Campaigns</span>
-        <span class="bp-type-item">Sustainability Programs</span>
+    <section class="collections-cta-band">
+      <div>
+        <h2>Need a product that is not shown?</h2>
+        <p>Send us your idea, target quantity, timeline, and artwork. We can help source or develop more options.</p>
       </div>
-    </div>
-  </div>
-
-  <!-- FEATURED -->
-  <section class="bp-featured">
-    <div class="bp-featured-header">
-      <span class="section-label">FEATURED</span>
-    </div>
-    <div class="bp-featured-grid" id="featuredGrid">
-      <!-- Row 1: Homepage BRAND PROGRAMS images -->
-      <div class="bp-featured-card" data-cat="Retail"><img class="bp-featured-card-img" src="../assets/7-eleven-brand-program.jpg" alt="7-Eleven"><div class="bp-featured-card-body"><h4>7-Eleven</h4><p>Custom merchandise program for the global convenience brand</p></div></div>
-      <div class="bp-featured-card" data-cat="Retail"><img class="bp-featured-card-img" src="../assets/olipop-brand-program.jpg" alt="Olipop"><div class="bp-featured-card-body"><h4>Olipop</h4><p>Branded merchandise for the fast-growing soda brand</p></div></div>
-      <!-- Row 2 -->
-      <div class="bp-featured-card" data-cat="Conference"><img class="bp-featured-card-img" src="../assets/conference-swag-hero.jpg" alt="Conference &amp; Event Merch"><div class="bp-featured-card-body"><h4>Conference &amp; Event Merch</h4><p>Branded products for events of any scale</p></div></div>
-      <div class="bp-featured-card" data-cat="Mascot"><img class="bp-featured-card-img" src="../assets/character-mascot-hero.jpg" alt="Custom Mascot Programs"><div class="bp-featured-card-body"><h4>Custom Mascot Programs</h4><p>From sketch to finished plush &amp; merchandise</p></div></div>
-    </div>
-  </section>
-
-  <!-- YOU MAY LIKE -->
-  <section class="bp-you-may-like">
-    <div class="bp-carousel-header">
-      <span class="section-label">YOU MIGHT ALSO LIKE</span>
-    </div>
-    <div class="bp-carousel-wrap">
-      <div class="bp-carousel-track">
-        <div class="bp-carousel-card" data-cat="Employee Welcome"><img class="bp-carousel-card-img" src="https://images.unsplash.com/photo-1544816155-12df9643f363?w=600&h=450&fit=crop" alt="Welcome Box"><div class="bp-carousel-card-body"><h4>Welcome Box</h4><p>Employee Welcome Kits</p></div></div>
-        <div class="bp-carousel-card" data-cat="Conference"><img class="bp-carousel-card-img" src="../assets/conference-swag-hero.jpg" alt="Event Kit"><div class="bp-carousel-card-body"><h4>Event Kit</h4><p>Conference &amp; Event Merch</p></div></div>
-        <div class="bp-carousel-card" data-cat="Mascot"><img class="bp-carousel-card-img" src="../assets/character-mascot-hero.jpg" alt="Custom Mascot"><div class="bp-carousel-card-body"><h4>Custom Mascot</h4><p>Mascot Programs</p></div></div>
-        <div class="bp-carousel-card" data-cat="Retail Plush"><img class="bp-carousel-card-img" src="https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=600&h=450&fit=crop" alt="Retail Plush"><div class="bp-carousel-card-body"><h4>Retail Plush</h4><p>Retail Plush Development</p></div></div>
-        <div class="bp-carousel-card" data-cat="Packaging"><img class="bp-carousel-card-img" src="../assets/bags-hero-bg.jpg" alt="Mailer Box"><div class="bp-carousel-card-body"><h4>Custom Mailer Box</h4><p>Packaging Solutions</p></div></div>
-        <div class="bp-carousel-card" data-cat="Gifting"><img class="bp-carousel-card-img" src="../assets/collections-hero-bg.jpg" alt="Gift Set"><div class="bp-carousel-card-body"><h4>Premium Gift Set</h4><p>Corporate Gifting</p></div></div>
-        <div class="bp-carousel-card" data-cat="Promotional"><img class="bp-carousel-card-img" src="../assets/collections-hero-bg.jpg" alt="Launch Kit"><div class="bp-carousel-card-body"><h4>Product Launch Kit</h4><p>Promotional Campaigns</p></div></div>
-        <div class="bp-carousel-card" data-cat="Sustainability"><img class="bp-carousel-card-img" src="../assets/drinkware-hero-bg.jpg" alt="Eco Kit"><div class="bp-carousel-card-body"><h4>Eco-Friendly Kit</h4><p>Sustainability Programs</p></div></div>
-      </div>
-    </div>
-    <div class="bp-carousel-pagination">
-      <div class="bp-pagination-bar"><div class="bp-pagination-bar-fill" id="paginationFill" style="width:33.3%;"></div></div>
-      <div class="bp-pagination-arrows">
-        <div class="bp-pagination-arrow" onclick="prevPage()">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
-        </div>
-        <span class="bp-pagination-num" id="pageNum">1/3</span>
-        <div class="bp-pagination-arrow" onclick="nextPage()">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- HOW WE WORK -->
-  <section class="hww-section">
-    <div class="container">
-      <div class="hww-header">
-        <span class="section-label">HOW WE WORK</span>
-        <h2 class="section-title">Simple, Fast, Reliable</h2>
-        <p class="section-subtitle">A straightforward process designed to get you from idea to delivery with minimal friction.</p>
-      </div>
-      <div class="hww-steps">
-        <div class="hww-step">
-          <div class="hww-num">1</div>
-          <h3>Share Your Idea</h3>
-          <p>Send us your design, sketch, or concept. Tell us about your brand, audience, and goals.</p>
-        </div>
-        <div class="hww-arrow">
-          <svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg>
-        </div>
-        <div class="hww-step">
-          <div class="hww-num">2</div>
-          <h3>Receive Mockup &amp; Pricing</h3>
-          <p>Within 24 hours, receive a free digital mockup and detailed pricing options.</p>
-        </div>
-        <div class="hww-arrow">
-          <svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg>
-        </div>
-        <div class="hww-step">
-          <div class="hww-num">3</div>
-          <h3>Sampling &amp; Approval</h3>
-          <p>Review physical samples, request adjustments, and approve before full production.</p>
-        </div>
-        <div class="hww-arrow">
-          <svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg>
-        </div>
-        <div class="hww-step">
-          <div class="hww-num">4</div>
-          <h3>Production &amp; Delivery</h3>
-          <p>We handle manufacturing and worldwide shipping. Track your order every step.</p>
-        </div>
-      </div>
-      <div style="text-align:center; margin-top:24px;">
-        <a href="../contact/index.html" class="btn btn-primary">Start a Project</a>
-      </div>
-    </div>
-  </section>
+      <a href="../contact/index.html" class="btn btn-primary btn-sm">Start a Project</a>
+    </section>
+  </main>
 
   <footer class="footer">
     <div class="container">
-      <div class="footer-grid">
+      <div class="footer-content">
         <div class="footer-brand">
-          <img src="../assets/logo-white.png" alt="Amazing Yep Inc.">
-          <p>Custom merchandise solutions for brands,<br>events, retail programs and promotional campaigns.</p>
-          <div class="footer-social">
-            <a href="#" aria-label="LinkedIn">in</a>
-            <a href="#" aria-label="Instagram">ig</a>
-            <a href="#" aria-label="Facebook">fb</a>
+          <img src="../assets/logo-footer.png" alt="Amazing Yep Inc." class="footer-logo">
+          <p>Custom merchandise and sourcing support for brands, events, retail programs, and promotional campaigns.</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>Products</h4>
+            <ul>
+              <li><a href="plush-mascots.html">Plush &amp; Mascots</a></li>
+              <li><a href="keychains.html">Keychains</a></li>
+              <li><a href="drinkware.html">Drinkware</a></li>
+              <li><a href="bags.html">Bags</a></li>
+            </ul>
           </div>
-          <div class="footer-newsletter">
-            <h4>Start a Project</h4>
-            <form action="mailto:info@amazingyep.com" method="post" enctype="text/plain" class="footer-email-form">
-              <div class="footer-email-wrap">
-                <input type="email" name="email" placeholder="Enter your email address" required>
-                <button type="submit" class="footer-email-btn">JOIN</button>
-              </div>
-            </form>
+          <div>
+            <h4>Collections</h4>
+            <ul>
+              <li><a href="office.html">Office &amp; Stationery</a></li>
+              <li><a href="outdoor-leisure.html">Outdoor &amp; Leisure</a></li>
+              <li><a href="technology.html">Technology</a></li>
+              <li><a href="trade-show.html">Trade Show</a></li>
+            </ul>
           </div>
-        </div>
-        <div class="footer-col">
-          <h4>Ideas &amp; Use Cases</h4>
-          <ul>
-            <li><a href="../case-studies/index.html">Conference &amp; Event Swag</a></li>
-            <li><a href="../case-studies/index.html">Employee Engagement Kits</a></li>
-            <li><a href="../case-studies/index.html">Character &amp; Mascot Programs</a></li>
-            <li><a href="../case-studies/index.html">Schools, Teams &amp; Communities</a></li>
-            <li><a href="../case-studies/index.html">Brand Loyalty Programs</a></li>
-            <li><a href="../case-studies/index.html">Travel &amp; Adventure Collection</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Collections</h4>
-          <ul>
-            <li><a href="../collections/index.html">Plush &amp; Mascots</a></li>
-            <li><a href="../collections/index.html">Keychains</a></li>
-            <li><a href="../collections/index.html">Drinkware</a></li>
-            <li><a href="../collections/index.html">Bags</a></li>
-            <li><a href="../collections/index.html">Apparel</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Company</h4>
-          <ul>
-            <li><a href="../about/index.html">About Us</a></li>
-            <li><a href="../contact/index.html">Contact</a></li>
-            <li><a href="mailto:info@amazingyep.com">info@amazingyep.com</a></li>
-            <li><a href="tel:7326928285">732-692-8285</a></li>
-          </ul>
+          <div>
+            <h4>Contact</h4>
+            <ul>
+              <li><a href="mailto:info@amazingyep.com">info@amazingyep.com</a></li>
+              <li><a href="tel:7326928285">732-692-8285</a></li>
+              <li><a href="../contact/index.html">Start a Project</a></li>
+            </ul>
+          </div>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2026 Amazing Yep Inc.</p>
-        <p>Bringing Custom Merchandise Ideas to Life. Built for Brands, Events &amp; Promotional Programs.</p>
+        <p>&copy; 2026 Amazing Yep Inc. All rights reserved.</p>
       </div>
     </div>
   </footer>
-
-  <script>
-    function toggleFilter() {
-      const arrow = document.getElementById('filterArrow');
-      const content = document.getElementById('typeContent');
-      arrow.classList.toggle('collapsed');
-      content.classList.toggle('collapsed');
-    }
-    document.querySelectorAll('.bp-type-item').forEach(item => {
-      item.addEventListener('click', function() {
-        document.querySelectorAll('.bp-type-item').forEach(i => i.classList.remove('active'));
-        this.classList.add('active');
-      });
-    });
-    let currentPage = 1;
-    const totalPages = 3;
-    const carouselTrack = document.querySelector('.bp-carousel-track');
-    function getScrollPerPage() {
-      const wrap = document.querySelector('.bp-carousel-wrap');
-      return wrap ? wrap.clientWidth : 0;
-    }
-    function updatePagination() {
-      document.getElementById('paginationFill').style.width = (currentPage / totalPages * 100) + '%';
-      document.getElementById('pageNum').textContent = currentPage + '/' + totalPages;
-    }
-    function prevPage() {
-      if (currentPage > 1) {
-        currentPage--;
-        carouselTrack.scrollTo({ left: (currentPage - 1) * getScrollPerPage(), behavior: 'smooth' });
-        updatePagination();
-      }
-    }
-    function nextPage() {
-      if (currentPage < totalPages) {
-        currentPage++;
-        carouselTrack.scrollTo({ left: (currentPage - 1) * getScrollPerPage(), behavior: 'smooth' });
-        updatePagination();
-      }
-    }
-    carouselTrack.addEventListener('scroll', function() {
-      const newPage = Math.round(carouselTrack.scrollLeft / getScrollPerPage()) + 1;
-      if (newPage !== currentPage) { currentPage = newPage; updatePagination(); }
-    });
-    function filterBrandPrograms() {
-      const query = (document.getElementById('searchInput').value || '').toLowerCase();
-      document.querySelectorAll('.bp-featured-card').forEach(card => {
-        const name = (card.querySelector('h4')?.textContent || '').toLowerCase();
-        const cat = (card.dataset.cat || '').toLowerCase();
-        card.style.display = (!query || name.includes(query) || cat.includes(query)) ? '' : 'none';
-      });
-      document.querySelectorAll('.bp-carousel-card').forEach(card => {
-        const name = (card.querySelector('h4')?.textContent || '').toLowerCase();
-        const cat = (card.dataset.cat || '').toLowerCase();
-        card.style.display = (!query || name.includes(query) || cat.includes(query)) ? '' : 'none';
-      });
-    }
-  </script>
 
   <script src="../script.js"></script>
 </body>

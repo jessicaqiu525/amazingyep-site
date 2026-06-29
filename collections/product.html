@@ -11,14 +11,14 @@
   <style>
     /* Product Detail Page Styles */
     .pd-wrap {
-      padding: 120px 0 32px;
-      background: var(--white);
+      padding: 112px 0 40px;
+      background: #fffaf6;
     }
 
     .pd-layout {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
+      grid-template-columns: minmax(0, 1.05fr) minmax(420px, 0.95fr);
+      gap: 52px;
       align-items: start;
     }
 
@@ -30,18 +30,24 @@
 
     .pd-main-img {
       width: 100%;
-      aspect-ratio: 4/5;
-      border-radius: var(--radius);
+      aspect-ratio: 1/1;
+      border-radius: 0;
       overflow: hidden;
-      background: var(--gray-50);
+      background: transparent;
       margin-bottom: 12px;
+      box-shadow: none;
     }
 
     .pd-main-img img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       transition: var(--transition);
+      background: transparent;
+    }
+
+    .pd-main-img.is-cover img {
+      object-fit: cover;
     }
 
     .pd-main-img:hover img { transform: scale(1.03); }
@@ -49,6 +55,7 @@
     .pd-thumbs {
       display: flex;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
     .pd-thumb {
@@ -59,7 +66,7 @@
       cursor: pointer;
       border: 2px solid transparent;
       transition: var(--transition);
-      background: var(--gray-50);
+      background: var(--white);
     }
 
     .pd-thumb:hover,
@@ -80,42 +87,217 @@
 
     .pd-breadcrumb {
       display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-      font-size: 13px;
-      color: var(--text-light);
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 18px;
+      font-size: 14px;
+      color: #0a2540 !important;
     }
 
-    .pd-breadcrumb a { color: var(--text-light); transition: var(--transition); }
+    .pd-breadcrumb a { color: var(--navy); transition: var(--transition); }
     .pd-breadcrumb a:hover { color: var(--orange); }
-    .pd-breadcrumb .sep { color: var(--gray-400); }
-
-    .pd-category-tag {
-      display: inline-block;
-      padding: 4px 14px;
-      border-radius: 50px;
-      background: var(--gray-50);
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--orange);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
+    .pd-breadcrumb .sep { color: rgba(10,37,64,0.45); }
 
     .pd-name {
-      font-size: 28px;
-      font-weight: 800;
+      font-size: 32px;
+      font-weight: 700;
       color: var(--navy);
-      line-height: 1.2;
-      margin-bottom: 16px;
+      line-height: 1.18;
+      letter-spacing: 0;
+      margin-bottom: 8px;
+    }
+
+    .pd-sku {
+      font-size: 16px;
+      color: var(--navy);
+      font-weight: 500;
+      margin-bottom: 18px;
     }
 
     .pd-desc {
       font-size: 15px;
-      color: var(--text-light);
+      color: var(--navy);
       line-height: 1.7;
-      margin-bottom: 24px;
+      margin-bottom: 18px;
+    }
+
+    .pd-gallery-info {
+      margin-top: 22px;
+    }
+
+    .pd-gallery-card {
+      border: 1px solid rgba(10, 37, 64, 0.08);
+      border-radius: var(--radius);
+      background: var(--white);
+      padding: 24px;
+      box-shadow: 0 12px 30px rgba(10, 37, 64, 0.05);
+    }
+
+    .pd-gallery-card p {
+      color: var(--navy);
+      font-size: 16px;
+      line-height: 1.65;
+      font-weight: 400;
+      margin: 0;
+    }
+
+    .pd-info-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--gray-100);
+      margin: -4px 0 16px;
+      padding-bottom: 10px;
+      flex-wrap: nowrap;
+    }
+
+    .pd-tab-btn {
+      appearance: none;
+      border: 1px solid rgba(242,101,34,0.34);
+      background: var(--white);
+      border-radius: 999px;
+      color: var(--navy);
+      cursor: pointer;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0;
+      line-height: 1.2;
+      padding: 11px 12px;
+      min-width: 0;
+      flex: 1 1 0;
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .pd-tab-btn[data-tab="description"] { flex-grow: 1.08; }
+    .pd-tab-btn[data-tab="details"] { flex-grow: 0.9; }
+    .pd-tab-btn[data-tab="shipping"] { flex-grow: 1.22; }
+
+    .pd-tab-btn:hover {
+      border-color: rgba(242,101,34,0.72);
+      color: var(--orange);
+    }
+
+    .pd-tab-btn.active {
+      background: var(--white);
+      border-color: var(--orange);
+      border-width: 1px;
+      border-bottom-width: 3px;
+      color: var(--navy);
+      box-shadow: none;
+    }
+
+    .pd-tab-panel {
+      display: none;
+    }
+
+    .pd-tab-panel.active {
+      display: block;
+    }
+
+    .pd-buy-panel {
+      border: 1px solid rgba(10, 37, 64, 0.08);
+      border-radius: var(--radius);
+      background: var(--white);
+      box-shadow: 0 18px 42px rgba(10, 37, 64, 0.08);
+      padding: 24px;
+    }
+
+    .pd-section {
+      padding: 18px 0;
+      border-top: 1px solid var(--gray-100);
+    }
+
+    .pd-section:first-child {
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    #quoteActionWrap {
+      border-top: 0;
+    }
+
+    .pd-section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      margin-bottom: 12px;
+    }
+
+    .pd-section-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: 0;
+    }
+
+    .pd-section-note {
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--navy);
+    }
+
+    .pd-price-note {
+      border: 1px solid rgba(242,101,34,0.14);
+      background: #fff7f2;
+      border-radius: var(--radius-sm);
+      color: var(--navy);
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.55;
+      margin-bottom: 12px;
+      padding: 11px 12px;
+    }
+
+    .pd-price-note strong {
+      color: var(--orange);
+    }
+
+    .pd-desc-specs {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+      margin-top: 0;
+      border-top: 1px solid rgba(10, 37, 64, 0.08);
+      border-bottom: 1px solid rgba(10, 37, 64, 0.08);
+      background: var(--white);
+    }
+
+    .pd-desc-spec {
+      display: grid;
+      grid-template-columns: 150px minmax(0, 1fr);
+      gap: 18px;
+      align-items: baseline;
+      padding: 13px 0;
+      border: 0;
+      border-bottom: 1px solid rgba(10, 37, 64, 0.08);
+      border-radius: 0;
+      background: transparent;
+      min-width: 0;
+    }
+
+    .pd-desc-spec:last-child {
+      border-bottom: 0;
+    }
+
+    .pd-desc-spec-label {
+      display: block;
+      margin-bottom: 0;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0;
+      color: var(--navy);
+    }
+
+    .pd-desc-spec-value {
+      display: block;
+      font-size: 15px;
+      line-height: 1.45;
+      font-weight: 400;
+      color: var(--navy);
+      overflow-wrap: anywhere;
     }
 
     /* ---- Product Details Specs Table ---- */
@@ -139,7 +321,7 @@
     .pd-details-table td:first-child {
       font-weight: 700;
       width: 35%;
-      color: var(--gray-600);
+      color: var(--navy);
       font-size: 13px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -149,37 +331,73 @@
     }
 
     .pd-specs {
-      display: flex;
-      gap: 24px;
-      margin-bottom: 32px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
     }
 
     .pd-spec-item {
-      padding: 16px 24px;
-      background: var(--gray-50);
+      padding: 14px 14px;
+      background: #fffaf6;
       border-radius: var(--radius-sm);
-      min-width: 140px;
+      min-width: 0;
+    }
+
+    .pd-spec-item.highlight {
+      background: rgba(242,101,34,0.09);
+      border: 1px solid rgba(242,101,34,0.18);
     }
 
     .pd-spec-label {
       font-size: 11px;
       font-weight: 700;
-      color: var(--gray-500);
+      color: var(--navy);
       text-transform: uppercase;
       letter-spacing: 1px;
       margin-bottom: 4px;
     }
 
     .pd-spec-value {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       color: var(--navy);
+      line-height: 1.35;
     }
 
     .pd-cta {
       display: flex;
       gap: 12px;
-      margin-bottom: 32px;
+      margin-bottom: 12px;
+    }
+
+    .pd-cta .btn {
+      min-height: 46px;
+      justify-content: center;
+      flex: 1;
+      font-size: 15px;
+      font-weight: 600;
+      transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .pd-cta .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+
+    .pd-help-note {
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      background: #fffaf6;
+      color: var(--navy);
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+
+    .pd-help-note strong {
+      color: var(--orange);
+      font-weight: 700;
     }
 
     .btn-orange {
@@ -230,7 +448,7 @@
     .pd-tl-label {
       font-size: 11px;
       font-weight: 700;
-      color: var(--gray-500);
+      color: var(--navy);
       text-transform: uppercase;
       letter-spacing: 1px;
       margin-bottom: 4px;
@@ -250,7 +468,7 @@
       padding-top: 14px;
       flex-shrink: 0;
       width: 40px;
-      color: var(--gray-300);
+      color: rgba(10,37,64,0.45);
     }
 
     .pd-tl-arrow svg {
@@ -262,10 +480,181 @@
       text-align: center;
       margin-top: 16px;
       padding: 12px 24px;
-      background: var(--gray-50);
+      background: #fffaf6;
       border-radius: var(--radius-sm);
       font-size: 13px;
       color: var(--navy);
+    }
+
+    .pd-price-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--gray-100);
+      border-radius: var(--radius-sm);
+      background: var(--white);
+    }
+
+    .pd-price-break-table {
+      width: 100%;
+      min-width: 0;
+      table-layout: fixed;
+      border-collapse: collapse;
+      margin: 0;
+    }
+
+    .pd-price-break-table th,
+    .pd-price-break-table td {
+      padding: 15px 10px;
+      text-align: center;
+      border-right: 1px solid var(--gray-100);
+      border-bottom: 1px solid var(--gray-100);
+      font-size: 16px;
+      color: var(--navy);
+      white-space: nowrap;
+    }
+
+    .pd-price-break-table th:first-child,
+    .pd-price-break-table td:first-child {
+      text-align: left;
+      font-weight: 700;
+      color: var(--navy);
+      background: #fffaf6;
+      width: 112px;
+    }
+
+    .pd-price-break-table th:last-child,
+    .pd-price-break-table td:last-child {
+      border-right: 0;
+    }
+
+    .pd-price-break-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .pd-price-break-table .pd-best-price {
+      color: var(--orange);
+      font-weight: 800;
+    }
+
+    .pd-price-break-table .pd-setup-row td {
+      background: #fffaf6;
+    }
+
+    .pd-price-break-table .pd-setup-amount-cell {
+      color: var(--orange);
+      font-weight: 700;
+    }
+
+    .pd-price-break-table .pd-setup-note-cell {
+      text-align: left;
+      color: var(--navy);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.45;
+      white-space: normal;
+    }
+
+    .pd-colors {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(74px, 1fr));
+      gap: 10px;
+    }
+
+    .pd-color-choice {
+      cursor: pointer;
+      border: 1px solid var(--gray-100);
+      border-radius: var(--radius-sm);
+      background: var(--white);
+      padding: 7px;
+      transition: var(--transition);
+      text-align: center;
+    }
+
+    .pd-color-choice:hover,
+    .pd-color-choice.active {
+      border-color: var(--orange);
+      box-shadow: 0 6px 18px rgba(242,101,34,0.16);
+      transform: translateY(-2px);
+    }
+
+    .pd-color-swatch {
+      width: 100%;
+      aspect-ratio: 1/1;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fffaf6;
+      margin-bottom: 6px;
+    }
+
+    .pd-color-swatch img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .pd-color-name {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      line-height: 1.25;
+    }
+
+    .pd-leadtime-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+      border-top: 1px solid rgba(10, 37, 64, 0.08);
+      border-bottom: 1px solid rgba(10, 37, 64, 0.08);
+      background: var(--white);
+    }
+
+    .pd-leadtime-card {
+      display: grid;
+      grid-template-columns: 34px minmax(145px, 0.62fr) minmax(0, 1fr);
+      gap: 12px;
+      align-items: center;
+      border-right: 0;
+      border-bottom: 1px solid rgba(10, 37, 64, 0.08);
+      padding: 12px 0;
+      background: var(--white);
+    }
+
+    .pd-leadtime-card:last-child {
+      border-bottom: 0;
+    }
+
+    .pd-leadtime-step {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 0;
+      background: transparent;
+      color: var(--orange);
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 0;
+    }
+
+    .pd-leadtime-card strong {
+      display: block;
+      font-size: 15px;
+      letter-spacing: 0;
+      color: var(--navy);
+      margin-bottom: 0;
+    }
+
+    .pd-leadtime-card span {
+      display: block;
+      font-size: 15px;
+      line-height: 1.45;
+      font-weight: 400;
+      color: var(--navy);
+    }
+
+    .pd-details-wrap {
+      margin-top: 0;
     }
 
     @media (max-width: 768px) {
@@ -282,33 +671,91 @@
 
     /* ---- Related Products ---- */
     .pd-related {
-      padding: 32px 0 20px;
-      background: var(--white);
-      margin-bottom: 24px;
+      position: relative;
+      padding: 60px 0 56px;
+      background: #fbf8f4;
+      margin-bottom: 0;
+      border-top: 0;
+    }
+
+    .pd-related::before {
+      content: '';
+      position: absolute;
+      top: -28px;
+      left: 0;
+      right: 0;
+      height: 28px;
+      background: linear-gradient(180deg, rgba(255,255,255,0) 0%, #fbf8f4 100%);
+      pointer-events: none;
+    }
+
+    .pd-related .container {
+      max-width: 1840px;
+      padding-left: 42px;
+      padding-right: 42px;
+    }
+
+    .hww-section .container {
+      max-width: 1360px;
+      padding-left: 42px;
+      padding-right: 42px;
+    }
+
+    .pd-related-head {
+      margin-bottom: 38px;
+    }
+
+    .pd-related-head .section-title {
+      margin-bottom: 0;
+      color: var(--orange);
+      font-size: 42px;
+      line-height: 1.08;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-align: left;
     }
 
     .pd-related-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
+      display: flex;
+      gap: 24px;
+      overflow-x: auto;
+      padding: 0 0 4px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
     }
 
-    .pd-related-card {
-      background: var(--white);
-      border-radius: var(--radius);
+    .pd-related-grid::-webkit-scrollbar {
+      display: none;
+    }
+
+    .pd-related-card,
+    .pd-related-empty-card {
+      background: #fff !important;
+      border-radius: 10px;
       overflow: hidden;
-      border: 1px solid rgba(0,0,0,0.08);
-      transition: var(--transition);
+      border: 1px solid transparent;
+      transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+      flex: 0 0 calc((100% - 96px) / 5);
+      min-width: 0;
+      scroll-snap-align: start;
+      color: var(--navy);
+      box-shadow: none;
     }
 
-    .pd-related-card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-lg);
+    .pd-related-card:hover,
+    .pd-related-empty-card:hover {
+      transform: translateY(-10px);
+      border-color: var(--orange);
+      box-shadow: 0 18px 36px rgba(10,37,64,0.14);
     }
 
     .pd-related-card-img {
-      aspect-ratio: 4/5;
+      aspect-ratio: 1.08 / 1;
       overflow: hidden;
+      background: #fff !important;
+      border-radius: 0;
     }
 
     .pd-related-card-img img {
@@ -318,37 +765,267 @@
       transition: var(--transition);
     }
 
-    .pd-related-card:hover .pd-related-card-img img { transform: scale(1.05); }
+    .pd-related-card:hover .pd-related-card-img img,
+    .pd-related-empty-card:hover .pd-related-card-img img { transform: scale(1.05); }
+
+    .pd-related-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff !important;
+    }
+
+    .pd-related-empty-card {
+      opacity: 1;
+    }
+
+    .pd-related-empty-card .pd-related-card-img {
+      background: #fff !important;
+      border: 0;
+    }
+
+    .pd-related-empty-card .pd-related-card-body {
+      min-height: 86px;
+    }
 
     .pd-related-card-body {
-      padding: 16px;
+      padding: 17px 18px 20px;
+      background: #fff !important;
+      box-shadow: none !important;
     }
 
     .pd-related-card-body h4 {
-      font-size: 15px;
-      font-weight: 700;
+      font-size: 14px;
+      font-weight: 600;
       color: var(--navy);
-      margin-bottom: 4px;
+      line-height: 1.6;
+      margin-bottom: 7px;
     }
 
-    .pd-related-card-body .pd-price-sm {
-      font-size: 13px;
+    .pd-related-meta {
+      font-size: 12px;
       font-weight: 700;
       color: var(--orange);
+      margin-bottom: 7px;
+    }
+
+    .pd-related-price {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .pd-related-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-top: 32px;
+      padding: 0 2px;
+    }
+
+    .pd-related-progress {
+      width: min(400px, 31vw);
+      height: 3px;
+      background: rgba(10,37,64,0.14);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .pd-related-progress span {
+      display: block;
+      width: 0;
+      min-width: 56px;
+      max-width: 100%;
+      height: 100%;
+      background: var(--navy);
+      transition: width 0.25s ease;
+    }
+
+    .pd-related-nav {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: var(--navy);
+      cursor: pointer;
+      font-size: 34px;
+      line-height: 1;
+      padding: 0 4px;
+      transition: var(--transition);
+    }
+
+    .pd-related-nav:hover {
+      color: var(--orange);
+      transform: translateY(-1px);
+    }
+
+    .pd-related-nav:disabled {
+      color: rgba(10,37,64,0.28);
+      cursor: default;
+      transform: none;
+    }
+
+    .pd-related-count {
+      min-width: 58px;
+      text-align: center;
+      color: var(--navy);
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    .pd-related-pager {
+      display: inline-flex;
+      align-items: center;
+      gap: 20px;
+      margin-left: auto;
+    }
+
+    /* Product page process block */
+    .hww-section {
+      padding: 48px 0 52px;
+      background: #fafafa;
+      margin-bottom: 0;
+    }
+
+    .hww-section .hww-header {
+      display: block;
+      max-width: 760px;
+      text-align: center;
+      margin: 0 auto 28px;
+    }
+
+    .hww-section .section-label {
+      margin-bottom: 8px;
+      color: var(--orange);
+      font-size: 44px;
+      font-weight: 800;
+      letter-spacing: 1.8px;
+      line-height: 1.08;
+      padding-top: 0;
+    }
+
+    .hww-section .section-title {
+      font-size: 30px;
+      margin-bottom: 8px;
+      letter-spacing: 0;
+    }
+
+    .hww-section .section-subtitle {
+      max-width: 720px;
+      margin: 0 auto;
+      color: var(--text-light);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .hww-section .hww-steps {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      gap: 22px;
+      overflow: visible;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .hww-section .hww-step {
+      max-width: none;
+      flex: 1 1 0;
+      text-align: center;
+      padding: 36px 28px 34px;
+      border: 0;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 3px 16px rgba(10,37,64,0.06);
+      background: #fff;
+    }
+
+    .hww-section .hww-step:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 36px rgba(10,37,64,0.08);
+      background: #fffaf6;
+    }
+
+    .hww-section .hww-num {
+      width: 32px;
+      height: 32px;
+      margin: 0 auto 22px;
+      font-size: 20px;
+      border-radius: 999px;
+    }
+
+    .hww-section .hww-step h3 {
+      font-size: 19px;
+      margin-bottom: 14px;
+    }
+
+    .hww-section .hww-step p {
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--text-light);
+    }
+
+    .hww-section .hww-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--orange);
+      flex: 0 0 24px;
+      padding: 0;
+      margin: 0;
+    }
+
+    .hww-section .hww-arrow svg { width: 20px; height: 20px; }
+
+    .hww-section .btn {
+      min-height: 52px;
+      padding: 0 42px;
+      font-size: 16px;
+      font-weight: 600;
     }
 
     /* Responsive */
     @media (max-width: 1024px) {
       .pd-layout { grid-template-columns: 1fr; gap: 24px; }
       .pd-gallery { position: static; }
-      .pd-related-grid { grid-template-columns: repeat(2, 1fr); }
+      .pd-related-card,
+      .pd-related-empty-card { flex-basis: calc((100% - 40px) / 3); }
+      .hww-section .hww-steps { flex-wrap: wrap; }
+      .hww-section .hww-step { flex: 1 1 calc(50% - 22px); }
+      .hww-section .hww-arrow { display: none; }
     }
 
     @media (max-width: 640px) {
       .pd-wrap { padding: 100px 0 24px; }
-      .pd-name { font-size: 22px; }
-      .pd-specs { flex-direction: column; gap: 12px; }
-      .pd-related-grid { grid-template-columns: 1fr; }
+      .pd-name { font-size: 26px; }
+      .pd-specs { grid-template-columns: 1fr; gap: 12px; }
+      .pd-cta { flex-direction: column; }
+      .pd-leadtime-grid { grid-template-columns: 1fr; }
+      .pd-leadtime-card { grid-template-columns: 34px 1fr; align-items: start; }
+      .pd-leadtime-card strong { grid-column: 2; }
+      .pd-leadtime-card span:not(.pd-leadtime-step) { grid-column: 2; }
+      .pd-price-break-table { min-width: 520px; }
+      .pd-related .container,
+      .hww-section .container { padding-left: 22px; padding-right: 22px; }
+      .pd-related-head { align-items: flex-start; }
+      .pd-related-head .section-title { font-size: 34px; text-align: left; letter-spacing: 1px; }
+      .pd-related-grid { gap: 14px; }
+      .pd-related-card,
+      .pd-related-empty-card { flex-basis: 72%; min-width: 220px; }
+      .pd-related-controls { gap: 14px; }
+      .pd-related-progress { width: 150px; }
+      .hww-section .hww-header { grid-template-columns: 1fr; gap: 10px; }
+      .hww-section .section-label { font-size: 34px; }
+      .hww-section .section-title { font-size: 24px; }
+      .hww-section .hww-steps { flex-direction: column; }
+      .hww-section .hww-step { border-right: 1px solid rgba(10,37,64,0.10); border-bottom: 1px solid rgba(10,37,64,0.10); }
+      .hww-section .hww-step:last-child { border-bottom: 0; }
+      .pd-desc-spec { grid-template-columns: 1fr; gap: 4px; }
+      .pd-info-tabs { justify-content: flex-start; gap: 8px; flex-wrap: wrap; }
+      .pd-tab-btn { min-width: 0; flex: 1 1 100%; }
     }
   </style>
 </head>
@@ -356,7 +1033,7 @@
 
   <nav class="nav">
     <div class="nav-inner">
-      <a href="../index.html" class="nav-logo"><img src="../assets/logo.png" alt="Amazing Yep Inc."></a>
+      <a href="../index.html" class="nav-logo"><img src="../assets/logo-2026.png" alt="Amazing Yep Inc."></a>
       <ul class="nav-links">
         <li><a href="../index.html">Home</a></li>
         <li><a href="plush-mascots.html">Plush &amp; Mascots</a></li>
@@ -381,16 +1058,10 @@
         </li>
       </ul>
       <div class="nav-cta">
-        <div class="nav-contact">
-          <a href="tel:7326928285">
-            <svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-            732-692-8285
-          </a>
-          <a href="mailto:info@amazingyep.com">
-            <svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            info@amazingyep.com
-          </a>
-        </div>
+        <form class="nav-search" role="search" onsubmit="var q=(this.querySelector('input[name=q]').value||'').trim(); var p=location.pathname; var base=p.indexOf('/collections/')>-1?'index.html':(p.match(/\/(about|contact|solutions|case-studies)\//)?'../collections/index.html':'collections/index.html'); location.href=base+(q?'?search='+encodeURIComponent(q):''); return false;">
+          <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input type="search" name="q" placeholder="Search" aria-label="Search products" onkeydown="if(event.key==='Enter'){event.preventDefault(); var q=(this.value||'').trim(); var p=location.pathname; var base=p.indexOf('/collections/')>-1?'index.html':(p.match(/\/(about|contact|solutions|case-studies)\//)?'../collections/index.html':'collections/index.html'); location.href=base+(q?'?search='+encodeURIComponent(q):'');}">
+        </form>
         <a href="../contact/index.html" class="btn btn-primary btn-sm">Start a Project</a>
         <button class="nav-mobile-toggle" aria-label="Menu">
           <span></span><span></span><span></span>
@@ -415,56 +1086,81 @@
               <img id="mainImage" src="" alt="">
             </div>
             <div class="pd-thumbs" id="thumbList"></div>
+            <div class="pd-gallery-info">
+              <div class="pd-gallery-card" id="leftInfoCard" style="display:none;">
+                <div class="pd-info-tabs">
+                  <button class="pd-tab-btn active" type="button" data-tab="description" onclick="switchInfoTab('description')">Product Description</button>
+                  <button class="pd-tab-btn" type="button" data-tab="details" onclick="switchInfoTab('details')">Product Details</button>
+                  <button class="pd-tab-btn" type="button" data-tab="shipping" onclick="switchInfoTab('shipping')">Production &amp; Shipping</button>
+                </div>
+                <div class="pd-tab-panel active" id="descriptionPanel">
+                  <p id="productDesc"></p>
+                </div>
+                <div class="pd-tab-panel" id="detailsPanel">
+                  <div class="pd-desc-specs" id="productSpecs" style="display:none;"></div>
+                </div>
+                <div class="pd-tab-panel" id="shippingPanel">
+                  <div class="pd-section-head">
+                    <span class="pd-section-title">Estimated Timeline</span>
+                  </div>
+                  <div class="pd-leadtime-grid" id="timelineSteps"></div>
+                  <div class="pd-tl-notes" id="timelineNotes" style="display:none;"></div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Info -->
           <div class="pd-info">
             <div class="pd-breadcrumb">
               <a href="../index.html">Home</a><span class="sep">/</span>
-              <a href="index.html">Collections</a><span class="sep">/</span>
-              <span id="bcCategory"></span><span class="sep">/</span>
-              <span id="bcName" style="color:var(--navy);font-weight:600;"></span>
+              <a href="../collections/index.html?v=20260625b">Collections</a><span class="sep">/</span>
+              <a href="../collections/index.html?v=20260625b" id="bcCategory"></a>
             </div>
 
-            <div class="pd-category-tag" id="categoryTag"></div>
             <h1 class="pd-name" id="productName"></h1>
-            <div class="pd-sku" id="productSku" style="font-size:14px; color:var(--orange); font-weight:600; margin-bottom:16px;"></div>
-            <p class="pd-desc" id="productDesc"></p>
+            <div class="pd-sku" id="productSku"></div>
 
-            <div class="pd-specs" id="specsWrap">
-              <div class="pd-spec-item" id="moqSpec">
-                <div class="pd-spec-label">MOQ</div>
-                <div class="pd-spec-value" id="moqValue"></div>
+            <div class="pd-buy-panel">
+              <!-- Color Options -->
+              <div class="pd-section" id="colorOptionsWrap" style="display:none;">
+                <div class="pd-section-head">
+                  <span class="pd-section-title">Color Options</span>
+                  <span class="pd-section-note" id="colorCountNote">Select to preview</span>
+                </div>
+                <div class="pd-colors" id="colorOptionsList"></div>
               </div>
-              <div class="pd-spec-item" id="priceSpec">
-                <div class="pd-spec-label">Price Range</div>
-                <div class="pd-spec-value" id="priceValue"></div>
+
+              <!-- Full Pricing Table -->
+              <div class="pd-section" id="pricingTableWrap" style="display:none;">
+                <div class="pd-section-head">
+                  <span class="pd-section-title">Quantity Price Breaks</span>
+                </div>
+                <div class="pd-price-note">
+                  <strong>Price includes</strong> a one-color, one-location imprint unless otherwise noted.
+                </div>
+                <div class="pd-price-wrap">
+                  <table class="pd-price-break-table" id="pricingTable"></table>
+                </div>
               </div>
-            </div>
 
-            <div class="pd-cta">
-              <a href="../contact/index.html" class="btn btn-orange">Start a Project</a>
-              <a href="index.html" class="btn btn-outline btn-sm">Back to Collections</a>
-            </div>
+              <div class="pd-section" id="quoteActionWrap">
+                <div class="pd-cta">
+                  <a href="../contact/index.html" class="btn btn-orange" id="projectCta">Start a Project</a>
+                  <a href="../collections/index.html?v=20260625b" class="btn btn-outline">Back to Collections</a>
+                </div>
+                <div class="pd-help-note">
+                  <strong>Have a logo or deadline?</strong> Send it with your request and we will confirm artwork options, timing, and final setup details.
+                </div>
+              </div>
 
-            <!-- Color Options -->
-            <div id="colorOptionsWrap" style="display:none; margin-bottom:24px;">
-              <span class="section-label" style="margin-bottom:8px;display:block;">SELECT A COLOR</span>
-              <div id="colorOptionsList" style="display:flex; flex-wrap:wrap; gap:10px;"></div>
-            </div>
-
-            <!-- Full Pricing Table -->
-            <div id="pricingTableWrap" style="display:none; margin-bottom:24px;">
-              <span class="section-label" style="margin-bottom:8px;display:block;">PRICING</span>
-              <table class="pd-details-table" id="pricingTable">
-              </table>
-            </div>
-
-            <!-- Product Details Specs -->
-            <div id="productDetailsWrap" class="pd-details-wrap" style="display:none;">
-              <span class="section-label" style="margin-bottom:8px;display:block;">PRODUCT DETAILS</span>
-              <table class="pd-details-table" id="productDetailsTable">
-              </table>
+              <!-- Product Details Specs -->
+              <div class="pd-section pd-details-wrap" id="productDetailsWrap" style="display:none;">
+                <div class="pd-section-head">
+                  <span class="pd-section-title">Product Details</span>
+                </div>
+                <table class="pd-details-table" id="productDetailsTable"></table>
+              </div>
             </div>
           </div>
         </div>
@@ -473,7 +1169,7 @@
       <div id="productNotFound" style="display:none; text-align:center; padding:80px 0;">
         <h3 style="font-size:20px; font-weight:700; color:var(--navy); margin-bottom:8px;">Product Not Found</h3>
         <p style="font-size:14px; color:var(--text-light); margin-bottom:24px;">The product you're looking for doesn't exist or has been removed.</p>
-        <a href="index.html" class="btn btn-primary btn-sm">Back to Collections</a>
+        <a href="../collections/index.html?v=20260625b" class="btn btn-primary btn-sm">Back to Collections</a>
       </div>
     </div>
   </section>
@@ -483,19 +1179,18 @@
   <!-- Related Products -->
   <section class="pd-related" id="relatedSection" style="display:none;">
     <div class="container">
-      <span class="section-label">Related Products</span>
-      <h2 class="section-title" style="margin-bottom:16px;">You Might Also Like</h2>
+      <div class="pd-related-head">
+        <h2 class="section-title">You Might Also Like</h2>
+      </div>
       <div class="pd-related-grid" id="relatedGrid"></div>
-    </div>
-  </section>
-
-  <!-- Production & Shipping Timeline -->
-  <section class="pd-timeline" id="timelineSection" style="display:none;">
-    <div class="container">
-      <span class="section-label">PRODUCTION &amp; SHIPPING TIMELINE</span>
-      <h2 class="section-title" style="margin-bottom:8px;">Estimated Lead Times</h2>
-      <div class="pd-timeline-steps" id="timelineSteps"></div>
-      <div class="pd-tl-notes" id="timelineNotes" style="display:none;"></div>
+      <div class="pd-related-controls" id="relatedControls" style="display:none;">
+        <div class="pd-related-progress" aria-hidden="true"><span id="relatedProgress"></span></div>
+        <div class="pd-related-pager">
+          <button class="pd-related-nav" type="button" id="relatedPrev" aria-label="Previous related products">‹</button>
+          <span class="pd-related-count" id="relatedCount">1 / 1</span>
+          <button class="pd-related-nav" type="button" id="relatedNext" aria-label="Next related products">›</button>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -504,42 +1199,44 @@
     <div class="container">
       <div class="hww-header">
         <span class="section-label">HOW WE WORK</span>
-        <h2 class="section-title">Simple, Fast, Reliable</h2>
-        <p class="section-subtitle">A straightforward process designed to get you from idea to delivery with minimal friction.</p>
+        <div>
+          <h2 class="section-title">Clear Communication. Reliable Production.</h2>
+          <p class="section-subtitle">We keep custom projects moving with clear options, timely proofing, sample support, steady production updates, and shipping coordination.</p>
+        </div>
       </div>
       <div class="hww-steps">
         <div class="hww-step">
           <div class="hww-num">1</div>
-          <h3>Share Your Idea</h3>
-          <p>Send us your design, sketch, or concept. Tell us about your brand, audience, and goals.</p>
+          <h3>Send the Request</h3>
+          <p>Share the item, artwork, quantity, deadline, or project notes.</p>
         </div>
         <div class="hww-arrow">
           <svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg>
         </div>
         <div class="hww-step">
           <div class="hww-num">2</div>
-          <h3>Receive Mockup &amp; Pricing</h3>
-          <p>Within 24 hours, receive a free digital mockup and detailed pricing options.</p>
+          <h3>Confirm the Details</h3>
+          <p>We review options, pricing, imprint method, timeline, and proof requirements.</p>
         </div>
         <div class="hww-arrow">
           <svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg>
         </div>
         <div class="hww-step">
           <div class="hww-num">3</div>
-          <h3>Sampling &amp; Approval</h3>
-          <p>Review physical samples, request adjustments, and approve before full production.</p>
+          <h3>Proof &amp; Sample Review</h3>
+          <p>We prepare a virtual proof for approval first. For samples, we can send photos for review or arrange a physical sample when needed.</p>
         </div>
         <div class="hww-arrow">
           <svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg>
         </div>
         <div class="hww-step">
           <div class="hww-num">4</div>
-          <h3>Production &amp; Delivery</h3>
-          <p>We handle manufacturing and worldwide shipping. Track your order every step.</p>
+          <h3>Produce &amp; Ship</h3>
+          <p>Once approved, we manage production, quality checks, packing, and shipping updates.</p>
         </div>
       </div>
-      <div style="text-align:center; margin-top:24px;">
-        <a href="../contact/index.html" class="btn btn-primary">Start a Project</a>
+      <div style="text-align:center; margin-top:44px;">
+        <a href="../contact/index.html" class="btn btn-primary" id="hwwProjectCta">Start a Project</a>
       </div>
     </div>
   </section>
@@ -549,8 +1246,8 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <img src="../assets/logo-white.png" alt="Amazing Yep Inc.">
-          <p>Custom merchandise solutions for brands,<br>events, retail programs and promotional campaigns.</p>
+          <img src="../assets/logo-2026.png" alt="Amazing Yep Inc.">
+          <p>Custom merchandise and sourcing support for brands,<br>events, retail programs, and promotional campaigns.</p>
           <div class="footer-social">
             <a href="#" aria-label="LinkedIn">in</a>
             <a href="#" aria-label="Instagram">ig</a>
@@ -561,7 +1258,7 @@
             <form action="mailto:info@amazingyep.com" method="post" enctype="text/plain" class="footer-email-form">
               <div class="footer-email-wrap">
                 <input type="email" name="email" placeholder="Enter your email address" required>
-                <button type="submit" class="footer-email-btn">JOIN</button>
+                <button type="submit" class="footer-email-btn">SEND</button>
               </div>
             </form>
           </div>
@@ -580,11 +1277,11 @@
         <div class="footer-col">
           <h4>Collections</h4>
           <ul>
-            <li><a href="../collections/index.html">Plush &amp; Mascots</a></li>
-            <li><a href="../collections/index.html">Keychains</a></li>
-            <li><a href="../collections/index.html">Drinkware</a></li>
-            <li><a href="../collections/index.html">Bags</a></li>
-            <li><a href="../collections/index.html">Apparel</a></li>
+            <li><a href="../collections/plush-mascots.html">Plush &amp; Mascots</a></li>
+            <li><a href="../collections/keychains.html">Keychains</a></li>
+            <li><a href="../collections/drinkware.html">Drinkware</a></li>
+            <li><a href="../collections/bags.html">Bags</a></li>
+            <li><a href="../collections/apparel.html">Wearables</a></li>
           </ul>
         </div>
         <div class="footer-col">
@@ -606,9 +1303,11 @@
 
   <script src="../script.js"></script>
 
-  <script src="../api-config.js"></script>
+  <script src="../api-config.js?v=20260629a"></script>
   <script>
-  const API_BASE = (window.API_CONFIG && window.API_CONFIG.BASE_URL) || 'https://amazingyep-backend.onrender.com';
+  const LOCAL_HOSTS = ['127.0.0.1', 'localhost', '::1'];
+  const API_BASE = (window.API_CONFIG && window.API_CONFIG.BASE_URL)
+    || (LOCAL_HOSTS.includes(window.location.hostname) ? window.location.origin : 'https://amazingyep-backend.onrender.com');
   let currentProduct = null;
 
   function getProductId() {
@@ -623,6 +1322,157 @@
     return div.innerHTML;
   }
 
+  function getProjectMailto(p) {
+    const subject = encodeURIComponent('Start a Project: ' + (p.name || 'Product') + (p.sku ? ' (' + p.sku + ')' : ''));
+    const body = [
+      'Hi Amazing Yep,',
+      '',
+      'I am interested in this product:',
+      'Product: ' + (p.name || ''),
+      'Item #: ' + (p.sku || ''),
+      '',
+      'Project details:',
+      'Quantity:',
+      'Target delivery date:',
+      'Logo / artwork:',
+      'Preferred shipping method:',
+      '',
+      'Thank you.'
+    ].join('%0D%0A');
+    return 'mailto:info@amazingyep.com?subject=' + subject + '&body=' + body;
+  }
+
+  function getCategoryUrl(category) {
+    const map = {
+      'Bags': '../collections/bags.html',
+      'Drinkware': '../collections/drinkware.html',
+      'Plush & Mascots': '../collections/plush-mascots.html',
+      'Keychains & Accessories': '../collections/keychains.html',
+      'Office & Stationery': '../collections/office.html',
+      'Outdoor & Leisure': '../collections/outdoor-leisure.html',
+      'Technology': '../collections/technology.html',
+      'Trade Show': '../collections/trade-show.html',
+      'Wearables': '../collections/apparel.html'
+    };
+    return map[category] || '../collections/index.html';
+  }
+
+  function getSetupCharge(p) {
+    if (p && p.setupCharge !== undefined && p.setupCharge !== null && p.setupCharge !== '') {
+      return p.setupCharge;
+    }
+    const details = p.productDetails || {};
+    const specs = details.specs || [];
+    for (let i = 0; i < specs.length; i++) {
+      const raw = typeof specs[i] === 'string'
+        ? specs[i]
+        : ((specs[i].label || specs[i].key || '') + ': ' + (specs[i].value || ''));
+      if (/setup|set up/i.test(raw)) {
+        const parts = raw.split(/[:：]/);
+        return parts.length > 1 ? parts.slice(1).join(':').trim() : raw.trim();
+      }
+    }
+    return '';
+  }
+
+  function formatSetupCharge(value) {
+    const cleaned = String(value || '').replace(/[^0-9.]/g, '');
+    const amount = parseFloat(cleaned);
+    if (Number.isFinite(amount)) {
+      return '$' + amount.toFixed(2);
+    }
+    return value;
+  }
+
+  function getPriceRangeText(p) {
+    if (p.priceRange) return p.priceRange;
+    const pricing = p.pricing || [];
+    if (!pricing.length) return '';
+    const prices = pricing
+      .map(function(row) { return Number(row.price); })
+      .filter(function(price) { return Number.isFinite(price) && price > 0; });
+    if (!prices.length) return '';
+    const min = Math.min.apply(null, prices);
+    const max = Math.max.apply(null, prices);
+    if (min === max) return '$' + min.toFixed(2);
+    return '$' + min.toFixed(2) + '-$' + max.toFixed(2);
+  }
+
+  function getRelatedFallbackImage(p, index) {
+    const category = String((p && p.category) || '').toLowerCase();
+    if (category.includes('bag') || category.includes('tote')) {
+      return ['../assets/tote-canvas.png', '../assets/tote-yellow.png', '../assets/tote-blue.png', '../assets/tote-colors.jpg'][index % 4];
+    }
+    if (category.includes('drink') || category.includes('mug') || category.includes('bottle')) {
+      return '../assets/drinkware-hero-bg.jpg';
+    }
+    if (category.includes('plush') || category.includes('mascot')) {
+      return '../assets/cat-plush.jpg';
+    }
+    if (category.includes('keychain')) {
+      return '../assets/cat-keychain.jpg';
+    }
+    return ['../assets/cat-bags.jpg', '../assets/hero-merch.jpg', '../assets/collections-hero.png', '../assets/hero-image.jpg'][index % 4];
+  }
+
+  function getRelatedFillers(product, count) {
+    const category = String((product && product.category) || 'Custom Merch');
+    return [
+      { name: 'More Custom Options', meta: category, img: getRelatedFallbackImage(product, 0) },
+      { name: 'Similar Project Ideas', meta: 'Built around your artwork', img: getRelatedFallbackImage(product, 1) },
+      { name: 'Ask for Matching Items', meta: 'Quote-ready support', img: getRelatedFallbackImage(product, 2) },
+      { name: 'Complete the Set', meta: 'Custom packaging available', img: getRelatedFallbackImage(product, 3) },
+      { name: 'Event-Ready Picks', meta: 'Fast quote available', img: getRelatedFallbackImage(product, 4) },
+      { name: 'Popular Add-Ons', meta: 'Mix and match options', img: getRelatedFallbackImage(product, 5) }
+    ].slice(0, count);
+  }
+
+  function normalizeSpecLabel(label) {
+    const clean = String(label || '').trim();
+    if (/^(product\s*)?size$/i.test(clean)) return 'Product Size';
+    if (/^material$/i.test(clean)) return 'Material';
+    if (/^(primary\s*)?imprint\s*area$/i.test(clean)) return 'Imprint Area';
+    if (/^imprint\s*method$/i.test(clean)) return 'Imprint Method';
+    if (/^packaging$/i.test(clean)) return 'Packaging';
+    return clean;
+  }
+
+  function shouldSkipDescriptionSpec(label, value, productDescription, setupCharge) {
+    const combined = (String(label || '') + ' ' + String(value || '')).trim();
+    if (!combined) return true;
+    if (/setup|set up/i.test(combined)) return true;
+    if (/^description$/i.test(String(label || '').trim())) return true;
+    if (setupCharge && String(value || '').trim() === String(setupCharge || '').trim()) return true;
+    if (productDescription && String(value || '').trim() === String(productDescription || '').trim()) return true;
+    return false;
+  }
+
+  function getDirectDescriptionSpecs(p) {
+    const details = p.productDetails || {};
+    const fields = [
+      ['Material', p.material || details.material],
+      ['Product Size', p.productSize || p.size || p.dimensions || details.productSize || details.size || details.dimensions],
+      ['Imprint Area', p.imprintArea || details.imprintArea],
+      ['Imprint Method', p.imprintMethod || details.imprintMethod],
+      ['Packaging', p.packaging || details.packaging]
+    ];
+
+    const directSpecs = fields
+      .filter(function(item) { return item[1]; })
+      .map(function(item) { return { label: item[0], value: item[1] }; });
+
+    if (directSpecs.length === 0 && /AK468/i.test(p.sku || '')) {
+      return [
+        { label: 'Material', value: 'Foam insulation with leak-resistant PEVA lining' },
+        { label: 'Product Size', value: '6-can capacity' },
+        { label: 'Imprint Method', value: 'One-color imprint' },
+        { label: 'Imprint Area', value: 'Available on request' }
+      ];
+    }
+
+    return directSpecs;
+  }
+
   // Normalize image URLs
   // - API paths (/uploads/, /img/) → prefix with API_BASE
   // - Local paths (../, ./) → leave as-is (site-relative)
@@ -634,6 +1484,47 @@
     return API_BASE + src;
   }
 
+  function productMatchesIdOrSku(p, id) {
+    const target = String(id || '').trim().toUpperCase();
+    return [
+      p.id,
+      p.sku,
+      p.itemNumber,
+      p.itemNo,
+      p.item
+    ].some(function(value) {
+      return String(value || '').trim().toUpperCase() === target;
+    });
+  }
+
+  async function fetchProductByIdOrSku(id, signal) {
+    const detailRes = await fetch(API_BASE + '/api/products/' + encodeURIComponent(id), { signal: signal });
+
+    if (detailRes.ok) {
+      return await detailRes.json();
+    }
+
+    if (detailRes.status !== 404) {
+      throw new Error('Server error: ' + detailRes.status);
+    }
+
+    const listRes = await fetch(API_BASE + '/api/products', { signal: signal });
+    if (!listRes.ok) {
+      throw new Error('Server error: ' + listRes.status);
+    }
+
+    const data = await listRes.json();
+    const product = (data.products || []).find(function(p) {
+      return productMatchesIdOrSku(p, id);
+    });
+
+    if (!product) {
+      return null;
+    }
+
+    return product;
+  }
+
   async function loadProduct() {
     const id = getProductId();
     if (!id) {
@@ -642,7 +1533,6 @@
     }
 
     const loadingMsg = document.getElementById('productLoadingMsg');
-    const url = API_BASE + '/api/products/' + id;
     let lastError = null;
 
     // Retry up to 3 times (handles Render cold start)
@@ -654,15 +1544,14 @@
         const controller = new AbortController();
         const timeout = setTimeout(function() { controller.abort(); }, 40000);
 
-        const res = await fetch(url, { signal: controller.signal });
+        const product = await fetchProductByIdOrSku(id, controller.signal);
         clearTimeout(timeout);
 
-        if (!res.ok) {
-          if (res.status === 404) { showNotFound(); return; }
-          throw new Error('Server error: ' + res.status);
+        if (!product) {
+          showNotFound();
+          return;
         }
 
-        const product = await res.json();
         currentProduct = product;
         renderProduct(product);
         loadRelated(product);
@@ -682,15 +1571,13 @@
 
   function renderProduct(p) {
     document.getElementById('productLoading').style.display = 'none';
+    document.getElementById('productNotFound').style.display = 'none';
     document.getElementById('productContent').style.display = 'block';
     document.title = escapeHtml(p.name) + ' - Amazing Yep Inc.';
 
     // Breadcrumb
     document.getElementById('bcCategory').textContent = p.category;
-    document.getElementById('bcName').textContent = p.name;
-
-    // Category tag
-    document.getElementById('categoryTag').textContent = p.category;
+    document.getElementById('bcCategory').href = getCategoryUrl(p.category);
 
     // SKU
     if (p.sku) {
@@ -701,7 +1588,14 @@
 
     // Name & description
     document.getElementById('productName').textContent = p.name;
-    document.getElementById('productDesc').textContent = p.description || 'Contact us for more details about this product.';
+    if (p.description) {
+      document.getElementById('productDesc').textContent = p.description;
+      document.getElementById('leftInfoCard').style.display = 'block';
+    } else {
+      document.getElementById('leftInfoCard').style.display = 'none';
+    }
+    document.getElementById('projectCta').href = getProjectMailto(p);
+    document.getElementById('hwwProjectCta').href = getProjectMailto(p);
 
     // Color options
     renderColors(p);
@@ -714,23 +1608,6 @@
 
     // Product Details Specs
     renderProductDetails(p);
-
-    // Specs (MOQ/Price)
-    if (p.moq) {
-      document.getElementById('moqValue').textContent = p.moq;
-    } else {
-      document.getElementById('moqSpec').style.display = 'none';
-    }
-
-    if (p.priceRange) {
-      document.getElementById('priceValue').textContent = p.priceRange;
-    } else {
-      document.getElementById('priceSpec').style.display = 'none';
-    }
-
-    if (!p.moq && !p.priceRange) {
-      document.getElementById('specsWrap').style.display = 'none';
-    }
 
     // Gallery: normalize image URLs, cascade through all possible sources
     // Priority: images[] → gallery[] → colorOptions images → no image
@@ -746,12 +1623,13 @@
         .filter(Boolean);
     }
     if (images.length > 0) {
-      document.getElementById('mainImage').src = images[0];
-      document.getElementById('mainImage').alt = escapeHtml(p.name);
-      document.getElementById('mainImage').onerror = function() {
+      const mainImage = document.getElementById('mainImage');
+      mainImage.alt = escapeHtml(p.name);
+      mainImage.onerror = function() {
         this.style.display = 'none';
         document.getElementById('mainImageWrap').innerHTML = '<div style="width:100%;height:100%;background:var(--gray-50);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span style="font-size:13px;color:#999;">Image loading...</span></div>';
       };
+      setMainImage(images[0]);
 
       const thumbHtml = images.map((img, i) => `
         <div class="pd-thumb ${i === 0 ? 'active' : ''}" onclick="switchImage('${img}', this)">
@@ -769,14 +1647,29 @@
     }
   }
 
+  function setMainImage(src) {
+    var wrap = document.getElementById('mainImageWrap');
+    var img = document.getElementById('mainImage');
+    if (!wrap || !img || !src) return;
+    wrap.classList.remove('is-cover');
+    img.style.display = 'block';
+    img.onload = function() {
+      var ratio = img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : 1;
+      var looksLikeScene = ratio > 1.08 || ratio < 0.92;
+      wrap.classList.toggle('is-cover', looksLikeScene);
+    };
+    img.src = src;
+  }
+
   function switchImage(src, thumbEl) {
-    document.getElementById('mainImage').src = src;
+    setMainImage(src);
     document.querySelectorAll('.pd-thumb').forEach(t => t.classList.remove('active'));
     thumbEl.classList.add('active');
   }
 
   function showNotFound() {
     document.getElementById('productLoading').style.display = 'none';
+    document.getElementById('productContent').style.display = 'none';
     document.getElementById('productNotFound').style.display = 'block';
   }
 
@@ -787,22 +1680,33 @@
       return;
     }
     document.getElementById('colorOptionsWrap').style.display = 'block';
-    const html = colors.map(function(c) {
+    document.getElementById('colorCountNote').textContent = colors.length + ' shown. More available on request.';
+    const html = colors.map(function(c, i) {
       const img = resolveImg(c.image);
       const grad = c.gradient || '';
-      return '<div style="text-align:center;cursor:pointer;min-width:100px;" onclick="switchMainImage(\'' + img + '\')">' +
-        '<div style="width:80px;height:80px;border-radius:8px;overflow:hidden;margin:0 auto 6px;border:2px solid #ddd;background:' + (grad || 'var(--gray-50)') + ';">' +
-        (img ? '<img src="' + img + '" alt="' + escapeHtml(c.name) + '" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.style.background=\'var(--gray-50)\'">' : '') +
+      return '<div class="pd-color-choice ' + (i === 0 ? 'active' : '') + '" onclick="switchMainImage(\'' + img + '\', this)">' +
+        '<div class="pd-color-swatch" style="background:' + (grad || '#fffaf6') + ';">' +
+        (img ? '<img src="' + img + '" alt="' + escapeHtml(c.name) + '" onerror="this.parentElement.style.background=\'#fffaf6\'">' : '') +
         '</div>' +
-        '<span style="font-size:12px;color:var(--navy);font-weight:500;">' + escapeHtml(c.name) + '</span>' +
+        '<span class="pd-color-name">' + escapeHtml(c.name) + '</span>' +
       '</div>';
     }).join('');
     document.getElementById('colorOptionsList').innerHTML = html;
   }
 
-  function switchMainImage(src) {
-    var img = document.getElementById('mainImage');
-    if (img) img.src = src;
+  function switchMainImage(src, colorEl) {
+    setMainImage(src);
+    document.querySelectorAll('.pd-color-choice').forEach(function(el) { el.classList.remove('active'); });
+    if (colorEl) colorEl.classList.add('active');
+  }
+
+  function switchInfoTab(tabName) {
+    document.querySelectorAll('.pd-tab-btn').forEach(function(btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-tab') === tabName);
+    });
+    document.getElementById('descriptionPanel').classList.toggle('active', tabName === 'description');
+    document.getElementById('detailsPanel').classList.toggle('active', tabName === 'details');
+    document.getElementById('shippingPanel').classList.toggle('active', tabName === 'shipping');
   }
 
   function renderPricing(p) {
@@ -812,33 +1716,43 @@
       return;
     }
     document.getElementById('pricingTableWrap').style.display = 'block';
-    var rows = '<tr><td>Quantity (pcs)</td><td>Price Each</td></tr>';
-    pricing.forEach(function(row) {
-      rows += '<tr><td>' + (row.quantity || 0) + '</td><td>$' + (row.price || 0).toFixed(2) + '</td></tr>';
-    });
-    document.getElementById('pricingTable').innerHTML = rows;
+    const qtyCells = pricing.map(function(row) {
+      return '<th>' + Number(row.quantity || 0).toLocaleString() + '</th>';
+    }).join('');
+    const priceCells = pricing.map(function(row, i) {
+      const price = '$' + (row.price || 0).toFixed(2);
+      return '<td class="' + (i === pricing.length - 1 ? 'pd-best-price' : '') + '">' + price + '</td>';
+    }).join('');
+    const setupCharge = getSetupCharge(p);
+    const setupRow = setupCharge
+      ? '<tr class="pd-setup-row"><td>Setup</td><td class="pd-setup-amount-cell">' + escapeHtml(formatSetupCharge(setupCharge)) + '</td><td class="pd-setup-note-cell" colspan="' + Math.max(pricing.length - 1, 1) + '">Additional charges may apply based on artwork, imprint method, or project requirements.</td></tr>'
+      : '';
+    document.getElementById('pricingTable').innerHTML =
+      '<tr><th>Quantity</th>' + qtyCells + '</tr>' +
+      '<tr><td>Price Each</td>' + priceCells + '</tr>' +
+      setupRow;
   }
 
   function renderTimeline(p) {
     const tl = p.shippingTimeline || {};
+    const sampleLeadTime = String(tl.sample || '5-7 working days after artwork approval')
+      .replace(/5\s*[-–—]\s*7\s*(business|working)?\s*days\s+after\s+artwork\s+approval/i, '5-7 working days after artwork approval');
+    const productionLeadTime = String(tl.production || '12-18 business days after sample approval')
+      .replace(/12\s*[-–—]\s*18\s*(business\s*)?days\s+after\s+sample\s+approval/i, '12-18 business days after sample approval');
     const steps = [
-      { num: 1, label: 'Custom Sample Time', value: tl.sample || '5-7 days after artwork approval' },
-      { num: 2, label: 'Production Time', value: tl.production || '12-18 days after sample approval' },
+      { num: 1, label: 'Custom Sample', value: sampleLeadTime },
+      { num: 2, label: 'Mass Production', value: productionLeadTime },
       { num: 3, label: 'Shipping By Air', value: tl.shippingByAir || '10-20 days' },
       { num: 4, label: 'Shipping By Sea', value: tl.shippingBySea || '22-30 days' }
     ];
 
-    const stepsHtml = steps.map((s, i) => {
-      const arrow = i < steps.length - 1
-        ? `<div class="pd-tl-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>`
-        : '';
+    const stepsHtml = steps.map((s) => {
       return `
-        <div class="pd-tl-step">
-          <div class="pd-tl-icon">${s.num}</div>
-          <div class="pd-tl-label">${s.label}</div>
-          <div class="pd-tl-value">${escapeHtml(s.value)}</div>
+        <div class="pd-leadtime-card">
+          <span class="pd-leadtime-step">${s.num}</span>
+          <strong>${escapeHtml(s.label)}</strong>
+          <span>${escapeHtml(s.value)}</span>
         </div>
-        ${arrow}
       `;
     }).join('');
 
@@ -851,24 +1765,29 @@
       document.getElementById('timelineNotes').style.display = 'none';
     }
 
-    document.getElementById('timelineSection').style.display = 'block';
+    document.getElementById('leftInfoCard').style.display = 'block';
   }
 
   function renderProductDetails(p) {
     const details = p.productDetails;
-    const specs = (details && details.specs && details.specs.length > 0) ? details.specs : [];
+    const specs = (details && details.specs && details.specs.length > 0) ? details.specs.slice() : [];
+    getDirectDescriptionSpecs(p).forEach(function(spec) {
+      specs.push(spec);
+    });
+    const setupCharge = getSetupCharge(p);
 
-    const hasContent = specs.length > 0 || (details && details.description);
+    const hasContent = specs.length > 0;
+    const specsWrap = document.getElementById('productSpecs');
+    document.getElementById('productDetailsWrap').style.display = 'none';
 
     if (!hasContent) {
-      document.getElementById('productDetailsWrap').style.display = 'none';
+      specsWrap.style.display = 'none';
+      specsWrap.innerHTML = '';
       return;
     }
 
     let rows = '';
-    if (details && details.description) {
-      rows += `<tr><td>Description</td><td>${escapeHtml(details.description)}</td></tr>`;
-    }
+    const seenSpecs = new Set();
     specs.forEach(s => {
       let label = '', value = '';
       if (typeof s === 'string') {
@@ -883,45 +1802,116 @@
         label = s.label || s.key || '';
         value = s.value || '';
       }
+      if (shouldSkipDescriptionSpec(label, value, p.description, setupCharge)) {
+        return;
+      }
       if (value) {
-        rows += `<tr><td>${escapeHtml(label)}</td><td>${escapeHtml(value)}</td></tr>`;
+        const displayLabel = normalizeSpecLabel(label) || 'Details';
+        const key = (displayLabel + '|' + value).toLowerCase().replace(/\s+/g, ' ').trim();
+        if (seenSpecs.has(key)) return;
+        seenSpecs.add(key);
+        rows += `<div class="pd-desc-spec"><span class="pd-desc-spec-label">${escapeHtml(displayLabel)}</span><span class="pd-desc-spec-value">${escapeHtml(value)}</span></div>`;
       }
     });
 
-    document.getElementById('productDetailsTable').innerHTML = rows;
-    document.getElementById('productDetailsWrap').style.display = 'block';
+    if (!rows) {
+      specsWrap.style.display = 'none';
+      specsWrap.innerHTML = '';
+      return;
+    }
+
+    specsWrap.innerHTML = rows;
+    specsWrap.style.display = 'grid';
+    document.getElementById('leftInfoCard').style.display = 'block';
+  }
+
+  function setupRelatedCarousel(total) {
+    const grid = document.getElementById('relatedGrid');
+    const controls = document.getElementById('relatedControls');
+    const prev = document.getElementById('relatedPrev');
+    const next = document.getElementById('relatedNext');
+    const count = document.getElementById('relatedCount');
+    const progress = document.getElementById('relatedProgress');
+    if (!grid || !controls || !prev || !next || !count || !progress) return;
+
+    controls.style.display = 'flex';
+
+    function getVisibleCount() {
+      if (window.innerWidth <= 640) return 1;
+      if (window.innerWidth <= 1024) return 3;
+      return 5;
+    }
+
+    function getStep() {
+      return grid.clientWidth;
+    }
+
+    function update() {
+      const maxScroll = Math.max(grid.scrollWidth - grid.clientWidth, 0);
+      const visibleCount = getVisibleCount();
+      const pages = Math.max(1, Math.ceil(total / visibleCount));
+      controls.style.display = 'flex';
+      const step = getStep();
+      const index = maxScroll > 0 ? Math.min(pages, Math.round(grid.scrollLeft / step) + 1) : 1;
+      count.textContent = index + ' / ' + pages;
+      progress.style.width = (pages > 1 ? (index / pages) * 100 : 100) + '%';
+      prev.disabled = pages <= 1 || grid.scrollLeft <= 2;
+      next.disabled = pages <= 1 || grid.scrollLeft >= maxScroll - 2;
+    }
+
+    prev.onclick = function() {
+      grid.scrollBy({ left: -getStep(), behavior: 'smooth' });
+    };
+    next.onclick = function() {
+      grid.scrollBy({ left: getStep(), behavior: 'smooth' });
+    };
+    grid.onscroll = update;
+    window.addEventListener('resize', update);
+    setTimeout(update, 0);
   }
 
   async function loadRelated(product) {
     try {
       const res = await fetch(API_BASE + '/api/products?category=' + encodeURIComponent(product.category));
       const data = await res.json();
-      const related = (data.products || []).filter(p => p.id !== product.id).slice(0, 4);
-
-      if (related.length === 0) {
-        return;
-      }
+      const related = (data.products || []).filter(p => p.id !== product.id).slice(0, 12);
 
       document.getElementById('relatedSection').style.display = 'block';
       const grid = document.getElementById('relatedGrid');
-      grid.innerHTML = related.map(p => {
+      const emptyCardsNeeded = Math.max(0, 6 - related.length);
+      const relatedCards = related.map((p, index) => {
         const relImg = (p.images && p.images.length > 0)
           ? resolveImg(p.images[0])
-          : null;
+          : getRelatedFallbackImage(p, index);
+        const relatedHref = 'product.html?id=' + encodeURIComponent(p.id);
+        const priceRange = getPriceRangeText(p);
         return `
-        <div class="pd-related-card">
+        <a class="pd-related-card" href="${relatedHref}">
           <div class="pd-related-card-img">
             ${relImg
-              ? `<img src="${relImg}" alt="${escapeHtml(p.name)}">`
-              : `<div style="width:100%;height:100%;background:var(--gray-50);display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:12px;">No Image</div>`}
+              ? `<img src="${relImg}" alt="${escapeHtml(p.name)}" onerror="this.src='${getRelatedFallbackImage(p, index)}'">`
+              : `<div class="pd-related-placeholder"></div>`}
           </div>
           <div class="pd-related-card-body">
             <h4>${escapeHtml(p.name)}</h4>
-            ${p.moq ? `<div style="font-size:13px;color:var(--text-light);margin-bottom:10px;">MOQ: ${escapeHtml(p.moq)}</div>` : ''}
-            <a href="../contact/index.html" class="btn btn-primary btn-sm" style="display:block;width:100%;text-align:center;padding:8px 12px;font-size:13px;border-radius:50px;">Start a Project</a>
+            ${p.sku ? `<div class="pd-related-meta">Item #: ${escapeHtml(p.sku)}</div>` : ''}
+            ${priceRange ? `<div class="pd-related-price">${escapeHtml(priceRange)}</div>` : ''}
+          </div>
+        </a>
+      `;});
+      const emptyCards = getRelatedFillers(product, emptyCardsNeeded).map(item => `
+        <div class="pd-related-empty-card">
+          <div class="pd-related-card-img">
+            <img src="${item.img}" alt="">
+          </div>
+          <div class="pd-related-card-body">
+            <h4>${escapeHtml(item.name)}</h4>
+            <div class="pd-related-meta">${escapeHtml(item.meta)}</div>
           </div>
         </div>
-      `;}).join('');
+      `);
+      grid.innerHTML = relatedCards.concat(emptyCards).join('');
+      setupRelatedCarousel(relatedCards.length + emptyCards.length);
     } catch (e) {
       // Silently skip related products
     }

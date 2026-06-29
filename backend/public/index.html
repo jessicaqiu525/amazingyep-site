@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amazing Yep Admin</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="loginScreen" class="login-screen">
+    <form id="loginForm" class="login-card">
+      <div class="login-brand">
+        <span class="brand-mark">AY</span>
+        <div>
+          <strong>Amazing Yep</strong>
+          <span>Product Admin</span>
+        </div>
+      </div>
+      <h1>Admin Login</h1>
+      <p>Sign in before editing products, uploading images, or exporting SAGE files.</p>
+      <label>Username<input id="loginUser" type="text" autocomplete="username" value="admin"></label>
+      <label>Password<input id="loginPassword" type="password" autocomplete="current-password"></label>
+      <button class="btn primary" type="submit">Sign In</button>
+      <div id="loginStatus" class="login-status" hidden></div>
+    </form>
+  </div>
+
+  <div class="admin-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">AY</span>
+        <div>
+          <strong>Amazing Yep</strong>
+          <span>Product Admin</span>
+        </div>
+      </div>
+
+      <div class="side-section">
+        <label for="searchInput">Search</label>
+        <input id="searchInput" name="productSearchOnly" type="search" placeholder="Search products" autocomplete="new-password" spellcheck="false">
+      </div>
+
+      <div class="side-section">
+        <label for="categoryFilter">Website Category</label>
+        <select id="categoryFilter">
+          <option value="">All Categories</option>
+          <option>Bags</option>
+          <option>Plush & Mascots</option>
+          <option>Keychains & Accessories</option>
+          <option>Drinkware</option>
+          <option>Wearables</option>
+          <option>Office & Stationery</option>
+          <option>Outdoor & Leisure</option>
+          <option>Technology</option>
+          <option>Trade Show</option>
+        </select>
+      </div>
+
+      <div class="side-section">
+        <label for="sageCategoryFilter">SAGE Category</label>
+        <select id="sageCategoryFilter">
+          <option value="">All SAGE Categories</option>
+        </select>
+      </div>
+
+      <div class="side-actions">
+        <button id="newProductBtn" class="btn primary" type="button">New Product</button>
+        <button id="refreshBtn" class="btn ghost" type="button">Refresh</button>
+      </div>
+      <button id="clearFiltersBtn" class="btn ghost full" type="button">Clear Filters</button>
+
+      <div id="teamPanel" class="side-section team-panel" hidden>
+        <div class="side-heading">
+          <span>Team Access</span>
+          <button id="reloadUsersBtn" class="text-btn" type="button">Reload</button>
+        </div>
+        <div id="userList" class="user-list"></div>
+        <div class="team-form">
+          <input id="newUserName" type="text" placeholder="Username">
+          <input id="newUserDisplay" type="text" placeholder="Display name">
+          <input id="newUserPassword" type="password" placeholder="Temporary password">
+          <select id="newUserRole">
+            <option value="staff">Staff</option>
+            <option value="admin">Admin</option>
+          </select>
+          <button id="addUserBtn" class="btn mini" type="button">Add Staff Account</button>
+        </div>
+      </div>
+
+      <div id="activityPanel" class="side-section activity-panel" hidden>
+        <div class="side-heading">
+          <span>Recent Activity</span>
+          <button id="reloadActivityBtn" class="text-btn" type="button">Reload</button>
+        </div>
+        <div id="activityList" class="activity-list"></div>
+      </div>
+
+      <div id="productList" class="product-list"></div>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Product Database</p>
+          <h1 id="pageTitle">Edit Product</h1>
+          <div class="view-switch" role="tablist" aria-label="Admin view">
+            <button id="productsViewBtn" class="view-tab active" type="button">Products List</button>
+            <button id="editorViewBtn" class="view-tab" type="button">Product Editor</button>
+          </div>
+        </div>
+        <div class="top-actions">
+          <button id="logoutBtn" class="btn ghost" type="button">Log Out</button>
+          <button id="downloadBackupBtn" class="btn ghost" type="button">Download Backup</button>
+          <button id="restoreBackupBtn" class="btn ghost warning" type="button">Restore Latest</button>
+          <button id="viewProductBtn" class="btn ghost" type="button">View Website Page</button>
+          <button id="exportSageBtn" class="btn ghost" type="button">Export SAGE</button>
+          <button id="deleteProductBtn" class="btn danger" type="button">Delete Product</button>
+          <button id="saveBtn" class="btn primary" type="button">Save Product</button>
+        </div>
+      </header>
+
+      <div id="statusBar" class="status" hidden></div>
+      <section id="productsView" class="panel span-2 catalog-panel">
+        <div class="panel-head">
+          <div>
+            <h2>Products</h2>
+            <p id="catalogSummary" class="panel-note">All saved backend products appear here.</p>
+          </div>
+        </div>
+        <div class="catalog-table-wrap">
+          <table class="catalog-table">
+            <thead>
+              <tr>
+                <th>Item #</th>
+                <th>Product Name</th>
+                <th>Website Category</th>
+                <th>SAGE Category</th>
+                <th>Status</th>
+                <th>Updated</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="catalogRows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <div id="editorView" class="editor-view" hidden>
+      <div id="validationPanel" class="validation-panel" hidden></div>
+
+      <form id="productForm" class="form-grid">
+        <section class="panel span-2">
+          <div class="panel-head">
+            <h2>General</h2>
+          </div>
+          <div class="publish-box">
+            <label><input name="published" type="checkbox"> Published on Website</label>
+            <span>Checked products are visible on the public website. Unchecked products stay saved in the backend as drafts.</span>
+          </div>
+          <div class="field-grid four">
+            <label>Product ID<input name="id" type="text" placeholder="Auto or SAGE ID"></label>
+            <label>Item Number<input name="sku" type="text" required placeholder="AK468"></label>
+            <label>Website Category<input name="category" type="text" list="websiteCategoryList" placeholder="Bags"></label>
+            <label>Website Subcategory<input name="subcategory" type="text" placeholder="Cooler Bags"></label>
+          </div>
+          <div class="field-grid two">
+            <label>Primary Category<input name="sageCategory1" type="text" list="sageCategoryList" placeholder="Coolers"></label>
+            <label>Secondary Category<input name="sageCategory2" type="text" list="sageCategoryList"></label>
+          </div>
+          <datalist id="websiteCategoryList">
+            <option>Bags</option>
+            <option>Plush & Mascots</option>
+            <option>Keychains & Accessories</option>
+            <option>Drinkware</option>
+            <option>Wearables</option>
+            <option>Office & Stationery</option>
+            <option>Outdoor & Leisure</option>
+            <option>Technology</option>
+            <option>Trade Show</option>
+          </datalist>
+          <datalist id="sageCategoryList"></datalist>
+          <datalist id="sageThemeList"></datalist>
+          <label>Product Name<input name="name" type="text" required placeholder="Caribou Clip Handle Cooler"></label>
+          <label>Description<textarea name="description" rows="7" placeholder="Short product description for the website and export."></textarea></label>
+          <div class="field-grid three">
+            <label>Price Range<input name="priceRange" type="text" placeholder="$3.62-$10.44"></label>
+          </div>
+          <label>Keywords<textarea class="keywords-textarea" name="keywords" rows="5" placeholder="cooler, bag, custom"></textarea></label>
+          <div class="theme-picker">
+            <label for="themeSearch">Themes (up to 5)</label>
+            <input id="themeSearch" type="text" list="sageThemeList" placeholder="Search or choose a SAGE theme">
+            <input name="themes" type="hidden">
+            <div class="theme-picker-actions">
+              <button id="addThemeBtn" class="btn mini" type="button">Add Theme</button>
+              <span id="themeCount">0 / 5 selected</span>
+            </div>
+            <div id="selectedThemes" class="theme-chip-list"></div>
+          </div>
+          <div class="field-grid three">
+            <label>Catalog Pg 1<input name="catalogPage1" type="text"></label>
+            <label>Catalog Pg 2<input name="catalogPage2" type="text"></label>
+            <label>Expires<input name="expirationDate" type="text" placeholder="12/31/2026"></label>
+          </div>
+          <div class="check-row">
+            <label><input name="verified" type="checkbox"> Verified</label>
+            <label><input name="discontinued" type="checkbox"> Discontinued</label>
+            <label><input name="notPictured" type="checkbox"> Not pictured</label>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Images</h2>
+          </div>
+          <div class="image-preview" id="imagePreview">Website Main Image / Left Image</div>
+          <label>Upload Main Image (Website Left Image)<input id="imageUpload" type="file" accept="image/*"></label>
+          <label>Main Image URL (Website Left Image)<input name="mainImage" type="text" placeholder="Auto-filled after upload"></label>
+          <label>Upload Gallery Images<input id="galleryUpload" type="file" accept="image/*" multiple></label>
+          <label>Gallery Image URLs<textarea name="gallery" rows="5" placeholder="Auto-filled after upload, one image URL per line"></textarea></label>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Origin Information & Decoration</h2>
+          </div>
+          <label>SAGE Picture URL<input name="sagePictureUrl" type="url" placeholder="https://..."></label>
+          <h3 class="group-title">Origin Information</h3>
+          <div class="field-grid three">
+            <label>Made In<input name="madeInCountry" type="text" placeholder="China"></label>
+            <label>Assembled In<input name="assembledInCountry" type="text" placeholder="China"></label>
+            <label>Decorated In<input name="decoratedInCountry" type="text" placeholder="China"></label>
+          </div>
+          <h3 class="group-title">Decoration</h3>
+          <label>Decoration Method<input name="imprintMethod" type="text" placeholder="Screen printed"></label>
+          <div class="check-row compact">
+            <label><input name="noDecorationOffered" type="checkbox"> No decoration offered</label>
+            <label><input name="printOnDemand" type="checkbox"> Print on Demand</label>
+          </div>
+        </section>
+
+        <section class="panel span-2">
+          <div class="panel-head">
+            <h2>Pricing</h2>
+            <button id="addPriceBtn" class="btn mini" type="button">Add Tier</button>
+          </div>
+          <div id="pricingRows" class="rows"></div>
+          <div class="check-row">
+            <label><input name="quotedUponRequest" type="checkbox"> This item is quoted upon request</label>
+          </div>
+          <h3 class="group-title">Price Includes</h3>
+          <div class="field-grid four mt-16">
+            <label>Price Code<input name="priceCode" type="text" placeholder="CCCCCC"></label>
+            <label>Colors<input name="priceIncludeColor" type="text" placeholder="1 color"></label>
+            <label>Sides<input name="priceIncludeSide" type="text" placeholder="1 side"></label>
+            <label>Locations<input name="priceIncludeLocation" type="text" placeholder="1 location"></label>
+          </div>
+          <div class="check-row">
+            <label><input name="noDecorationIncludedInPrice" type="checkbox"> No decoration included in price</label>
+          </div>
+          <h3 class="group-title">Setup Charges</h3>
+          <div class="field-grid four">
+            <label>Setup Charge<input name="setupCharge" type="number" min="0" step="0.01" placeholder="80"></label>
+            <label>Code<input name="setupChargeCode" type="text" placeholder="C"></label>
+            <label>Screen Charge<input name="screenCharge" type="number" min="0" step="0.01"></label>
+            <label>Code<input name="screenChargeCode" type="text"></label>
+            <label>Die Charge<input name="dieCharge" type="number" min="0" step="0.01"></label>
+            <label>Code<input name="dieChargeCode" type="text"></label>
+            <label>Add'l Color/Location Setup<input name="addColorLocationSetup" type="number" min="0" step="0.01"></label>
+            <label>Code<input name="addColorLocationSetupCode" type="text"></label>
+          </div>
+        </section>
+
+        <section class="panel span-2">
+          <div class="panel-head">
+            <h2>Options / Upcharges</h2>
+            <button id="addOptionBtn" class="btn mini" type="button">Add Option</button>
+          </div>
+          <div id="optionRows" class="option-list"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Colors</h2>
+            <button id="addColorBtn" class="btn mini" type="button">Add Color</button>
+          </div>
+          <div id="colorRows" class="rows"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Product Details</h2>
+          </div>
+          <label>Material<textarea name="material" rows="2"></textarea></label>
+          <h3 class="group-title">Dimensions</h3>
+          <div class="field-grid four">
+            <label>L<input name="dimensionLength" type="number" step="0.01"></label>
+            <label>W<input name="dimensionWidth" type="number" step="0.01"></label>
+            <label>H<input name="dimensionHeight" type="number" step="0.01"></label>
+            <label>Units<input name="dimensionUnits" type="text" placeholder="Inches"></label>
+          </div>
+          <h3 class="group-title">Primary Imprint Area</h3>
+          <div class="field-grid two">
+            <label>Area<input name="imprintArea" type="text" placeholder="3 x 3 Inches"></label>
+            <label>Location<input name="imprintLocation" type="text" placeholder="Front"></label>
+          </div>
+          <h3 class="group-title">Secondary Imprint Area</h3>
+          <div class="field-grid two">
+            <label>Area<input name="secondaryImprintArea" type="text" placeholder="Optional"></label>
+            <label>Location<input name="secondaryImprintLocation" type="text" placeholder="Back"></label>
+          </div>
+        </section>
+
+        <section class="panel span-2">
+          <div class="panel-head">
+            <h2>Packaging, Carton & Production</h2>
+          </div>
+          <h3 class="group-title">Packaging Information</h3>
+          <div class="field-grid three">
+            <label>Packaging<input name="packaging" type="text" placeholder="Bulk,Case,Box"></label>
+            <label>Units/Ctn<input name="unitsPerCarton" type="number" min="0" step="1"></label>
+            <label>Weight/Ctn<input name="weightPerCarton" type="number" min="0" step="0.01"></label>
+          </div>
+          <h3 class="group-title">Carton Dimensions</h3>
+          <div class="field-grid four">
+            <label>Carton L<input name="cartonLength" type="number" min="0" step="0.01"></label>
+            <label>Carton W<input name="cartonWidth" type="number" min="0" step="0.01"></label>
+            <label>Carton H<input name="cartonHeight" type="number" min="0" step="0.01"></label>
+          </div>
+          <label>Sample<textarea class="sample-textarea" name="sampleTime" rows="2" placeholder="5-7 working days after artwork approval"></textarea></label>
+          <h3 class="group-title">Production Time</h3>
+          <div class="field-grid four">
+            <label>Working Days<input name="productionTimeLo" type="number" min="0" step="1"></label>
+            <label>Working Days<input name="productionTimeHi" type="number" min="0" step="1"></label>
+          </div>
+          <h3 class="group-title">Rush Service</h3>
+          <div class="field-grid four">
+            <label>Working Days<input name="rushTimeLo" type="number" min="0" step="1"></label>
+            <label>Working Days<input name="rushTimeHi" type="number" min="0" step="1"></label>
+          </div>
+          <h3 class="group-title">Shipping Point</h3>
+          <div class="field-grid two">
+            <label>Country<input name="shipPointCountry" type="text" placeholder="China"></label>
+            <label>Zip / Postal Code<input name="shipPointPostalCode" type="text"></label>
+            <label>Air Shipping<input name="shippingByAir" type="text" placeholder="10-20 days"></label>
+            <label>Sea Shipping<input name="shippingBySea" type="text" placeholder="22-30 days"></label>
+          </div>
+        </section>
+      </form>
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
