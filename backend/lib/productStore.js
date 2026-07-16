@@ -11,6 +11,22 @@ const USE_POSTGRES = Boolean(DATABASE_URL);
 let pool = null;
 let postgresReady = false;
 
+const WEBSITE_CATEGORY_ALIASES = new Map([
+  ['tumblers', 'Drinkware'],
+  ['mugs', 'Drinkware'],
+  ['cups', 'Drinkware'],
+  ['key chains / rings', 'Keychains & Accessories'],
+  ['key chains', 'Keychains & Accessories'],
+  ['keychains', 'Keychains & Accessories'],
+  ['blankets', 'Outdoor & Leisure'],
+  ['sweaters', 'Wearables']
+]);
+
+function canonicalWebsiteCategory(value) {
+  const category = String(value || '').trim();
+  return WEBSITE_CATEGORY_ALIASES.get(category.toLowerCase()) || category;
+}
+
 function ensureStore() {
   fs.mkdirSync(DATA_DIR, { recursive: true });
   fs.mkdirSync(BACKUP_DIR, { recursive: true });
@@ -175,6 +191,7 @@ function normalizeProduct(product, existing) {
     id: product.id !== undefined && product.id !== null && product.id !== ''
       ? product.id
       : ((existing && existing.id) || nextId()),
+    category: canonicalWebsiteCategory(product.category),
     published: product.published === true,
     updatedAt: now,
     createdAt: (existing && existing.createdAt) || product.createdAt || now
@@ -198,7 +215,7 @@ async function nextIdAsync() {
 }
 
 function productMatches(product, query) {
-  if (query.category && String(product.category || '') !== String(query.category)) {
+  if (query.category && canonicalWebsiteCategory(product.category) !== canonicalWebsiteCategory(query.category)) {
     return false;
   }
 

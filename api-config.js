@@ -7,7 +7,7 @@
   const isLocalSite = ['127.0.0.1', 'localhost', '::1'].includes(window.location.hostname);
   const BASE_URL = isLocalSite
     ? window.location.origin
-    : 'https://amazingyep-backend.onrender.com';
+    : 'https://amazingyep-sitebackend.onrender.com';
 
   // All products use the unified dynamic detail page
   // (no more static per-product pages — everything is product.html?id=X)
