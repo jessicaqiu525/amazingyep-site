@@ -216,6 +216,40 @@
     '</div>';
   }
 
+  function productMatchesType(product, selectedType) {
+    if (!selectedType) return true;
+
+    const stopWords = new Set([
+      'and', 'the', 'bags', 'bag', 'accessories', 'accessory', 'gear',
+      'equipment', 'products', 'product', 'custom'
+    ]);
+    function tokens(value) {
+      return String(value || '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, ' ')
+        .trim()
+        .split(/\s+/)
+        .filter(function(token) {
+          return token && !stopWords.has(token);
+        })
+        .map(function(token) {
+          return token.endsWith('s') && token.length > 3 ? token.slice(0, -1) : token;
+        });
+    }
+
+    const selectedTokens = tokens(selectedType);
+    const productTokens = tokens([
+      product.subcategory,
+      product.sageCategory1,
+      product.sageCategory2
+    ].filter(Boolean).join(' '));
+
+    if (!selectedTokens.length || !productTokens.length) return false;
+    return selectedTokens.some(function(token) {
+      return productTokens.includes(token);
+    });
+  }
+
   // Initialize a category page: always show 12 cards (real + samples)
   // category: e.g. 'Bags', 'Drinkware'
   // gridId: the ID of the grid container (default: 'featuredGrid')
@@ -229,6 +263,12 @@
 
     const apiCategory = category;
     const samples = (SAMPLE_PRODUCTS[category] || []).slice(0, 12);
+    const typeItems = Array.from(document.querySelectorAll('.' + cardClassPrefix + '-type-item'));
+
+    // No Product Type filter is selected until the visitor clicks one.
+    typeItems.forEach(function(item) {
+      item.classList.remove('active');
+    });
 
     try {
       let url = BASE_URL + '/api/products';
@@ -238,24 +278,50 @@
       const data = await res.json();
       const products = data.products || [];
 
-      // Build HTML: real products first, then sample placeholders to fill 12
-      let html = '';
+      function renderProducts(selectedType) {
+        const filteredProducts = selectedType
+          ? products.filter(function(product) {
+              return productMatchesType(product, selectedType);
+            })
+          : products;
 
-      // Show up to 12 real products
-      const realToShow = products.slice(0, 12);
-      realToShow.forEach(function(p) {
-        html += renderProductCard(p, cardClassPrefix);
-      });
+        // Product Type filters show matching backend products only. The unfiltered
+        // view continues to use samples to keep the existing 12-card layout.
+        if (selectedType && !filteredProducts.length) {
+          grid.innerHTML = '<p style="grid-column:1/-1;padding:32px 0;color:#667085;">No products found for ' +
+            selectedType + '.</p>';
+          return;
+        }
 
-      // Fill remaining slots (up to 12 total) with samples
-      const remaining = 12 - realToShow.length;
-      if (remaining > 0) {
-        samples.slice(0, remaining).forEach(function(s) {
-          html += renderSampleCard(s, cardClassPrefix);
+        let html = '';
+        const realToShow = filteredProducts.slice(0, 12);
+        realToShow.forEach(function(p) {
+          html += renderProductCard(p, cardClassPrefix);
         });
+
+        if (!selectedType) {
+          const remaining = 12 - realToShow.length;
+          if (remaining > 0) {
+            samples.slice(0, remaining).forEach(function(s) {
+              html += renderSampleCard(s, cardClassPrefix);
+            });
+          }
+        }
+
+        grid.innerHTML = html;
       }
 
-      grid.innerHTML = html;
+      renderProducts('');
+
+      typeItems.forEach(function(item) {
+        item.addEventListener('click', function() {
+          typeItems.forEach(function(other) {
+            other.classList.remove('active');
+          });
+          item.classList.add('active');
+          renderProducts(item.textContent.trim());
+        });
+      });
 
     } catch (err) {
       console.error('Error loading products:', err);
@@ -271,6 +337,7 @@
     BASE_URL: BASE_URL,
     getDetailPageUrl: getDetailPageUrl,
     renderProductCard: renderProductCard,
+    productMatchesType: productMatchesType,
     initPage: initPage
   };
 })();
