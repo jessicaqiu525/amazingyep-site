@@ -249,16 +249,27 @@
     }
 
     const selectedTokens = tokens(selectedType);
-    const productTokens = tokens([
-      product.subcategory,
-      product.sageCategory1,
-      product.sageCategory2
-    ].filter(Boolean).join(' '));
+    if (!selectedTokens.length) return false;
 
-    if (!selectedTokens.length || !productTokens.length) return false;
-    return selectedTokens.some(function(token) {
-      return productTokens.includes(token);
-    });
+    function fieldMatches(value) {
+      const fieldTokens = tokens(value);
+      return selectedTokens.some(function(token) {
+        return fieldTokens.includes(token);
+      });
+    }
+
+    // Treat the product's identity fields as stronger evidence than the optional
+    // website subcategory. Imported catalogs occasionally contain a stale or
+    // incorrect subcategory (for example a Tote marked "Cooler Bags"). A lone
+    // subcategory match must not override the product name, keywords, or formal
+    // SAGE category, while correctly classified products continue to match.
+    let score = 0;
+    if (fieldMatches(product.name)) score += 5;
+    if (fieldMatches(product.keywords)) score += 4;
+    if (fieldMatches(product.sageCategory1) || fieldMatches(product.sageCategory2)) score += 3;
+    if (fieldMatches(product.subcategory)) score += 2;
+
+    return score >= 3;
   }
 
   // Initialize a category page: always show 12 cards (real + samples)
