@@ -11,20 +11,53 @@ const USE_POSTGRES = Boolean(DATABASE_URL);
 let pool = null;
 let postgresReady = false;
 
-const WEBSITE_CATEGORY_ALIASES = new Map([
-  ['tumblers', 'Drinkware'],
-  ['mugs', 'Drinkware'],
-  ['cups', 'Drinkware'],
-  ['key chains / rings', 'Keychains & Accessories'],
-  ['key chains', 'Keychains & Accessories'],
-  ['keychains', 'Keychains & Accessories'],
-  ['blankets', 'Outdoor & Leisure'],
-  ['sweaters', 'Wearables']
-]);
+const WEBSITE_CATEGORY_GROUPS = [
+  {
+    name: 'Bags',
+    terms: ['bag', 'tote', 'backpack', 'briefcase', 'luggage', 'cooler']
+  },
+  {
+    name: 'Drinkware',
+    terms: ['drinkware', 'tumbler', 'mug', 'cup', 'bottle', 'glassware', 'hydration']
+  },
+  {
+    name: 'Plush & Mascots',
+    terms: ['plush', 'mascot', 'stuffed animal', 'pillow', 'doll']
+  },
+  {
+    name: 'Keychains & Accessories',
+    terms: ['keychain', 'key chain', 'key ring', 'lanyard']
+  },
+  {
+    name: 'Office & Stationery',
+    terms: ['office', 'stationery', 'writing', 'pen', 'pencil', 'notebook', 'journal', 'calendar', 'desk']
+  },
+  {
+    name: 'Outdoor & Leisure',
+    terms: ['outdoor', 'leisure', 'blanket', 'umbrella', 'sport', 'towel', 'picnic']
+  },
+  {
+    name: 'Technology',
+    terms: ['technology', 'electronics', 'power bank', 'charger', 'speaker', 'headphone', 'earbud', 'usb', 'computer accessor']
+  },
+  {
+    name: 'Trade Show',
+    terms: ['trade show', 'tradeshow', 'display', 'banner', 'signage', 'tent']
+  },
+  {
+    name: 'Wearables',
+    terms: ['wearable', 'apparel', 'sweater', 'shirt', 'jacket', 'hoodie', 'cap', 'hat']
+  }
+];
 
 function canonicalWebsiteCategory(value) {
   const category = String(value || '').trim();
-  return WEBSITE_CATEGORY_ALIASES.get(category.toLowerCase()) || category;
+  const normalized = category.toLowerCase();
+  const group = WEBSITE_CATEGORY_GROUPS.find((item) => {
+    return item.name.toLowerCase() === normalized
+      || item.terms.some((term) => normalized.includes(term));
+  });
+  return group ? group.name : category;
 }
 
 function ensureStore() {
