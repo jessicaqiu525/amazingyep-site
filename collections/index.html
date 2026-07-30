@@ -67,28 +67,26 @@
       line-height: 1.5;
       color: var(--text-light);
     }
-    .collections-cta-band {
-      margin-top: 48px;
-      padding: 28px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 24px;
-      background: var(--navy);
-      color: #fff;
-      border-radius: 8px;
-    }
-    .collections-cta-band h2 {
-      margin: 0 0 6px;
-      font-size: 24px;
-      color: #fff;
-    }
-    .collections-cta-band p {
-      margin: 0;
-      color: rgba(255,255,255,0.78);
-      font-size: 14px;
-      line-height: 1.5;
-    }
+    .collections-you-may-like { background: #fff; padding: 0 0 40px; }
+    .collections-carousel-header { max-width: 1440px; margin: 0 auto 16px; padding: 0 32px; }
+    .collections-carousel-wrap { max-width: 1440px; margin: 0 auto; padding: 0 32px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .collections-carousel-wrap::-webkit-scrollbar { display: none; }
+    .collections-carousel-track { display: flex; gap: 16px; padding-bottom: 8px; scroll-behavior: smooth; }
+    .collections-carousel-card { flex: 0 0 220px; border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s; background: var(--gray-50); text-decoration: none; }
+    .collections-carousel-card:hover { transform: translateY(-2px); }
+    .collections-carousel-card-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; background: var(--gray-100); }
+    .collections-carousel-card-body { padding: 12px; }
+    .collections-carousel-card-body h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin: 0 0 4px; }
+    .collections-carousel-card-body p { font-size: 12px; color: var(--text-light); margin: 0; }
+    .collections-carousel-pagination { max-width: 1440px; margin: 20px auto 0; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; }
+    .collections-pagination-bar { flex: 1; max-width: 400px; height: 2px; background: var(--gray-200); border-radius: 2px; position: relative; overflow: hidden; }
+    .collections-pagination-bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--navy); border-radius: 2px; transition: width 0.3s; }
+    .collections-pagination-arrows { display: flex; align-items: center; gap: 12px; }
+    .collections-pagination-arrow { width: 28px; height: 28px; border: 1px solid var(--gray-200); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; background: #fff; transition: all 0.2s; }
+    .collections-pagination-arrow:hover { border-color: var(--navy); background: var(--navy); }
+    .collections-pagination-arrow:hover svg { stroke: #fff; }
+    .collections-pagination-arrow svg { width: 12px; height: 12px; stroke: var(--text-light); transition: stroke 0.2s; }
+    .collections-pagination-num { font-size: 13px; color: var(--text-light); min-width: 28px; text-align: center; }
     @media (max-width: 1100px) {
       .collections-grid { grid-template-columns: repeat(3, 1fr); }
     }
@@ -102,8 +100,7 @@
       .collection-card-body { padding: 12px; }
       .collection-card h3 { font-size: 15px; }
       .collection-card p { font-size: 12px; }
-      .collections-cta-band { display: block; padding: 24px; }
-      .collections-cta-band .btn { margin-top: 18px; }
+      .collections-carousel-card { flex: 0 0 160px; }
     }
   </style>
 </head>
@@ -261,53 +258,70 @@
       </a>
     </div>
 
-    <section class="collections-cta-band">
-      <div>
-        <h2>Need a product that is not shown?</h2>
-        <p>Send us your idea, target quantity, timeline, and artwork. We can help source or develop more options.</p>
-      </div>
-      <a href="../contact/index.html" class="btn btn-primary btn-sm">Start a Project</a>
-    </section>
   </main>
+
+  <section class="collections-you-may-like">
+    <div class="collections-carousel-header">
+      <span class="section-label">YOU MIGHT ALSO LIKE</span>
+    </div>
+    <div class="collections-carousel-wrap">
+      <div class="collections-carousel-track" id="collectionsCarousel">
+        <a class="collections-carousel-card" href="plush-mascots.html"><img class="collections-carousel-card-img" src="../assets/cat-plush.jpg" alt="Plush and mascots"><div class="collections-carousel-card-body"><h4>Custom Plush</h4><p>Plush &amp; Mascots</p></div></a>
+        <a class="collections-carousel-card" href="keychains.html"><img class="collections-carousel-card-img" src="../assets/cat-keychain.jpg" alt="Keychains"><div class="collections-carousel-card-body"><h4>Custom Keychains</h4><p>Keychains &amp; Accessories</p></div></a>
+        <a class="collections-carousel-card" href="drinkware.html"><img class="collections-carousel-card-img" src="../assets/cat-drinkware.jpg" alt="Drinkware"><div class="collections-carousel-card-body"><h4>Branded Drinkware</h4><p>Drinkware</p></div></a>
+        <a class="collections-carousel-card" href="bags.html"><img class="collections-carousel-card-img" src="../assets/cat-bags.jpg" alt="Bags"><div class="collections-carousel-card-body"><h4>Custom Bags</h4><p>Bags</p></div></a>
+        <a class="collections-carousel-card" href="office.html"><img class="collections-carousel-card-img" src="../assets/collections-hero-bg.jpg" alt="Office products"><div class="collections-carousel-card-body"><h4>Desk Essentials</h4><p>Office &amp; Stationery</p></div></a>
+        <a class="collections-carousel-card" href="outdoor-leisure.html"><img class="collections-carousel-card-img" src="../assets/collections-hero-bg.jpg" alt="Outdoor products"><div class="collections-carousel-card-body"><h4>Outdoor Essentials</h4><p>Outdoor &amp; Leisure</p></div></a>
+        <a class="collections-carousel-card" href="technology.html"><img class="collections-carousel-card-img" src="../assets/collections-hero-bg.jpg" alt="Technology products"><div class="collections-carousel-card-body"><h4>Tech Accessories</h4><p>Technology</p></div></a>
+        <a class="collections-carousel-card" href="apparel.html"><img class="collections-carousel-card-img" src="../assets/collections-hero-bg.jpg" alt="Wearables"><div class="collections-carousel-card-body"><h4>Custom Wearables</h4><p>Wearables</p></div></a>
+      </div>
+    </div>
+    <div class="collections-carousel-pagination">
+      <div class="collections-pagination-bar"><div class="collections-pagination-bar-fill" id="paginationFill" style="width:50%;"></div></div>
+      <div class="collections-pagination-arrows">
+        <button class="collections-pagination-arrow" type="button" onclick="prevPage()" aria-label="Previous products"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button>
+        <span class="collections-pagination-num" id="pageNum">1/2</span>
+        <button class="collections-pagination-arrow" type="button" onclick="nextPage()" aria-label="Next products"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="hww-section">
+    <div class="container">
+      <div class="hww-header">
+        <span class="section-label">HOW WE WORK</span>
+        <h2 class="section-title">Simple, Fast, Reliable</h2>
+        <p class="section-subtitle">A straightforward process designed to get you from idea to delivery with minimal friction.</p>
+      </div>
+      <div class="hww-steps">
+        <div class="hww-step"><div class="hww-num">1</div><h3>Share Your Idea</h3><p>Send us your design, sketch, or concept. Tell us about your brand, audience, and goals.</p></div>
+        <div class="hww-arrow"><svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg></div>
+        <div class="hww-step"><div class="hww-num">2</div><h3>Receive Mockup &amp; Pricing</h3><p>Within 24 hours, receive a free digital mockup and detailed pricing options.</p></div>
+        <div class="hww-arrow"><svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg></div>
+        <div class="hww-step"><div class="hww-num">3</div><h3>Sampling &amp; Approval</h3><p>Review physical samples, request adjustments, and approve before full production.</p></div>
+        <div class="hww-arrow"><svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg></div>
+        <div class="hww-step"><div class="hww-num">4</div><h3>Production &amp; Delivery</h3><p>We handle manufacturing and worldwide shipping. Track your order every step.</p></div>
+      </div>
+      <div style="text-align:center; margin-top:24px;"><a href="../contact/index.html" class="btn btn-primary">Start a Project</a></div>
+    </div>
+  </section>
 
   <footer class="footer">
     <div class="container">
-      <div class="footer-content">
+      <div class="footer-grid">
         <div class="footer-brand">
-          <img src="../assets/logo-footer.png" alt="Amazing Yep Inc." class="footer-logo">
-          <p>Custom merchandise and sourcing support for brands, events, retail programs, and promotional campaigns.</p>
+          <img src="../assets/logo-2026.png" alt="Amazing Yep Inc.">
+          <p>Custom merchandise and sourcing support for brands,<br>events, retail programs, and promotional campaigns.</p>
+          <div class="footer-social"><a href="#" aria-label="LinkedIn">in</a><a href="#" aria-label="Instagram">ig</a><a href="#" aria-label="Facebook">fb</a></div>
+          <div class="footer-newsletter"><h4>Start a Project</h4><form action="mailto:info@amazingyep.com" method="post" enctype="text/plain" class="footer-email-form"><div class="footer-email-wrap"><input type="email" name="email" placeholder="Enter your email address" required><button type="submit" class="footer-email-btn">SEND</button></div></form></div>
         </div>
-        <div class="footer-links">
-          <div>
-            <h4>Products</h4>
-            <ul>
-              <li><a href="plush-mascots.html">Plush &amp; Mascots</a></li>
-              <li><a href="keychains.html">Keychains</a></li>
-              <li><a href="drinkware.html">Drinkware</a></li>
-              <li><a href="bags.html">Bags</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4>Collections</h4>
-            <ul>
-              <li><a href="office.html">Office &amp; Stationery</a></li>
-              <li><a href="outdoor-leisure.html">Outdoor &amp; Leisure</a></li>
-              <li><a href="technology.html">Technology</a></li>
-              <li><a href="trade-show.html">Trade Show</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4>Contact</h4>
-            <ul>
-              <li><a href="mailto:info@amazingyep.com">info@amazingyep.com</a></li>
-              <li><a href="tel:7326928285">732-692-8285</a></li>
-              <li><a href="../contact/index.html">Start a Project</a></li>
-            </ul>
-          </div>
-        </div>
+        <div class="footer-col"><h4>Ideas &amp; Use Cases</h4><ul><li><a href="../case-studies/index.html">Conference &amp; Event Swag</a></li><li><a href="../case-studies/index.html">Employee Engagement Kits</a></li><li><a href="../case-studies/index.html">Character &amp; Mascot Programs</a></li><li><a href="../case-studies/index.html">Schools, Teams &amp; Communities</a></li><li><a href="../case-studies/index.html">Brand Loyalty Programs</a></li><li><a href="../case-studies/index.html">Travel &amp; Adventure Collection</a></li></ul></div>
+        <div class="footer-col"><h4>Collections</h4><ul><li><a href="plush-mascots.html">Plush &amp; Mascots</a></li><li><a href="keychains.html">Keychains</a></li><li><a href="drinkware.html">Drinkware</a></li><li><a href="bags.html">Bags</a></li><li><a href="apparel.html">Wearables</a></li></ul></div>
+        <div class="footer-col"><h4>Company</h4><ul><li><a href="../about/index.html">About Us</a></li><li><a href="../contact/index.html">Contact</a></li><li><a href="mailto:info@amazingyep.com">info@amazingyep.com</a></li><li><a href="tel:7326928285">732-692-8285</a></li></ul></div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2026 Amazing Yep Inc. All rights reserved.</p>
+        <p>&copy; 2026 Amazing Yep Inc.</p>
+        <p>Bringing Custom Merchandise Ideas to Life. Built for Brands, Events &amp; Promotional Programs.</p>
       </div>
     </div>
   </footer>
@@ -329,6 +343,10 @@
         const matchesSearch = !query || text.includes(query);
         card.style.display = matchesCategory && matchesSearch ? '' : 'none';
       });
+      document.querySelectorAll('.collections-carousel-card').forEach(card => {
+        const text = (card.textContent || '').toLowerCase();
+        card.style.display = !query || text.includes(query) ? '' : 'none';
+      });
     }
 
     document.querySelectorAll('.collections-type-item').forEach(item => {
@@ -339,6 +357,31 @@
         filterCollections();
       });
     });
+
+    let currentPage = 1;
+    const totalPages = 2;
+    const carousel = document.getElementById('collectionsCarousel');
+
+    function updatePagination() {
+      document.getElementById('paginationFill').style.width = (currentPage / totalPages * 100) + '%';
+      document.getElementById('pageNum').textContent = currentPage + '/' + totalPages;
+      const wrap = carousel.parentElement;
+      wrap.scrollTo({ left: (currentPage - 1) * wrap.clientWidth, behavior: 'smooth' });
+    }
+
+    function prevPage() {
+      if (currentPage > 1) {
+        currentPage--;
+        updatePagination();
+      }
+    }
+
+    function nextPage() {
+      if (currentPage < totalPages) {
+        currentPage++;
+        updatePagination();
+      }
+    }
   </script>
   <script src="../script.js"></script>
 </body>
