@@ -1,6 +1,44 @@
 // Amazing Yep - Global Scripts
 
 document.addEventListener('DOMContentLoaded', function() {
+  // One global product-search behavior for every navigation bar on the site.
+  // Search results always live on the Collections page, regardless of which
+  // page the visitor starts from.
+  document.querySelectorAll('form.nav-search').forEach(function(form) {
+    const input = form.querySelector('input[type="search"]');
+    if (!input) return;
+
+    form.setAttribute('action', '/collections/index.html');
+    form.setAttribute('method', 'get');
+    input.setAttribute('name', 'search');
+
+    // At tablet and mobile widths the field collapses to a search icon. A
+    // click anywhere on the control focuses the input and expands it via CSS.
+    form.addEventListener('click', function() {
+      if (document.activeElement !== input) input.focus();
+    });
+
+    function runProductSearch() {
+      const query = (input.value || '').trim();
+      if (!query) {
+        input.focus();
+        return;
+      }
+      window.location.assign('/collections/index.html?search=' + encodeURIComponent(query));
+    }
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      runProductSearch();
+    });
+
+    input.addEventListener('keydown', function(event) {
+      if (event.key !== 'Enter') return;
+      event.preventDefault();
+      runProductSearch();
+    });
+  });
+
   // Mobile navigation toggle
   const mobileToggle = document.querySelector('.nav-mobile-toggle');
   const navLinks = document.querySelector('.nav-links');
@@ -77,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Form submission handler (for forms without action)
   document.querySelectorAll('form').forEach(form => {
-    if (!form.getAttribute('action') || form.getAttribute('action') === '#') {
+    if (!form.classList.contains('nav-search') && (!form.getAttribute('action') || form.getAttribute('action') === '#')) {
       form.addEventListener('submit', function(e) {
         e.preventDefault();
         const btn = form.querySelector('button[type="submit"]');

@@ -349,7 +349,6 @@ img { max-width: 100%; height: auto; display: block; }
   .nav-cta .btn-sm { min-width: 126px; min-height: 36px; padding: 8px 14px; font-size: 12.5px; }
 }
 @media (max-width: 1200px) {
-  .nav-search { display: none; }
   .nav-links { gap: 16px; }
 }
 
@@ -2586,8 +2585,11 @@ img { max-width: 100%; height: auto; display: block; }
 
 @media (max-width: 768px) {
   .nav-links,
-  .nav-search,
   .nav-contact { display: none; }
+  .nav-search { display: flex; width: 42px; padding: 0 12px; justify-content: center; }
+  .nav-search input { width: 0; opacity: 0; pointer-events: none; }
+  .nav-search:focus-within { width: min(180px, 42vw); justify-content: flex-start; }
+  .nav-search:focus-within input { width: 100%; opacity: 1; pointer-events: auto; }
   .nav-mobile-toggle { display: block; }
   .hero { padding: 100px 0 60px; }
   .hero-title { font-size: 36px; }

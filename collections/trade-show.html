@@ -106,9 +106,9 @@
       </ul>
 
       <div class="nav-cta">
-        <form class="nav-search" role="search" onsubmit="var q=(this.querySelector('input[name=q]').value||'').trim(); var p=location.pathname; var base=p.indexOf('/collections/')>-1?'index.html':(p.match(/\/(about|contact|solutions|case-studies)\//)?'../collections/index.html':'collections/index.html'); location.href=base+(q?'?search='+encodeURIComponent(q):''); return false;">
+        <form class="nav-search" role="search" action="/collections/index.html" method="get">
           <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-          <input type="search" name="q" placeholder="Search" aria-label="Search products" onkeydown="if(event.key==='Enter'){event.preventDefault(); var q=(this.value||'').trim(); var p=location.pathname; var base=p.indexOf('/collections/')>-1?'index.html':(p.match(/\/(about|contact|solutions|case-studies)\//)?'../collections/index.html':'collections/index.html'); location.href=base+(q?'?search='+encodeURIComponent(q):'');}">
+          <input type="search" name="search" placeholder="Search" aria-label="Search products">
         </form>
         <a href="../contact/index.html" class="btn btn-primary btn-sm">Start a Project</a>
         <button class="nav-mobile-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
@@ -394,5 +394,6 @@
     window.API_CONFIG.initPage('Trade Show', 'featuredGrid', 'tradeshow');
   </script>
 
+  <script src="../script.js"></script>
 </body>
 </html>
