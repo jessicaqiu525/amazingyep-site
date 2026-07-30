@@ -335,12 +335,55 @@
       }
       const recommendationTrack = document.querySelector('.' + cardClassPrefix + '-carousel-track');
       const recommendationPagination = document.querySelector('.' + cardClassPrefix + '-carousel-pagination');
+      const recommendationPageSize = 5;
+      let recommendationProducts = [];
+      let recommendationPage = 0;
       if (recommendationTrack) {
         recommendationTrack.style.display = 'grid';
         recommendationTrack.style.gridTemplateColumns = 'repeat(5, minmax(180px, 1fr))';
         recommendationTrack.style.alignItems = 'stretch';
       }
-      if (recommendationPagination) recommendationPagination.style.display = 'none';
+
+      function drawRecommendationPage() {
+        if (!recommendationTrack) return;
+        const pageCount = Math.max(1, Math.ceil(recommendationProducts.length / recommendationPageSize));
+        recommendationPage = Math.max(0, Math.min(recommendationPage, pageCount - 1));
+        const pageProducts = recommendationProducts.slice(
+          recommendationPage * recommendationPageSize,
+          (recommendationPage + 1) * recommendationPageSize
+        );
+        recommendationTrack.innerHTML = pageProducts.length
+          ? pageProducts.map(function(product) { return renderRecommendationCard(product, cardClassPrefix); }).join('')
+          : '<p style="color:#667085;">More custom product ideas are available on request.</p>';
+
+        if (recommendationPagination) {
+          recommendationPagination.style.display = pageCount > 1 ? 'flex' : 'none';
+          const fill = recommendationPagination.querySelector('.' + cardClassPrefix + '-pagination-bar-fill');
+          const pageNum = recommendationPagination.querySelector('.' + cardClassPrefix + '-pagination-num');
+          const arrows = recommendationPagination.querySelectorAll('.' + cardClassPrefix + '-pagination-arrow');
+          if (fill) fill.style.width = ((recommendationPage + 1) / pageCount * 100) + '%';
+          if (pageNum) pageNum.textContent = (recommendationPage + 1) + '/' + pageCount;
+          if (arrows[0]) arrows[0].style.opacity = recommendationPage === 0 ? '0.35' : '1';
+          if (arrows[1]) arrows[1].style.opacity = recommendationPage === pageCount - 1 ? '0.35' : '1';
+        }
+      }
+
+      if (recommendationPagination) {
+        const arrows = recommendationPagination.querySelectorAll('.' + cardClassPrefix + '-pagination-arrow');
+        if (arrows[0]) arrows[0].onclick = function() {
+          if (recommendationPage > 0) {
+            recommendationPage -= 1;
+            drawRecommendationPage();
+          }
+        };
+        if (arrows[1]) arrows[1].onclick = function() {
+          const pageCount = Math.ceil(recommendationProducts.length / recommendationPageSize);
+          if (recommendationPage + 1 < pageCount) {
+            recommendationPage += 1;
+            drawRecommendationPage();
+          }
+        };
+      }
 
       // Add backend-derived product types that are not yet represented by a
       // hard-coded chip. New catalog types therefore become filterable without
@@ -416,13 +459,12 @@
           const sameCategory = products.filter(function(product) {
             return !visibleIds.has(String(product.id || product.sku || ''));
           });
-          const related = sameCategory.concat(allProducts.filter(function(product) {
+          recommendationProducts = sameCategory.concat(allProducts.filter(function(product) {
             const id = String(product.id || product.sku || '');
             return !categoryIds.has(id) && !visibleIds.has(id);
-          })).slice(0, 5);
-          recommendationTrack.innerHTML = related.length
-            ? related.map(function(product) { return renderRecommendationCard(product, cardClassPrefix); }).join('')
-            : '<p style="color:#667085;">More custom product ideas are available on request.</p>';
+          }));
+          recommendationPage = 0;
+          drawRecommendationPage();
         }
       }
 
