@@ -8,63 +8,35 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style.css">
   <style>
-    .collections-breadcrumb {
-      background: #fff;
-      border-bottom: 1px solid var(--gray-200);
-    }
-    .collections-breadcrumb-inner {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 16px 32px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      color: var(--text-light);
-    }
-    .collections-breadcrumb-inner a {
-      color: var(--text-light);
-      text-decoration: none;
-      transition: var(--transition);
-    }
-    .collections-breadcrumb-inner a:hover { color: var(--orange); }
-    .collections-main {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 40px 32px 72px;
-    }
-    .collections-section-head {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 24px;
-      margin-bottom: 22px;
-    }
-    .collections-section-head h2 {
-      margin: 0;
-      font-size: 28px;
-      line-height: 1.15;
-      color: var(--navy);
-    }
-    .collections-section-head p {
-      margin: 0;
-      max-width: 520px;
-      font-size: 14px;
-      line-height: 1.6;
-      color: var(--text-light);
-    }
-    .collections-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 18px;
-    }
+    .collections-breadcrumb { padding: 16px 0 4px; background: #fff; }
+    .collections-breadcrumb-inner { max-width: 1440px; margin: 0 auto; padding: 0 32px; display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-light); }
+    .collections-breadcrumb-inner a { color: var(--text-light); text-decoration: none; display: flex; align-items: center; gap: 4px; transition: all 0.3s ease; transform-origin: left center; }
+    .collections-breadcrumb-inner a:hover { color: var(--orange); transform: scale(1.08) translateZ(0); filter: drop-shadow(0 2px 4px rgba(242,101,34,0.3)); }
+    .collections-breadcrumb-inner .sep { color: #ccc; }
+    .collections-breadcrumb-arrow { width: 16px; height: 16px; stroke: var(--text-light); }
+    .collections-header { max-width: 1440px; margin: 0 auto; padding: 16px 32px 20px; text-align: left; }
+    .collections-title { font-size: 48px; font-weight: 900; color: var(--navy); letter-spacing: 1px; margin: 0 0 4px; }
+    .collections-subtitle { font-size: 20px; font-weight: 500; color: var(--text-light); margin-left: 8px; letter-spacing: 0; }
+    .collections-filter-wrap { display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
+    .collections-filter-text { font-size: 18px; font-weight: 700; letter-spacing: 1px; color: var(--navy); text-transform: uppercase; }
+    .collections-filter-arrow { width: 20px; height: 20px; transition: transform 0.3s; flex-shrink: 0; }
+    .collections-filter-arrow.collapsed { transform: rotate(180deg); }
+    .collections-type-content { overflow: hidden; max-height: 600px; transition: max-height 0.3s ease; }
+    .collections-type-content.collapsed { max-height: 0; margin-bottom: 0; }
+    .collections-product-type { max-width: 1440px; margin: 0 auto; padding: 0 32px 40px; text-align: left; border-bottom: 1px solid var(--gray-200); }
+    .collections-type-label { font-size: 24px; font-weight: 700; letter-spacing: 1.5px; color: var(--navy); text-transform: uppercase; margin-bottom: 16px; text-decoration: underline; }
+    .collections-type-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .collections-type-item { padding: 12px 24px; border: 1px solid var(--gray-200); border-radius: 50px; font-size: 15px; color: var(--navy); cursor: pointer; transition: all 0.2s; background: #fff; white-space: nowrap; }
+    .collections-type-item:hover, .collections-type-item.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+    .collections-main { max-width: 1440px; margin: 0 auto; padding: 32px 32px 72px; }
+    .collections-featured-header { margin-bottom: 16px; }
+    .collections-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
     .collection-card {
       display: block;
       text-decoration: none;
       color: inherit;
       background: #fff;
-      border: 1px solid var(--gray-200);
-      border-radius: 8px;
+      border-radius: 12px;
       overflow: hidden;
       transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     }
@@ -95,9 +67,6 @@
       line-height: 1.5;
       color: var(--text-light);
     }
-    .collection-card-main h3 {
-      font-size: 20px;
-    }
     .collections-cta-band {
       margin-top: 48px;
       padding: 28px 32px;
@@ -124,9 +93,11 @@
       .collections-grid { grid-template-columns: repeat(3, 1fr); }
     }
     @media (max-width: 768px) {
+      .collections-title { font-size: 30px; letter-spacing: 0; }
+      .collections-subtitle { font-size: 14px; display: block; margin-left: 0; margin-top: 4px; }
+      .collections-type-grid { gap: 6px; }
+      .collections-type-item { padding: 8px 16px; font-size: 13px; }
       .collections-main { padding: 28px 20px 56px; }
-      .collections-section-head { display: block; }
-      .collections-section-head h2 { font-size: 24px; margin-bottom: 8px; }
       .collections-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
       .collection-card-body { padding: 12px; }
       .collection-card h3 { font-size: 15px; }
@@ -180,74 +151,108 @@
 
   <div class="collections-breadcrumb">
     <div class="collections-breadcrumb-inner">
-      <a href="../index.html">Home</a><span>/</span><span>Collections</span>
+      <a href="../index.html"><svg class="collections-breadcrumb-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Home</a><span class="sep">/</span><span>Collections</span>
+    </div>
+  </div>
+
+  <div class="collections-header">
+    <h1 class="collections-title">ALL COLLECTIONS <span class="collections-subtitle">Explore every way to bring your brand to life</span></h1>
+    <div class="collections-filter-wrap" onclick="toggleFilter()">
+      <span class="collections-filter-text">FILTER</span>
+      <svg class="collections-filter-arrow" id="filterArrow" viewBox="0 0 24 24" fill="none" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </div>
+
+  <div style="max-width:1440px; margin:0 auto; padding:0 32px 24px;">
+    <div style="display:flex; align-items:center; gap:12px; max-width:600px;">
+      <div style="flex:1; display:flex; align-items:center; gap:8px; padding:14px 20px; border:2px solid #d0d5dd; border-radius:50px; background:#fff;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" id="searchInput" placeholder="Search collections..." oninput="filterCollections()" style="border:none; outline:none; flex:1; font-size:15px; font-family:Inter,sans-serif; color:var(--navy); background:transparent;">
+      </div>
+    </div>
+  </div>
+
+  <div class="collections-product-type">
+    <div class="collections-type-content" id="typeContent">
+      <div class="collections-type-label">PRODUCT TYPE</div>
+      <div class="collections-type-grid">
+        <span class="collections-type-item active" data-category="all">All Collections</span>
+        <span class="collections-type-item" data-category="plush">Plush &amp; Mascots</span>
+        <span class="collections-type-item" data-category="keychains">Keychains &amp; Accessories</span>
+        <span class="collections-type-item" data-category="drinkware">Drinkware</span>
+        <span class="collections-type-item" data-category="bags">Bags</span>
+        <span class="collections-type-item" data-category="office">Office &amp; Stationery</span>
+        <span class="collections-type-item" data-category="outdoor">Outdoor &amp; Leisure</span>
+        <span class="collections-type-item" data-category="technology">Technology</span>
+        <span class="collections-type-item" data-category="trade-show">Trade Show</span>
+        <span class="collections-type-item" data-category="wearables">Wearables</span>
+      </div>
     </div>
   </div>
 
   <main class="collections-main">
-    <div class="collections-section-head">
-      <h2>Explore By Product Type</h2>
-      <p>Start with a core category, then open a collection page to view available products, item numbers, and price ranges.</p>
+    <div class="collections-featured-header">
+      <span class="section-label">FEATURED</span>
     </div>
 
     <div class="collections-grid">
-      <a class="collection-card collection-card-main" href="plush-mascots.html">
+      <a class="collection-card" href="plush-mascots.html" data-category="plush">
         <img class="collection-card-img" src="../assets/cat-plush.jpg" alt="Plush and mascots">
         <div class="collection-card-body">
           <h3>Plush &amp; Mascots</h3>
           <p>Custom plush, character items, and mascot merchandise.</p>
         </div>
       </a>
-      <a class="collection-card collection-card-main" href="keychains.html">
+      <a class="collection-card" href="keychains.html" data-category="keychains">
         <img class="collection-card-img" src="../assets/cat-keychain.jpg" alt="Keychains">
         <div class="collection-card-body">
           <h3>Keychains</h3>
           <p>Keychains and small accessories for promotional programs.</p>
         </div>
       </a>
-      <a class="collection-card collection-card-main" href="drinkware.html">
+      <a class="collection-card" href="drinkware.html" data-category="drinkware">
         <img class="collection-card-img" src="../assets/cat-drinkware.jpg" alt="Drinkware">
         <div class="collection-card-body">
           <h3>Drinkware</h3>
           <p>Bottles, tumblers, cups, and branded drinkware options.</p>
         </div>
       </a>
-      <a class="collection-card collection-card-main" href="bags.html">
+      <a class="collection-card" href="bags.html" data-category="bags">
         <img class="collection-card-img" src="../assets/cat-bags.jpg" alt="Bags">
         <div class="collection-card-body">
           <h3>Bags</h3>
           <p>Totes, coolers, backpacks, travel bags, and packaging bags.</p>
         </div>
       </a>
-      <a class="collection-card" href="office.html">
+      <a class="collection-card" href="office.html" data-category="office">
         <img class="collection-card-img" src="../assets/collections-hero-bg.jpg" alt="Office and stationery">
         <div class="collection-card-body">
           <h3>Office &amp; Stationery</h3>
           <p>Useful desk items, writing products, and office essentials.</p>
         </div>
       </a>
-      <a class="collection-card" href="outdoor-leisure.html">
+      <a class="collection-card" href="outdoor-leisure.html" data-category="outdoor">
         <img class="collection-card-img" src="../assets/collections-hero-bg.jpg" alt="Outdoor and leisure">
         <div class="collection-card-body">
           <h3>Outdoor &amp; Leisure</h3>
           <p>Products for travel, outdoor events, lifestyle, and recreation.</p>
         </div>
       </a>
-      <a class="collection-card" href="technology.html">
+      <a class="collection-card" href="technology.html" data-category="technology">
         <img class="collection-card-img" src="../assets/collections-hero-bg.jpg" alt="Technology">
         <div class="collection-card-body">
           <h3>Technology</h3>
           <p>Tech accessories and practical branded electronic items.</p>
         </div>
       </a>
-      <a class="collection-card" href="trade-show.html">
+      <a class="collection-card" href="trade-show.html" data-category="trade-show">
         <img class="collection-card-img" src="../assets/collections-hero-bg.jpg" alt="Trade show">
         <div class="collection-card-body">
           <h3>Trade Show</h3>
           <p>Giveaways and booth-ready merchandise for events.</p>
         </div>
       </a>
-      <a class="collection-card" href="apparel.html">
+      <a class="collection-card" href="apparel.html" data-category="wearables">
         <img class="collection-card-img" src="../assets/collections-hero-bg.jpg" alt="Wearables">
         <div class="collection-card-body">
           <h3>Wearables</h3>
@@ -307,6 +312,34 @@
     </div>
   </footer>
 
+  <script>
+    let activeCategory = 'all';
+
+    function toggleFilter() {
+      document.getElementById('filterArrow').classList.toggle('collapsed');
+      document.getElementById('typeContent').classList.toggle('collapsed');
+    }
+
+    function filterCollections() {
+      const query = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+      document.querySelectorAll('.collection-card').forEach(card => {
+        const text = (card.textContent || '').toLowerCase();
+        const category = card.dataset.category || '';
+        const matchesCategory = activeCategory === 'all' || category === activeCategory;
+        const matchesSearch = !query || text.includes(query);
+        card.style.display = matchesCategory && matchesSearch ? '' : 'none';
+      });
+    }
+
+    document.querySelectorAll('.collections-type-item').forEach(item => {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.collections-type-item').forEach(option => option.classList.remove('active'));
+        this.classList.add('active');
+        activeCategory = this.dataset.category || 'all';
+        filterCollections();
+      });
+    });
+  </script>
   <script src="../script.js"></script>
 </body>
 </html>
