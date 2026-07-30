@@ -262,30 +262,83 @@ function productMatches(product, query) {
   }
 
   if (query.search) {
-    const search = String(query.search).trim().toLowerCase();
+    const rawSearch = String(query.search).trim().toLowerCase();
+    const compactSearch = rawSearch.replace(/[^a-z0-9]+/g, '');
+    const sku = String(product.sku || product.itemNumber || product.itemNo || '')
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '');
+    const looksLikeItemCode = /^[a-z]{2}$/.test(compactSearch)
+      || (/^[a-z]{2,4}[a-z0-9]*\d[a-z0-9]*$/.test(compactSearch));
+
+    // Two-letter searches such as AK or AW are catalog-code searches. This
+    // prevents "AK" from accidentally matching ordinary words such as "leak".
+    if (looksLikeItemCode) return sku.startsWith(compactSearch);
+
+    const searchTerms = rawSearch
+      .trim()
+      .replace(/[^a-z0-9]+/g, ' ')
+      .split(/\s+/)
+      .filter(Boolean);
     const haystack = [
       product.name,
       product.sku,
+      product.itemNumber,
+      product.itemNo,
       product.category,
       product.subcategory,
       product.sageCategory1,
       product.sageCategory2,
       product.description,
       Array.isArray(product.keywords) ? product.keywords.join(' ') : product.keywords
-    ].join(' ').toLowerCase();
-    if (!haystack.includes(search)) return false;
+    ].join(' ').toLowerCase().replace(/[^a-z0-9]+/g, ' ');
+    if (!searchTerms.every((term) => {
+      const singular = term.endsWith('s') && term.length > 3 ? term.slice(0, -1) : term;
+      return haystack.includes(term) || haystack.includes(singular);
+    })) return false;
   }
 
   return true;
 }
 
+function productSearchScore(product, search) {
+  const query = String(search || '').trim().toLowerCase();
+  const sku = String(product.sku || product.itemNumber || product.itemNo || '').trim().toLowerCase();
+  const name = String(product.name || '').trim().toLowerCase();
+  const keywords = Array.isArray(product.keywords)
+    ? product.keywords.join(' ').toLowerCase()
+    : String(product.keywords || '').toLowerCase();
+
+  if (sku === query) return 1000;
+  if (sku.startsWith(query)) return 900;
+  if (name === query) return 800;
+  if (name.startsWith(query)) return 700;
+  if (name.includes(query)) return 600;
+  if (keywords.includes(query)) return 500;
+  return 100;
+}
+
+function sortSearchResults(products, search) {
+  if (!search) return products;
+  return products.slice().sort((a, b) => {
+    return productSearchScore(b, search) - productSearchScore(a, search)
+      || String(a.name || '').localeCompare(String(b.name || ''));
+  });
+}
+
 function listProducts(query) {
-  return readProductsFromJson().filter((product) => productMatches(product, query || {}));
+  const filters = query || {};
+  const products = readProductsFromJson().filter((product) => productMatches(product, filters));
+  return sortSearchResults(products, filters.search);
 }
 
 async function listProductsAsync(query) {
+  const filters = query || {};
   const products = await readProductsAsync();
-  return products.filter((product) => productMatches(product, query || {}));
+  return sortSearchResults(
+    products.filter((product) => productMatches(product, filters)),
+    filters.search
+  );
 }
 
 function findProduct(idOrSku) {

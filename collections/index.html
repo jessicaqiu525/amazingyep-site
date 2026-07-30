@@ -153,7 +153,7 @@
   </div>
 
   <div class="collections-header">
-    <h1 class="collections-title">ALL COLLECTIONS <span class="collections-subtitle">Explore every way to bring your brand to life</span></h1>
+    <h1 class="collections-title" id="collectionsPageTitle">ALL COLLECTIONS <span class="collections-subtitle">Explore every way to bring your brand to life</span></h1>
     <div class="collections-filter-wrap" onclick="toggleFilter()">
       <span class="collections-filter-text">FILTER</span>
       <svg class="collections-filter-arrow" id="filterArrow" viewBox="0 0 24 24" fill="none" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
@@ -161,15 +161,15 @@
   </div>
 
   <div style="max-width:1440px; margin:0 auto; padding:0 32px 24px;">
-    <div style="display:flex; align-items:center; gap:12px; max-width:600px;">
+    <form action="index.html" method="get" style="display:flex; align-items:center; gap:12px; max-width:600px;">
       <div style="flex:1; display:flex; align-items:center; gap:8px; padding:14px 20px; border:2px solid #d0d5dd; border-radius:50px; background:#fff;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        <input type="text" id="searchInput" placeholder="Search collections..." oninput="filterCollections()" style="border:none; outline:none; flex:1; font-size:15px; font-family:Inter,sans-serif; color:var(--navy); background:transparent;">
+        <input type="search" name="search" id="searchInput" placeholder="Search by product name, keyword, or item #..." style="border:none; outline:none; flex:1; font-size:15px; font-family:Inter,sans-serif; color:var(--navy); background:transparent;">
       </div>
-    </div>
+    </form>
   </div>
 
-  <div class="collections-product-type">
+  <div class="collections-product-type" id="collectionTypeFilters">
     <div class="collections-type-content" id="typeContent">
       <div class="collections-type-label">PRODUCT TYPE</div>
       <div class="collections-type-grid">
@@ -187,7 +187,15 @@
     </div>
   </div>
 
-  <main class="collections-main">
+  <section class="collections-search-results" id="productSearchResults" hidden>
+    <div class="collections-featured-header">
+      <span class="section-label">PRODUCT SEARCH RESULTS</span>
+      <p class="collections-search-summary" id="searchSummary" aria-live="polite">Searching products...</p>
+    </div>
+    <div class="search-products-grid" id="searchResultsGrid"></div>
+  </section>
+
+  <main class="collections-main" id="collectionsCatalog">
     <div class="collections-featured-header">
       <span class="section-label">FEATURED</span>
     </div>
@@ -326,6 +334,7 @@
     </div>
   </footer>
 
+  <script src="../api-config.js?v=20260730-search"></script>
   <script>
     let activeCategory = 'all';
 
@@ -347,6 +356,45 @@
         const text = (card.textContent || '').toLowerCase();
         card.style.display = !query || text.includes(query) ? '' : 'none';
       });
+    }
+
+    async function loadProductSearch() {
+      const params = new URLSearchParams(window.location.search);
+      const query = (params.get('search') || params.get('q') || '').trim();
+      if (!query) return;
+
+      const searchInput = document.getElementById('searchInput');
+      const resultsSection = document.getElementById('productSearchResults');
+      const resultsGrid = document.getElementById('searchResultsGrid');
+      const summary = document.getElementById('searchSummary');
+
+      searchInput.value = query;
+      document.querySelector('.nav-search input[name="q"]').value = query;
+      document.getElementById('collectionTypeFilters').hidden = true;
+      document.getElementById('collectionsCatalog').hidden = true;
+      document.getElementById('collectionsPageTitle').innerHTML = 'SEARCH PRODUCTS <span class="collections-subtitle">Find products by name, keyword, category, or item number</span>';
+      resultsSection.hidden = false;
+      resultsGrid.innerHTML = '<p class="collections-search-state">Searching products...</p>';
+
+      try {
+        const response = await fetch(window.API_CONFIG.BASE_URL + '/api/products?search=' + encodeURIComponent(query));
+        if (!response.ok) throw new Error('Search request failed');
+        const data = await response.json();
+        const products = Array.isArray(data.products) ? data.products : [];
+
+        summary.textContent = products.length + (products.length === 1 ? ' product' : ' products') + ' found for “' + query + '”';
+        if (!products.length) {
+          resultsGrid.innerHTML = '<div class="collections-search-empty"><h3>No products found</h3><p>Try a broader product word, category, or item number—for example “cooler”, “tumbler”, or “AK”.</p></div>';
+          return;
+        }
+
+        resultsGrid.innerHTML = products.map(function(product) {
+          return window.API_CONFIG.renderProductCard(product, 'search');
+        }).join('');
+      } catch (error) {
+        summary.textContent = 'Search is temporarily unavailable.';
+        resultsGrid.innerHTML = '<div class="collections-search-empty"><h3>We couldn\'t load the results</h3><p>Please try again in a moment.</p></div>';
+      }
     }
 
     document.querySelectorAll('.collections-type-item').forEach(item => {
@@ -382,6 +430,7 @@
         updatePagination();
       }
     }
+    loadProductSearch();
   </script>
   <script src="../script.js"></script>
 </body>
