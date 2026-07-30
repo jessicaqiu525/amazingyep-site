@@ -1343,18 +1343,33 @@
   }
 
   function getCategoryUrl(category) {
-    const map = {
-      'Bags': '../collections/bags.html',
-      'Drinkware': '../collections/drinkware.html',
-      'Plush & Mascots': '../collections/plush-mascots.html',
-      'Keychains & Accessories': '../collections/keychains.html',
-      'Office & Stationery': '../collections/office.html',
-      'Outdoor & Leisure': '../collections/outdoor-leisure.html',
-      'Technology': '../collections/technology.html',
-      'Trade Show': '../collections/trade-show.html',
-      'Wearables': '../collections/apparel.html'
-    };
-    return map[category] || '../collections/index.html';
+    const value = String(category || '').trim().toLowerCase();
+
+    // Products imported from Sage can retain a catalog category (for example
+    // "Tumblers") instead of the broader website category ("Drinkware").
+    // Route both forms to the same collection page so breadcrumb links never
+    // fall back to the Collections landing page unnecessarily.
+    const routes = [
+      { terms: ['bag', 'bags', 'tote', 'totes', 'cooler bag', 'backpack'], url: '../collections/bags.html' },
+      { terms: ['drinkware', 'tumbler', 'tumblers', 'mug', 'mugs', 'cup', 'cups', 'bottle', 'bottles'], url: '../collections/drinkware.html' },
+      { terms: ['plush', 'plush & mascots', 'mascot', 'mascots', 'stuffed animal', 'stuffed animals', 'pillow', 'pillows'], url: '../collections/plush-mascots.html' },
+      { terms: ['keychain', 'keychains', 'key chains', 'key chains / rings', 'keychains & accessories'], url: '../collections/keychains.html' },
+      { terms: ['office', 'office & stationery', 'stationery', 'writing', 'notebook', 'notebooks'], url: '../collections/office.html' },
+      { terms: ['outdoor', 'outdoor & leisure', 'blanket', 'blankets', 'leisure'], url: '../collections/outdoor-leisure.html' },
+      { terms: ['technology', 'tech', 'electronics'], url: '../collections/technology.html' },
+      { terms: ['trade show', 'tradeshow', 'event display'], url: '../collections/trade-show.html' },
+      { terms: ['wearables', 'apparel', 'sweater', 'sweaters', 'shirt', 'shirts'], url: '../collections/apparel.html' }
+    ];
+
+    for (let i = 0; i < routes.length; i++) {
+      if (routes[i].terms.some(function(term) {
+        return value === term || value.includes(term);
+      })) {
+        return routes[i].url;
+      }
+    }
+
+    return '../collections/index.html';
   }
 
   function getSetupCharge(p) {
