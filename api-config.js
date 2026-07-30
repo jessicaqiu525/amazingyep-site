@@ -9,6 +9,12 @@
     ? window.location.origin
     : 'https://amazingyep-sitebackend.onrender.com';
 
+  function escapeHtml(value) {
+    return String(value || '').replace(/[&<>"']/g, function(char) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char];
+    });
+  }
+
   // All products use the unified dynamic detail page
   // (no more static per-product pages — everything is product.html?id=X)
 
@@ -227,6 +233,21 @@
     '</div>';
   }
 
+  function renderRecommendationCard(product, cardClassPrefix) {
+    const img = (product.images && product.images[0]) || product.mainImage || '../assets/hero-image.jpg';
+    const name = escapeHtml(product.name || 'Custom Product');
+    const sku = escapeHtml(product.sku || product.itemNumber || '');
+    const link = getDetailPageUrl(product);
+    return '<a href="' + link + '" style="display:block;text-decoration:none;color:inherit;">' +
+      '<div class="' + cardClassPrefix + '-carousel-card">' +
+        '<img class="' + cardClassPrefix + '-carousel-card-img" src="' + escapeHtml(img) + '" alt="' + name + '">' +
+        '<div class="' + cardClassPrefix + '-carousel-card-body">' +
+          '<h4>' + name + '</h4>' +
+          (sku ? '<p>Item #: ' + sku + '</p>' : '') +
+        '</div>' +
+      '</div></a>';
+  }
+
   function productMatchesType(product, selectedType) {
     if (!selectedType) return true;
 
@@ -299,10 +320,20 @@
     try {
       let url = BASE_URL + '/api/products';
       if (apiCategory) url += '?category=' + encodeURIComponent(apiCategory);
-      const res = await fetch(url);
+      const responses = await Promise.all([
+        fetch(url),
+        apiCategory ? fetch(BASE_URL + '/api/products') : Promise.resolve(null)
+      ]);
+      const res = responses[0];
       if (!res.ok) throw new Error('Failed to load products');
       const data = await res.json();
       const products = data.products || [];
+      let allProducts = products;
+      if (responses[1] && responses[1].ok) {
+        const allData = await responses[1].json();
+        allProducts = allData.products || products;
+      }
+      const recommendationTrack = document.querySelector('.' + cardClassPrefix + '-carousel-track');
 
       // Add backend-derived product types that are not yet represented by a
       // hard-coded chip. New catalog types therefore become filterable without
@@ -334,27 +365,58 @@
         // Product Type filters show matching backend products only. The unfiltered
         // view continues to use samples to keep the existing 12-card layout.
         if (selectedType && !filteredProducts.length) {
-          grid.innerHTML = '<p style="grid-column:1/-1;padding:32px 0;color:#667085;">No products found for ' +
-            selectedType + '.</p>';
-          return;
-        }
-
-        let html = '';
-        const realToShow = filteredProducts.slice(0, 12);
-        realToShow.forEach(function(p) {
-          html += renderProductCard(p, cardClassPrefix);
-        });
-
-        if (!selectedType) {
-          const remaining = 12 - realToShow.length;
-          if (remaining > 0) {
-            samples.slice(0, remaining).forEach(function(s) {
-              html += renderSampleCard(s, cardClassPrefix);
+          const safeType = escapeHtml(selectedType);
+          const safeCategory = escapeHtml(category);
+          grid.innerHTML = '<div style="grid-column:1/-1;padding:34px;border:1px solid #e4e7ec;border-radius:16px;background:#fffaf7;">' +
+            '<h3 style="margin:0 0 10px;color:#082a4a;font-size:24px;">Looking for custom ' + safeType + '?</h3>' +
+            '<p style="margin:0 0 22px;color:#667085;line-height:1.6;">We can source it for you. Tell us your quantity, artwork, and deadline—we’ll recommend the best options.</p>' +
+            '<a href="../contact/index.html" style="display:inline-block;padding:12px 20px;border-radius:28px;background:#ff5a1f;color:#fff;text-decoration:none;font-weight:700;margin-right:10px;">Start a Project</a>' +
+            (products.length ? '<button type="button" data-view-available style="padding:11px 20px;border-radius:28px;border:1px solid #082a4a;background:#fff;color:#082a4a;font-weight:700;cursor:pointer;">View Available ' + safeCategory + '</button>' : '') +
+          '</div>';
+          const viewAvailable = grid.querySelector('[data-view-available]');
+          if (viewAvailable) {
+            viewAvailable.addEventListener('click', function() {
+              typeItems.forEach(function(item) { item.classList.remove('active'); });
+              renderProducts('');
             });
           }
+        } else {
+          let html = '';
+          const realToShow = filteredProducts.slice(0, 12);
+          realToShow.forEach(function(p) {
+            html += renderProductCard(p, cardClassPrefix);
+          });
+
+          if (!selectedType) {
+            const remaining = 12 - realToShow.length;
+            if (remaining > 0) {
+              samples.slice(0, remaining).forEach(function(s) {
+                html += renderSampleCard(s, cardClassPrefix);
+              });
+            }
+          }
+
+          grid.innerHTML = html;
         }
 
-        grid.innerHTML = html;
+        if (recommendationTrack) {
+          const visibleIds = new Set(filteredProducts.map(function(product) {
+            return String(product.id || product.sku || '');
+          }));
+          const categoryIds = new Set(products.map(function(product) {
+            return String(product.id || product.sku || '');
+          }));
+          const sameCategory = products.filter(function(product) {
+            return !visibleIds.has(String(product.id || product.sku || ''));
+          });
+          const related = sameCategory.concat(allProducts.filter(function(product) {
+            const id = String(product.id || product.sku || '');
+            return !categoryIds.has(id) && !visibleIds.has(id);
+          })).slice(0, 8);
+          recommendationTrack.innerHTML = related.length
+            ? related.map(function(product) { return renderRecommendationCard(product, cardClassPrefix); }).join('')
+            : '<p style="color:#667085;">More custom product ideas are available on request.</p>';
+        }
       }
 
       renderProducts('');
