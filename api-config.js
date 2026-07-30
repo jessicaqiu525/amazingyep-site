@@ -238,12 +238,12 @@
     const name = escapeHtml(product.name || 'Custom Product');
     const sku = escapeHtml(product.sku || product.itemNumber || '');
     const link = getDetailPageUrl(product);
-    return '<a href="' + link + '" style="display:block;text-decoration:none;color:inherit;">' +
-      '<div class="' + cardClassPrefix + '-carousel-card">' +
+    return '<a href="' + link + '" style="display:flex;height:100%;min-width:0;text-decoration:none;color:inherit;">' +
+      '<div class="' + cardClassPrefix + '-carousel-card" style="width:100%;height:100%;display:flex;flex-direction:column;">' +
         '<img class="' + cardClassPrefix + '-carousel-card-img" src="' + escapeHtml(img) + '" alt="' + name + '">' +
-        '<div class="' + cardClassPrefix + '-carousel-card-body">' +
-          '<h4>' + name + '</h4>' +
-          (sku ? '<p>Item #: ' + sku + '</p>' : '') +
+        '<div class="' + cardClassPrefix + '-carousel-card-body" style="display:flex;flex:1;flex-direction:column;">' +
+          '<h4 title="' + name + '" style="min-height:4.2em;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">' + name + '</h4>' +
+          (sku ? '<p style="margin-top:auto;">Item #: ' + sku + '</p>' : '') +
         '</div>' +
       '</div></a>';
   }
@@ -334,6 +334,13 @@
         allProducts = allData.products || products;
       }
       const recommendationTrack = document.querySelector('.' + cardClassPrefix + '-carousel-track');
+      const recommendationPagination = document.querySelector('.' + cardClassPrefix + '-carousel-pagination');
+      if (recommendationTrack) {
+        recommendationTrack.style.display = 'grid';
+        recommendationTrack.style.gridTemplateColumns = 'repeat(5, minmax(180px, 1fr))';
+        recommendationTrack.style.alignItems = 'stretch';
+      }
+      if (recommendationPagination) recommendationPagination.style.display = 'none';
 
       // Add backend-derived product types that are not yet represented by a
       // hard-coded chip. New catalog types therefore become filterable without
@@ -412,7 +419,7 @@
           const related = sameCategory.concat(allProducts.filter(function(product) {
             const id = String(product.id || product.sku || '');
             return !categoryIds.has(id) && !visibleIds.has(id);
-          })).slice(0, 8);
+          })).slice(0, 5);
           recommendationTrack.innerHTML = related.length
             ? related.map(function(product) { return renderRecommendationCard(product, cardClassPrefix); }).join('')
             : '<p style="color:#667085;">More custom product ideas are available on request.</p>';
