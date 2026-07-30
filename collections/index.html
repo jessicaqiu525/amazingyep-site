@@ -8,50 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style.css">
   <style>
-    .collections-hero {
-      position: relative;
-      min-height: 360px;
-      display: flex;
-      align-items: flex-end;
-      background: #f5f7fa url('../assets/collections-hero-bg.jpg') center / cover no-repeat;
-    }
-    .collections-hero::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(10, 30, 54, 0.08), rgba(10, 30, 54, 0.58));
-    }
-    .collections-hero-inner {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 56px 32px;
-      color: #fff;
-    }
-    .collections-kicker {
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 1.6px;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-      color: rgba(255,255,255,0.86);
-    }
-    .collections-title {
-      margin: 0;
-      font-size: 56px;
-      line-height: 1;
-      font-weight: 900;
-      color: #fff;
-    }
-    .collections-copy {
-      max-width: 620px;
-      margin: 14px 0 0;
-      font-size: 18px;
-      line-height: 1.55;
-      color: rgba(255,255,255,0.9);
-    }
     .collections-breadcrumb {
       background: #fff;
       border-bottom: 1px solid var(--gray-200);
@@ -168,10 +124,6 @@
       .collections-grid { grid-template-columns: repeat(3, 1fr); }
     }
     @media (max-width: 768px) {
-      .collections-hero { min-height: 300px; }
-      .collections-hero-inner { padding: 42px 20px; }
-      .collections-title { font-size: 38px; }
-      .collections-copy { font-size: 15px; }
       .collections-main { padding: 28px 20px 56px; }
       .collections-section-head { display: block; }
       .collections-section-head h2 { font-size: 24px; margin-bottom: 8px; }
@@ -222,12 +174,8 @@
     </div>
   </nav>
 
-  <header class="collections-hero">
-    <div class="collections-hero-inner">
-      <div class="collections-kicker">Product Collections</div>
-      <h1 class="collections-title">Collections</h1>
-      <p class="collections-copy">Browse our main product families and supporting categories for distributor programs, events, retail merchandise, and custom branded projects.</p>
-    </div>
+  <header style="background:none; padding:0; margin:0;">
+    <img src="../assets/collections-hero-bg.jpg" alt="Collections" style="width:100%; height:auto; display:block; max-height:600px; object-fit:cover; object-position:center center;">
   </header>
 
   <div class="collections-breadcrumb">
