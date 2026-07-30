@@ -180,7 +180,18 @@
     }
     const name = product.name || 'Untitled Product';
     const sku = product.sku || '';
-    const priceRange = product.priceRange || '';
+    const prices = (product.pricing || [])
+      .map(function(row) { return Number(String(row.price || '').replace(/[^0-9.-]/g, '')); })
+      .filter(function(price) { return Number.isFinite(price) && price > 0; });
+    const priceRange = prices.length
+      ? (function() {
+          const min = Math.min.apply(null, prices);
+          const max = Math.max.apply(null, prices);
+          return min === max
+            ? '$' + min.toFixed(2)
+            : '$' + min.toFixed(2) + '-$' + max.toFixed(2);
+        })()
+      : (product.priceRange || '');
 
     const cardClass = cardClassPrefix + '-featured-card';
     const imgClass = cardClassPrefix + '-featured-card-img';

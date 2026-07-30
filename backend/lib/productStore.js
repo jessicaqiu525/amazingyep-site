@@ -60,6 +60,22 @@ function canonicalWebsiteCategory(value) {
   return group ? group.name : category;
 }
 
+function derivedPriceRange(product) {
+  const prices = (product.pricing || [])
+    .map((row) => Number(String(row.price || '').replace(/[^0-9.-]/g, '')))
+    .filter((price) => Number.isFinite(price) && price > 0);
+  if (!prices.length) return product.priceRange || '';
+  const min = Math.min(...prices);
+  const max = Math.max(...prices);
+  return min === max
+    ? '$' + min.toFixed(2)
+    : '$' + min.toFixed(2) + '-$' + max.toFixed(2);
+}
+
+function productForDisplay(product) {
+  return product ? { ...product, priceRange: derivedPriceRange(product) } : product;
+}
+
 function ensureStore() {
   fs.mkdirSync(DATA_DIR, { recursive: true });
   fs.mkdirSync(BACKUP_DIR, { recursive: true });
@@ -218,7 +234,7 @@ function restoreBackup(name) {
 
 function normalizeProduct(product, existing) {
   const now = new Date().toISOString();
-  return {
+  const normalized = {
     ...(existing || {}),
     ...product,
     id: product.id !== undefined && product.id !== null && product.id !== ''
@@ -229,6 +245,8 @@ function normalizeProduct(product, existing) {
     updatedAt: now,
     createdAt: (existing && existing.createdAt) || product.createdAt || now
   };
+  normalized.priceRange = derivedPriceRange(normalized);
+  return normalized;
 }
 
 function nextId() {
@@ -329,7 +347,7 @@ function sortSearchResults(products, search) {
 function listProducts(query) {
   const filters = query || {};
   const products = readProductsFromJson().filter((product) => productMatches(product, filters));
-  return sortSearchResults(products, filters.search);
+  return sortSearchResults(products, filters.search).map(productForDisplay);
 }
 
 async function listProductsAsync(query) {
@@ -338,15 +356,16 @@ async function listProductsAsync(query) {
   return sortSearchResults(
     products.filter((product) => productMatches(product, filters)),
     filters.search
-  );
+  ).map(productForDisplay);
 }
 
 function findProduct(idOrSku) {
   const target = String(idOrSku || '').trim().toUpperCase();
-  return readProductsFromJson().find((product) => {
+  const product = readProductsFromJson().find((product) => {
     return [product.id, product.sku, product.itemNumber, product.itemNo]
       .some((value) => String(value || '').trim().toUpperCase() === target);
   }) || null;
+  return productForDisplay(product);
 }
 
 async function findProductAsync(idOrSku) {
@@ -357,7 +376,7 @@ async function findProductAsync(idOrSku) {
     'SELECT data FROM products WHERE id = $1 OR UPPER(sku) = UPPER($1) OR UPPER(data->>\'itemNumber\') = UPPER($1) OR UPPER(data->>\'itemNo\') = UPPER($1) LIMIT 1',
     [target]
   );
-  return result.rows[0] ? result.rows[0].data : null;
+  return result.rows[0] ? productForDisplay(result.rows[0].data) : null;
 }
 
 async function writeProductToPostgres(product) {

@@ -1398,13 +1398,11 @@
   }
 
   function getPriceRangeText(p) {
-    if (p.priceRange) return p.priceRange;
     const pricing = p.pricing || [];
-    if (!pricing.length) return '';
     const prices = pricing
-      .map(function(row) { return Number(row.price); })
+      .map(function(row) { return Number(String(row.price || '').replace(/[^0-9.-]/g, '')); })
       .filter(function(price) { return Number.isFinite(price) && price > 0; });
-    if (!prices.length) return '';
+    if (!prices.length) return p.priceRange || '';
     const min = Math.min.apply(null, prices);
     const max = Math.max.apply(null, prices);
     if (min === max) return '$' + min.toFixed(2);
