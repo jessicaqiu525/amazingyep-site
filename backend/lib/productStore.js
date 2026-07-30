@@ -72,8 +72,58 @@ function derivedPriceRange(product) {
     : '$' + min.toFixed(2) + '-$' + max.toFixed(2);
 }
 
+const WEBSITE_PRODUCT_TYPE_RULES = [
+  ['Tote Bags', /\b(tote|shopper)\b/i],
+  ['Coolers', /\b(cooler|insulated lunch|lunch bag)\b/i],
+  ['Backpacks', /\bbackpack\b/i],
+  ['Duffels', /\bduffel\b/i],
+  ['Drawstring Sportpacks', /\b(drawstring|sportpack)\b/i],
+  ['PVC Keychains', /\bpvc\b/i],
+  ['Metal Keychains', /\bmetal\b/i],
+  ['Acrylic Keychains', /\bacrylic\b/i],
+  ['Enamel Keychains', /\benamel\b/i],
+  ['Bottle Opener Keychains', /\bbottle opener\b/i],
+  ['LED Keychains', /\bled\b/i],
+  ['Leather Keychains', /\bleather\b/i],
+  ['Mini Plush Keychains', /\b(plush|stuffed animal).{0,30}\bkeychain\b|\bkeychain.{0,30}\b(plush|stuffed animal)\b/i],
+  ['Pins', /\bpin(s)?\b/i],
+  ['Patches', /\bpatch(es)?\b/i],
+  ['Mugs and Tumblers', /\b(mug|tumbler)\b/i],
+  ['Water Bottles', /\bwater bottle\b/i],
+  ['Cups', /\bcup(s)?\b/i],
+  ['Blankets', /\bblanket\b/i],
+  ['Sweaters', /\bsweater\b/i],
+  ['Plush Pillows', /\b(pillow|cushion)\b/i],
+  ['Holiday Plush', /\b(holiday|christmas|seasonal).{0,30}\b(plush|mascot|character)\b/i],
+  ['Brand Mascots', /\bmascot\b/i],
+  ['Stuffed Animals', /\bstuffed animal\b/i],
+  ['Custom Plush Characters', /\b(plush|character|doll)\b/i],
+  ['Hoodies & Sweatshirts', /\b(hoodie|sweatshirt)\b/i],
+  ['T-Shirts', /\bt[ -]?shirt\b/i],
+  ['Hats & Caps', /\b(hat|cap)\b/i]
+];
+
+function derivedWebsiteProductType(product) {
+  if (String(product.websiteProductType || '').trim()) {
+    return String(product.websiteProductType).trim();
+  }
+  const searchable = [
+    product.name,
+    Array.isArray(product.keywords) ? product.keywords.join(' ') : product.keywords,
+    product.subcategory,
+    product.sageCategory2,
+    product.sageCategory1
+  ].filter(Boolean).join(' ');
+  const match = WEBSITE_PRODUCT_TYPE_RULES.find((rule) => rule[1].test(searchable));
+  return match ? match[0] : String(product.subcategory || product.sageCategory2 || product.sageCategory1 || '').trim();
+}
+
 function productForDisplay(product) {
-  return product ? { ...product, priceRange: derivedPriceRange(product) } : product;
+  return product ? {
+    ...product,
+    priceRange: derivedPriceRange(product),
+    websiteProductType: derivedWebsiteProductType(product)
+  } : product;
 }
 
 function ensureStore() {
@@ -246,6 +296,7 @@ function normalizeProduct(product, existing) {
     createdAt: (existing && existing.createdAt) || product.createdAt || now
   };
   normalized.priceRange = derivedPriceRange(normalized);
+  normalized.websiteProductType = derivedWebsiteProductType(normalized);
   return normalized;
 }
 
@@ -465,6 +516,7 @@ module.exports = {
   latestBackup,
   listBackups,
   restoreBackup,
+  derivedWebsiteProductType,
   usingPostgres: USE_POSTGRES,
   ensurePostgresStore
 };

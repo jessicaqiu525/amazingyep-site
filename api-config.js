@@ -232,7 +232,7 @@
 
     const stopWords = new Set([
       'and', 'the', 'bags', 'bag', 'accessories', 'accessory', 'gear',
-      'equipment', 'products', 'product', 'custom'
+      'equipment', 'products', 'product', 'custom', 'keychain', 'keychains'
     ]);
     function tokens(value) {
       return String(value || '')
@@ -250,6 +250,10 @@
 
     const selectedTokens = tokens(selectedType);
     if (!selectedTokens.length) return false;
+
+    if (product.websiteProductType) {
+      return tokens(product.websiteProductType).join(' ') === selectedTokens.join(' ');
+    }
 
     function fieldMatches(value) {
       const fieldTokens = tokens(value);
@@ -285,7 +289,7 @@
 
     const apiCategory = category;
     const samples = (SAMPLE_PRODUCTS[category] || []).slice(0, 12);
-    const typeItems = Array.from(document.querySelectorAll('.' + cardClassPrefix + '-type-item'));
+    let typeItems = Array.from(document.querySelectorAll('.' + cardClassPrefix + '-type-item'));
 
     // No Product Type filter is selected until the visitor clicks one.
     typeItems.forEach(function(item) {
@@ -299,6 +303,26 @@
       if (!res.ok) throw new Error('Failed to load products');
       const data = await res.json();
       const products = data.products || [];
+
+      // Add backend-derived product types that are not yet represented by a
+      // hard-coded chip. New catalog types therefore become filterable without
+      // editing every category page by hand.
+      if (typeItems.length) {
+        const typeContainer = typeItems[0].parentElement;
+        const existingTypes = new Set(typeItems.map(function(item) {
+          return item.textContent.trim().toLowerCase();
+        }));
+        products.forEach(function(product) {
+          const productType = String(product.websiteProductType || '').trim();
+          if (!productType || existingTypes.has(productType.toLowerCase())) return;
+          const item = document.createElement('span');
+          item.className = cardClassPrefix + '-type-item';
+          item.textContent = productType;
+          typeContainer.appendChild(item);
+          existingTypes.add(productType.toLowerCase());
+        });
+        typeItems = Array.from(document.querySelectorAll('.' + cardClassPrefix + '-type-item'));
+      }
 
       function renderProducts(selectedType) {
         const filteredProducts = selectedType

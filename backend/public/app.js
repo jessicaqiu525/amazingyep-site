@@ -741,6 +741,7 @@ function fillForm(product) {
   setField('sku', product.sku);
   setField('category', product.category);
   setField('subcategory', product.subcategory);
+  setField('websiteProductType', product.websiteProductType);
   setField('sageCategory1', product.sageCategory1);
   setField('sageCategory2', product.sageCategory2);
   setField('name', product.name);
@@ -960,6 +961,7 @@ function collectProduct() {
     name: getField('name'),
     category: getField('category'),
     subcategory: getField('subcategory'),
+    websiteProductType: getField('websiteProductType'),
     sageCategory1: getField('sageCategory1'),
     sageCategory2: getField('sageCategory2'),
     description: getField('description'),
