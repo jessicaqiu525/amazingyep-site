@@ -204,7 +204,7 @@ app.get('/solutions/brand-program-v2.html', (req, res) => {
         var bar = document.createElement('div');
         bar.className = 'brand-back-bar';
         bar.setAttribute('aria-label', 'Breadcrumb');
-        bar.style.cssText = 'background:#fff;border-bottom:1px solid #e5e7eb;';
+        bar.style.cssText = 'margin-top:72px;background:#fff;border-bottom:1px solid #e5e7eb;';
         var inner = document.createElement('div');
         inner.className = 'container';
         inner.style.cssText = 'min-height:54px;display:flex;align-items:center;gap:9px;color:#667085;font-size:14px;';
