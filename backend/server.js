@@ -209,6 +209,7 @@ app.get('/solutions/brand-program-v2.html', (req, res) => {
         inner.className = 'container';
         inner.style.cssText = 'min-height:54px;display:flex;align-items:center;gap:9px;color:#667085;font-size:14px;';
         var link = document.createElement('a');
+        link.className = 'brand-back-root';
         link.href = 'index.html';
         link.textContent = '← Brand Programs';
         link.style.cssText = 'color:#082746;font-weight:700;text-decoration:none;';

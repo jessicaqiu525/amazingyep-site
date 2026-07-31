@@ -14,6 +14,7 @@
     .brand-back-bar a:hover { color: var(--orange); }
     .brand-back-bar svg { width: 17px; height: 17px; }
     .brand-back-separator { color: var(--gray-300); }
+    .brand-back-root:hover { color: var(--orange) !important; text-decoration: underline; text-underline-offset: 3px; }
     .brand-back-category { color: var(--navy) !important; font-weight: 600 !important; }
     .brand-back-category:hover { color: var(--orange) !important; text-decoration: underline; text-underline-offset: 3px; }
     .brand-back-current { color: var(--text-light); }
@@ -65,7 +66,7 @@
 
   <div class="brand-back-bar" aria-label="Breadcrumb">
     <div class="container">
-      <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Brand Programs</a>
+      <a class="brand-back-root" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Brand Programs</a>
       <span class="brand-back-separator">/</span>
       <a class="brand-back-category" id="breadcrumbCategory" href="index.html">Brand Category</a>
       <span class="brand-back-separator">/</span>
