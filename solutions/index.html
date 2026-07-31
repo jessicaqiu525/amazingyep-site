@@ -400,7 +400,7 @@
     }
     function openBrandProgram(card) {
       const brandName = card.querySelector('h4')?.textContent?.trim();
-      if (brandName) window.location.href = 'brand-program.html?brand=' + encodeURIComponent(brandName) + '&v=20260731c';
+      if (brandName) window.location.href = 'brand-program-v2.html?brand=' + encodeURIComponent(brandName);
     }
     document.querySelectorAll('.bp-featured-card').forEach(card => {
       card.setAttribute('role', 'link');

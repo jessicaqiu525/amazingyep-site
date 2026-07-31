@@ -180,6 +180,10 @@ app.use((req, res, next) => {
   }
   next();
 });
+app.get('/solutions/brand-program-v2.html', (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.sendFile(path.join(SITE_ROOT_DIR, 'solutions', 'brand-program.html'));
+});
 app.use('/uploads', express.static(UPLOAD_DIR));
 app.use('/assets', express.static(SITE_ASSETS_DIR));
 app.use('/admin', express.static(ADMIN_DIR));
