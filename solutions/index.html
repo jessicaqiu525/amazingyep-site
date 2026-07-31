@@ -415,7 +415,15 @@
         }
       });
     });
-    showBrandCategory('featured');
+    const requestedBrandCategory = new URLSearchParams(window.location.search).get('category');
+    const requestedCategoryButton = requestedBrandCategory ? document.querySelector('.bp-type-item[data-filter="' + requestedBrandCategory + '"]') : null;
+    if (requestedCategoryButton) {
+      document.querySelectorAll('.bp-type-item').forEach(item => item.classList.remove('active'));
+      requestedCategoryButton.classList.add('active');
+      showBrandCategory(requestedBrandCategory);
+    } else {
+      showBrandCategory('featured');
+    }
   </script>
 
   <script src="../script.js"></script>
