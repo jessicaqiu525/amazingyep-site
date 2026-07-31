@@ -216,6 +216,7 @@ app.get('/solutions/brand-program-v2.html', (req, res) => {
         category.textContent = categories[brand.toLowerCase()] || 'Brand Program';
         var categorySlugs = {'Food & Beverage':'food-beverage','Lifestyle & Entertainment':'lifestyle-entertainment','Sports':'sports','Retail & Automotive':'retail-automotive','Health, Wellness & Pet':'health-wellness'};
         var categoryLink = document.createElement('a');
+        categoryLink.className = 'brand-back-category';
         categoryLink.href = 'index.html?category=' + (categorySlugs[category.textContent] || 'all');
         categoryLink.textContent = category.textContent;
         categoryLink.style.cssText = 'color:#082746;font-weight:600;text-decoration:none;';
