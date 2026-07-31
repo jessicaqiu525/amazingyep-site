@@ -72,40 +72,132 @@ function derivedPriceRange(product) {
     : '$' + min.toFixed(2) + '-$' + max.toFixed(2);
 }
 
-const WEBSITE_PRODUCT_TYPE_RULES = [
-  ['Tote Bags', /\b(tote|shopper)\b/i],
-  ['Coolers', /\b(cooler|insulated lunch|lunch bag)\b/i],
-  ['Backpacks', /\bbackpack\b/i],
-  ['Duffels', /\bduffel\b/i],
-  ['Drawstring Sportpacks', /\b(drawstring|sportpack)\b/i],
-  ['PVC Keychains', /\bpvc\b/i],
-  ['Metal Keychains', /\bmetal\b/i],
-  ['Acrylic Keychains', /\bacrylic\b/i],
-  ['Enamel Keychains', /\benamel\b/i],
-  ['Bottle Opener Keychains', /\bbottle opener\b/i],
-  ['LED Keychains', /\bled\b/i],
-  ['Leather Keychains', /\bleather\b/i],
-  ['Plush Keychains', /\b(plush|stuffed animal).{0,30}\bkeychain\b|\bkeychain.{0,30}\b(plush|stuffed animal)\b/i],
-  ['Pins', /\bpin(s)?\b/i],
-  ['Patches', /\bpatch(es)?\b/i],
-  ['Mugs and Tumblers', /\b(mug|tumbler)\b/i],
-  ['Water Bottles', /\bwater bottle\b/i],
-  ['Cups', /\bcup(s)?\b/i],
-  ['Blankets', /\bblanket\b/i],
-  ['Sweaters', /\bsweater\b/i],
-  ['Plush Pillows', /\b(pillow|cushion)\b/i],
-  ['Holiday & Seasonal Plush', /\b(holiday|christmas|seasonal).{0,30}\b(plush|mascot|character)\b/i],
-  ['Brand & Team Mascots', /\bmascot\b/i],
-  ['Custom Plush Toys', /\b(plush|stuffed animal|character|doll)\b/i],
-  ['Hoodies & Sweatshirts', /\b(hoodie|sweatshirt)\b/i],
-  ['T-Shirts', /\bt[ -]?shirt\b/i],
-  ['Hats & Caps', /\b(hat|cap)\b/i]
-];
+const WEBSITE_PRODUCT_TYPE_RULES = {
+  'Bags': [
+    ['Tote & Shopping Bags', /\b(tote|shopper|shopping bag)\b/i],
+    ['Backpacks & Drawstring Bags', /\b(backpack|drawstring|sportpack)\b/i],
+    ['Messenger & Briefcase Bags', /\b(messenger|briefcase|laptop bag)\b/i],
+    ['Crossbody & Fanny Packs', /\b(crossbody|fanny|waist pack)\b/i],
+    ['Duffel & Travel Bags', /\b(duffel|travel bag|luggage)\b/i],
+    ['Coolers & Lunch Bags', /\b(cooler|insulated lunch|lunch bag)\b/i],
+    ['Clear Stadium Bags', /\b(clear|stadium)\b/i],
+    ['Paper, Plastic & Retail Bags', /\b(paper bag|plastic bag|retail bag)\b/i]
+  ],
+  'Keychains & Accessories': [
+    ['Plush Keychains', /\b(plush|stuffed animal).{0,30}\bkeychain\b|\bkeychain.{0,30}\b(plush|stuffed animal)\b/i],
+    ['PVC & Rubber Keychains', /\b(pvc|rubber|silicone)\b/i],
+    ['Metal & Enamel Keychains', /\b(metal|enamel|zinc alloy)\b/i],
+    ['Acrylic Keychains', /\bacrylic\b/i],
+    ['Bottle Opener Keychains', /\bbottle opener\b/i],
+    ['Leather & Fabric Keychains', /\b(leather|fabric|woven|embroidered)\b/i],
+    ['Light-Up & Functional Keychains', /\b(led|light-up|flashlight|tool|functional)\b/i],
+    ['Pins & Patches', /\b(pin|pins|patch|patches)\b/i]
+  ],
+  'Drinkware': [
+    ['Tumblers & Travel Mugs', /\b(tumbler|travel mug|vacuum mug|insulated mug)\b/i],
+    ['Water Bottles', /\b(water bottle|sports bottle)\b/i],
+    ['Mugs & Cups', /\b(mug|cup)\b/i],
+    ['Can Coolers & Beverage Holders', /\b(can cooler|koozie|beverage holder|bottle holder)\b/i],
+    ['Barware', /\b(barware|wine|cocktail|beer|shot glass)\b/i],
+    ['Coasters & Drinkware Accessories', /\b(coaster|straw|lid|drinkware accessory)\b/i]
+  ],
+  'Plush & Mascots': [
+    ['Plush Keychains', /\b(plush|stuffed animal).{0,30}\bkeychain\b|\bkeychain.{0,30}\b(plush|stuffed animal)\b/i],
+    ['Plush Pillows', /\b(pillow|cushion)\b/i],
+    ['Holiday & Seasonal Plush', /\b(holiday|christmas|seasonal).{0,30}\b(plush|mascot|character)\b/i],
+    ['Brand & Team Mascots', /\b(mascot|team character)\b/i],
+    ['Custom Plush Toys', /\b(plush|stuffed animal|character|doll)\b/i]
+  ],
+  'Wearables': [
+    ['T-Shirts', /\bt[ -]?shirt\b/i],
+    ['Polo Shirts', /\bpolo\b/i],
+    ['Hoodies & Sweatshirts', /\b(hoodie|sweatshirt)\b/i],
+    ['Sweaters & Knitwear', /\b(sweater|knitwear|cardigan)\b/i],
+    ['Jackets & Outerwear', /\b(jacket|outerwear|coat|vest)\b/i],
+    ['Hats & Caps', /\b(hat|cap|beanie)\b/i],
+    ['Aprons & Uniforms', /\b(apron|uniform)\b/i],
+    ['Activewear', /\b(activewear|athletic|sportswear|shorts|leggings)\b/i]
+  ],
+  'Office & Stationery': [
+    ['Notebooks & Journals', /\b(notebook|journal)\b/i],
+    ['Pens & Writing', /\b(pen|pencil|writing)\b/i],
+    ['Desk Accessories & Organizers', /\b(desk|organizer|holder)\b/i],
+    ['Sticky Notes', /\bsticky note\b/i],
+    ['Calendars & Planners', /\b(calendar|planner)\b/i],
+    ['Mouse Pads', /\bmouse pad\b/i]
+  ],
+  'Outdoor & Leisure': [
+    ['Camping & Hiking Gear', /\b(camping|hiking|camp)\b/i],
+    ['Picnic & BBQ', /\b(picnic|bbq|barbecue|grill)\b/i],
+    ['Beach Accessories', /\b(beach|sunshade)\b/i],
+    ['Fishing Gear', /\bfishing\b/i],
+    ['Outdoor Games', /\b(outdoor game|cornhole|frisbee|flying disc)\b/i],
+    ['Blankets & Towels', /\b(blanket|towel)\b/i],
+    ['Travel & Leisure Kits', /\b(travel kit|leisure kit|amenity kit)\b/i]
+  ],
+  'Technology': [
+    ['Power Banks', /\bpower bank\b/i],
+    ['USB Drives', /\b(usb drive|flash drive)\b/i],
+    ['Phone Accessories', /\b(phone|webcam cover|phone case)\b/i],
+    ['Wireless Chargers', /\bwireless charger\b/i],
+    ['Speakers & Audio', /\b(speaker|audio)\b/i],
+    ['Headphones & Earbuds', /\b(headphone|earbud|headset)\b/i],
+    ['Cables & Adapters', /\b(cable|adapter|connector)\b/i]
+  ],
+  'Trade Show': [
+    ['Banners & Signs', /\b(banner|sign|signage)\b/i],
+    ['Table Covers', /\btable cover\b/i],
+    ['Pop-Up Displays', /\b(pop-up|popup|display)\b/i],
+    ['Lanyards & Badges', /\b(lanyard|badge)\b/i],
+    ['Brochure & Literature Holders', /\b(brochure|literature holder)\b/i],
+    ['Flags', /\bflag\b/i],
+    ['Booth Accessories', /\b(booth|tent|trade show accessory)\b/i]
+  ]
+};
 
 function derivedWebsiteProductType(product) {
   if (String(product.websiteProductType || '').trim()) {
     const explicitType = String(product.websiteProductType).trim();
-    const plushTypeAliases = {
+    const productTypeAliases = {
+      'Tote Bags': 'Tote & Shopping Bags',
+      'Backpacks': 'Backpacks & Drawstring Bags',
+      'Drawstring Sportpacks': 'Backpacks & Drawstring Bags',
+      'Messenger and Briefcase Bags': 'Messenger & Briefcase Bags',
+      'Crossbody Bags and Fanny Packs': 'Crossbody & Fanny Packs',
+      'Duffels': 'Duffel & Travel Bags',
+      'Travel and Travel Accessories': 'Duffel & Travel Bags',
+      'Coolers': 'Coolers & Lunch Bags',
+      'Paper Bags': 'Paper, Plastic & Retail Bags',
+      'Plastic Bags': 'Paper, Plastic & Retail Bags',
+      'PVC Keychains': 'PVC & Rubber Keychains',
+      'Metal Keychains': 'Metal & Enamel Keychains',
+      'Enamel Keychains': 'Metal & Enamel Keychains',
+      'LED Keychains': 'Light-Up & Functional Keychains',
+      'Leather Keychains': 'Leather & Fabric Keychains',
+      'Pins': 'Pins & Patches',
+      'Patches': 'Pins & Patches',
+      'Mugs and Tumblers': 'Tumblers & Travel Mugs',
+      'Cups': 'Mugs & Cups',
+      'Beverage Holders': 'Can Coolers & Beverage Holders',
+      'Coasters': 'Coasters & Drinkware Accessories',
+      'Reusable Straws': 'Coasters & Drinkware Accessories',
+      'Desk Accessories': 'Desk Accessories & Organizers',
+      'Desk Organizers': 'Desk Accessories & Organizers',
+      'Camping Gear': 'Camping & Hiking Gear',
+      'Hiking Equipment': 'Camping & Hiking Gear',
+      'Picnic Sets': 'Picnic & BBQ',
+      'BBQ Tools': 'Picnic & BBQ',
+      'Blankets': 'Blankets & Towels',
+      'Travel Kits': 'Travel & Leisure Kits',
+      'Phone Cases': 'Phone Accessories',
+      'Webcam Covers': 'Phone Accessories',
+      'Bluetooth Speakers': 'Speakers & Audio',
+      'Earbuds': 'Headphones & Earbuds',
+      'Cable Sets': 'Cables & Adapters',
+      'Brochure Holders': 'Brochure & Literature Holders',
+      'Sweaters': 'Sweaters & Knitwear',
+      'Aprons': 'Aprons & Uniforms',
+      'Uniforms': 'Aprons & Uniforms',
       'Custom Plush Characters': 'Custom Plush Toys',
       'Custom Shape Plush': 'Custom Plush Toys',
       'Stuffed Animals': 'Custom Plush Toys',
@@ -114,7 +206,7 @@ function derivedWebsiteProductType(product) {
       'Holiday Plush': 'Holiday & Seasonal Plush',
       'Seasonal Characters': 'Holiday & Seasonal Plush'
     };
-    return plushTypeAliases[explicitType] || explicitType;
+    return productTypeAliases[explicitType] || explicitType;
   }
   const searchable = [
     product.name,
@@ -123,7 +215,10 @@ function derivedWebsiteProductType(product) {
     product.sageCategory2,
     product.sageCategory1
   ].filter(Boolean).join(' ');
-  const match = WEBSITE_PRODUCT_TYPE_RULES.find((rule) => rule[1].test(searchable));
+  const websiteCategory = canonicalWebsiteCategory(product.category || product.sageCategory1);
+  const categoryRules = WEBSITE_PRODUCT_TYPE_RULES[websiteCategory]
+    || Object.values(WEBSITE_PRODUCT_TYPE_RULES).flat();
+  const match = categoryRules.find((rule) => rule[1].test(searchable));
   return match ? match[0] : String(product.subcategory || product.sageCategory2 || product.sageCategory1 || '').trim();
 }
 
