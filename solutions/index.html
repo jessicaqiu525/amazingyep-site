@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Brand Programs - Amazing Yep Inc.</title>
-  <meta name="description" content="Custom merchandise solutions for distributors: Employee Welcome Kits, Event Merch, Custom Mascots, Retail Plush, and Packaging.">
+  <meta name="description" content="Explore custom merchandise programs created by Amazing Yep for leading food, beverage, lifestyle, entertainment, sports, retail, automotive, health, and wellness brands.">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style.css">
   <style>
@@ -35,10 +35,11 @@
     .bp-featured { background: #fff; padding: 32px 0 40px; }
     .bp-featured-header { max-width: 1440px; margin: 0 auto 16px; padding: 0 32px; }
     .bp-featured-header .section-label { display: block; margin-bottom: 4px; }
-    .bp-featured-grid { max-width: 1440px; margin: 0 auto; padding: 0 32px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .bp-featured-grid { max-width: 1440px; margin: 0 auto; padding: 0 32px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
     .bp-featured-card { border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s; background: var(--gray-50); }
     .bp-featured-card:hover { transform: translateY(-2px); }
-    .bp-featured-card-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; background: var(--gray-100); }
+    .bp-featured-card-img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; background: var(--gray-100); }
+    .bp-brand-placeholder { aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center; padding: 24px; text-align: center; color: var(--navy); background: linear-gradient(145deg, #fff8f3, #f2f5f8); font-size: clamp(20px, 2vw, 30px); font-weight: 800; letter-spacing: -0.02em; }
     .bp-featured-card-body { padding: 12px; }
     .bp-featured-card-body h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin: 0 0 4px; }
     .bp-featured-card-body p { font-size: 12px; color: var(--text-light); margin: 0; }
@@ -73,6 +74,9 @@
       .bp-carousel-card { flex: 0 0 calc((100% - 16px) / 2); min-width: 140px; }
       .bp-type-grid { gap: 6px; }
       .bp-type-item { padding: 8px 16px; font-size: 13px; }
+    }
+    @media (min-width: 769px) and (max-width: 1100px) {
+      .bp-featured-grid { grid-template-columns: repeat(3, 1fr); }
     }
   </style>
 </head>
@@ -148,16 +152,15 @@
   <!-- PRODUCT TYPE -->
   <div class="bp-product-type">
     <div class="bp-type-content" id="typeContent">
-      <div class="bp-type-label">PROGRAM TYPE</div>
+      <div class="bp-type-label">BRAND CATEGORY</div>
       <div class="bp-type-grid">
-        <span class="bp-type-item">Employee Welcome Kits</span>
-        <span class="bp-type-item">Conference &amp; Event Merch</span>
-        <span class="bp-type-item">Custom Mascot Programs</span>
-        <span class="bp-type-item">Retail Plush Development</span>
-        <span class="bp-type-item">Packaging Solutions</span>
-        <span class="bp-type-item">Corporate Gifting</span>
-        <span class="bp-type-item">Promotional Campaigns</span>
-        <span class="bp-type-item">Sustainability Programs</span>
+        <span class="bp-type-item active" data-filter="featured">Featured Brands</span>
+        <span class="bp-type-item" data-filter="food-beverage">Food &amp; Beverage</span>
+        <span class="bp-type-item" data-filter="lifestyle-entertainment">Lifestyle &amp; Entertainment</span>
+        <span class="bp-type-item" data-filter="sports">Sports</span>
+        <span class="bp-type-item" data-filter="retail-automotive">Retail &amp; Automotive</span>
+        <span class="bp-type-item" data-filter="health-wellness">Health &amp; Wellness</span>
+        <span class="bp-type-item" data-filter="all">All Brands</span>
       </div>
     </div>
   </div>
@@ -165,46 +168,33 @@
   <!-- FEATURED -->
   <section class="bp-featured">
     <div class="bp-featured-header">
-      <span class="section-label">FEATURED</span>
+      <span class="section-label" id="brandGridTitle">FEATURED BRANDS</span>
     </div>
     <div class="bp-featured-grid" id="featuredGrid">
-      <!-- Row 1: Homepage BRAND PROGRAMS images -->
-      <div class="bp-featured-card" data-cat="Retail"><img class="bp-featured-card-img" src="../assets/7-eleven-brand-program.jpg" alt="7-Eleven"><div class="bp-featured-card-body"><h4>7-Eleven</h4><p>Custom merchandise program for the global convenience brand</p></div></div>
-      <div class="bp-featured-card" data-cat="Retail"><img class="bp-featured-card-img" src="../assets/olipop-brand-program.jpg" alt="Olipop"><div class="bp-featured-card-body"><h4>Olipop</h4><p>Branded merchandise for the fast-growing soda brand</p></div></div>
-      <!-- Row 2 -->
-      <div class="bp-featured-card" data-cat="Conference"><img class="bp-featured-card-img" src="../assets/conference-swag-hero.jpg" alt="Conference &amp; Event Merch"><div class="bp-featured-card-body"><h4>Conference &amp; Event Merch</h4><p>Branded products for events of any scale</p></div></div>
-      <div class="bp-featured-card" data-cat="Mascot"><img class="bp-featured-card-img" src="../assets/character-mascot-hero.jpg" alt="Custom Mascot Programs"><div class="bp-featured-card-body"><h4>Custom Mascot Programs</h4><p>From sketch to finished plush &amp; merchandise</p></div></div>
-    </div>
-  </section>
+      <div class="bp-featured-card" data-cat="food-beverage" data-featured="true"><div class="bp-brand-placeholder">Tropicana</div><div class="bp-featured-card-body"><h4>Tropicana</h4><p>Food &amp; Beverage</p></div></div>
+      <div class="bp-featured-card" data-cat="food-beverage" data-featured="true"><div class="bp-brand-placeholder">King's Hawaiian</div><div class="bp-featured-card-body"><h4>King's Hawaiian</h4><p>Food &amp; Beverage</p></div></div>
+      <div class="bp-featured-card" data-cat="food-beverage" data-featured="true"><img class="bp-featured-card-img" src="../assets/olipop-brand-program.jpg" alt="OLIPOP brand merchandise"><div class="bp-featured-card-body"><h4>OLIPOP</h4><p>Food &amp; Beverage</p></div></div>
+      <div class="bp-featured-card" data-cat="food-beverage" data-featured="true"><div class="bp-brand-placeholder">Pabst</div><div class="bp-featured-card-body"><h4>Pabst</h4><p>Food &amp; Beverage</p></div></div>
+      <div class="bp-featured-card" data-cat="food-beverage" data-featured="true"><div class="bp-brand-placeholder">Aperol</div><div class="bp-featured-card-body"><h4>Aperol</h4><p>Food &amp; Beverage</p></div></div>
+      <div class="bp-featured-card" data-cat="lifestyle-entertainment" data-featured="true"><div class="bp-brand-placeholder">Playboy</div><div class="bp-featured-card-body"><h4>Playboy</h4><p>Lifestyle &amp; Entertainment</p></div></div>
+      <div class="bp-featured-card" data-cat="retail-automotive" data-featured="true"><div class="bp-brand-placeholder">BMW</div><div class="bp-featured-card-body"><h4>BMW</h4><p>Retail &amp; Automotive</p></div></div>
+      <div class="bp-featured-card" data-cat="retail-automotive" data-featured="true"><img class="bp-featured-card-img" src="../assets/7-eleven-brand-program.jpg" alt="7-Eleven brand merchandise"><div class="bp-featured-card-body"><h4>7-Eleven</h4><p>Retail &amp; Automotive</p></div></div>
 
-  <!-- YOU MAY LIKE -->
-  <section class="bp-you-may-like">
-    <div class="bp-carousel-header">
-      <span class="section-label">YOU MIGHT ALSO LIKE</span>
-    </div>
-    <div class="bp-carousel-wrap">
-      <div class="bp-carousel-track">
-        <div class="bp-carousel-card" data-cat="Employee Welcome"><img class="bp-carousel-card-img" src="https://images.unsplash.com/photo-1544816155-12df9643f363?w=600&h=450&fit=crop" alt="Welcome Box"><div class="bp-carousel-card-body"><h4>Welcome Box</h4><p>Employee Welcome Kits</p></div></div>
-        <div class="bp-carousel-card" data-cat="Conference"><img class="bp-carousel-card-img" src="../assets/conference-swag-hero.jpg" alt="Event Kit"><div class="bp-carousel-card-body"><h4>Event Kit</h4><p>Conference &amp; Event Merch</p></div></div>
-        <div class="bp-carousel-card" data-cat="Mascot"><img class="bp-carousel-card-img" src="../assets/character-mascot-hero.jpg" alt="Custom Mascot"><div class="bp-carousel-card-body"><h4>Custom Mascot</h4><p>Mascot Programs</p></div></div>
-        <div class="bp-carousel-card" data-cat="Retail Plush"><img class="bp-carousel-card-img" src="https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=600&h=450&fit=crop" alt="Retail Plush"><div class="bp-carousel-card-body"><h4>Retail Plush</h4><p>Retail Plush Development</p></div></div>
-        <div class="bp-carousel-card" data-cat="Packaging"><img class="bp-carousel-card-img" src="../assets/bags-hero-bg.jpg" alt="Mailer Box"><div class="bp-carousel-card-body"><h4>Custom Mailer Box</h4><p>Packaging Solutions</p></div></div>
-        <div class="bp-carousel-card" data-cat="Gifting"><img class="bp-carousel-card-img" src="../assets/collections-hero-bg.jpg" alt="Gift Set"><div class="bp-carousel-card-body"><h4>Premium Gift Set</h4><p>Corporate Gifting</p></div></div>
-        <div class="bp-carousel-card" data-cat="Promotional"><img class="bp-carousel-card-img" src="../assets/collections-hero-bg.jpg" alt="Launch Kit"><div class="bp-carousel-card-body"><h4>Product Launch Kit</h4><p>Promotional Campaigns</p></div></div>
-        <div class="bp-carousel-card" data-cat="Sustainability"><img class="bp-carousel-card-img" src="../assets/drinkware-hero-bg.jpg" alt="Eco Kit"><div class="bp-carousel-card-body"><h4>Eco-Friendly Kit</h4><p>Sustainability Programs</p></div></div>
-      </div>
-    </div>
-    <div class="bp-carousel-pagination">
-      <div class="bp-pagination-bar"><div class="bp-pagination-bar-fill" id="paginationFill" style="width:33.3%;"></div></div>
-      <div class="bp-pagination-arrows">
-        <div class="bp-pagination-arrow" onclick="prevPage()">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
-        </div>
-        <span class="bp-pagination-num" id="pageNum">1/3</span>
-        <div class="bp-pagination-arrow" onclick="nextPage()">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
-        </div>
-      </div>
+      <div class="bp-featured-card" data-cat="food-beverage"><div class="bp-brand-placeholder">Deer Park</div><div class="bp-featured-card-body"><h4>Deer Park</h4><p>Food &amp; Beverage</p></div></div>
+      <div class="bp-featured-card" data-cat="food-beverage"><div class="bp-brand-placeholder">Naked</div><div class="bp-featured-card-body"><h4>Naked</h4><p>Food &amp; Beverage</p></div></div>
+      <div class="bp-featured-card" data-cat="food-beverage"><div class="bp-brand-placeholder">Mauna Loa</div><div class="bp-featured-card-body"><h4>Mauna Loa</h4><p>Food &amp; Beverage</p></div></div>
+      <div class="bp-featured-card" data-cat="food-beverage"><div class="bp-brand-placeholder">Espolòn</div><div class="bp-featured-card-body"><h4>Espolòn</h4><p>Food &amp; Beverage</p></div></div>
+      <div class="bp-featured-card" data-cat="food-beverage"><div class="bp-brand-placeholder">Rainier</div><div class="bp-featured-card-body"><h4>Rainier</h4><p>Food &amp; Beverage</p></div></div>
+      <div class="bp-featured-card" data-cat="food-beverage"><div class="bp-brand-placeholder">Lone Star</div><div class="bp-featured-card-body"><h4>Lone Star</h4><p>Food &amp; Beverage</p></div></div>
+      <div class="bp-featured-card" data-cat="food-beverage"><div class="bp-brand-placeholder">Long Drink</div><div class="bp-featured-card-body"><h4>Long Drink</h4><p>Food &amp; Beverage</p></div></div>
+      <div class="bp-featured-card" data-cat="food-beverage"><div class="bp-brand-placeholder">Grillo's</div><div class="bp-featured-card-body"><h4>Grillo's</h4><p>Food &amp; Beverage</p></div></div>
+      <div class="bp-featured-card" data-cat="food-beverage"><div class="bp-brand-placeholder">Splash Refresher</div><div class="bp-featured-card-body"><h4>Splash Refresher</h4><p>Food &amp; Beverage</p></div></div>
+      <div class="bp-featured-card" data-cat="lifestyle-entertainment"><div class="bp-brand-placeholder">John Wayne</div><div class="bp-featured-card-body"><h4>John Wayne</h4><p>Lifestyle &amp; Entertainment</p></div></div>
+      <div class="bp-featured-card" data-cat="lifestyle-entertainment"><div class="bp-brand-placeholder">Mythical</div><div class="bp-featured-card-body"><h4>Mythical</h4><p>Lifestyle &amp; Entertainment</p></div></div>
+      <div class="bp-featured-card" data-cat="lifestyle-entertainment"><div class="bp-brand-placeholder">Steve-O</div><div class="bp-featured-card-body"><h4>Steve-O</h4><p>Lifestyle &amp; Entertainment</p></div></div>
+      <div class="bp-featured-card" data-cat="sports"><div class="bp-brand-placeholder">World's Strongest Man</div><div class="bp-featured-card-body"><h4>World's Strongest Man</h4><p>Sports</p></div></div>
+      <div class="bp-featured-card" data-cat="health-wellness"><div class="bp-brand-placeholder">Librela</div><div class="bp-featured-card-body"><h4>Librela</h4><p>Health &amp; Wellness</p></div></div>
+      <div class="bp-featured-card" data-cat="health-wellness"><div class="bp-brand-placeholder">IntelliSkin</div><div class="bp-featured-card-body"><h4>IntelliSkin</h4><p>Health &amp; Wellness</p></div></div>
     </div>
   </section>
 
@@ -323,50 +313,37 @@
       item.addEventListener('click', function() {
         document.querySelectorAll('.bp-type-item').forEach(i => i.classList.remove('active'));
         this.classList.add('active');
+        document.getElementById('searchInput').value = '';
+        showBrandCategory(this.dataset.filter || 'featured');
       });
     });
-    let currentPage = 1;
-    const totalPages = 3;
-    const carouselTrack = document.querySelector('.bp-carousel-track');
-    function getScrollPerPage() {
-      const wrap = document.querySelector('.bp-carousel-wrap');
-      return wrap ? wrap.clientWidth : 0;
+    function showBrandCategory(category) {
+      const labels = {
+        featured: 'FEATURED BRANDS',
+        'food-beverage': 'FOOD & BEVERAGE BRANDS',
+        'lifestyle-entertainment': 'LIFESTYLE & ENTERTAINMENT BRANDS',
+        sports: 'SPORTS BRANDS',
+        'retail-automotive': 'RETAIL & AUTOMOTIVE BRANDS',
+        'health-wellness': 'HEALTH & WELLNESS BRANDS',
+        all: 'ALL BRAND PARTNERS'
+      };
+      document.getElementById('brandGridTitle').textContent = labels[category] || labels.featured;
+      document.querySelectorAll('.bp-featured-card').forEach(card => {
+        card.style.display = category === 'all' || (category === 'featured' ? card.dataset.featured === 'true' : card.dataset.cat === category) ? '' : 'none';
+      });
     }
-    function updatePagination() {
-      document.getElementById('paginationFill').style.width = (currentPage / totalPages * 100) + '%';
-      document.getElementById('pageNum').textContent = currentPage + '/' + totalPages;
-    }
-    function prevPage() {
-      if (currentPage > 1) {
-        currentPage--;
-        carouselTrack.scrollTo({ left: (currentPage - 1) * getScrollPerPage(), behavior: 'smooth' });
-        updatePagination();
-      }
-    }
-    function nextPage() {
-      if (currentPage < totalPages) {
-        currentPage++;
-        carouselTrack.scrollTo({ left: (currentPage - 1) * getScrollPerPage(), behavior: 'smooth' });
-        updatePagination();
-      }
-    }
-    carouselTrack.addEventListener('scroll', function() {
-      const newPage = Math.round(carouselTrack.scrollLeft / getScrollPerPage()) + 1;
-      if (newPage !== currentPage) { currentPage = newPage; updatePagination(); }
-    });
     function filterBrandPrograms() {
-      const query = (document.getElementById('searchInput').value || '').toLowerCase();
+      const query = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+      document.querySelectorAll('.bp-type-item').forEach(i => i.classList.remove('active'));
+      document.querySelector('[data-filter="all"]').classList.add('active');
+      document.getElementById('brandGridTitle').textContent = query ? 'SEARCH RESULTS' : 'ALL BRAND PARTNERS';
       document.querySelectorAll('.bp-featured-card').forEach(card => {
         const name = (card.querySelector('h4')?.textContent || '').toLowerCase();
         const cat = (card.dataset.cat || '').toLowerCase();
         card.style.display = (!query || name.includes(query) || cat.includes(query)) ? '' : 'none';
       });
-      document.querySelectorAll('.bp-carousel-card').forEach(card => {
-        const name = (card.querySelector('h4')?.textContent || '').toLowerCase();
-        const cat = (card.dataset.cat || '').toLowerCase();
-        card.style.display = (!query || name.includes(query) || cat.includes(query)) ? '' : 'none';
-      });
     }
+    showBrandCategory('featured');
   </script>
 
   <script src="../script.js"></script>
