@@ -172,6 +172,14 @@ async function uploadToCloudinary(file) {
 
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
+app.use((req, res, next) => {
+  if (req.path.endsWith('.html') || req.path === '/') {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+  }
+  next();
+});
 app.use('/uploads', express.static(UPLOAD_DIR));
 app.use('/assets', express.static(SITE_ASSETS_DIR));
 app.use('/admin', express.static(ADMIN_DIR));
