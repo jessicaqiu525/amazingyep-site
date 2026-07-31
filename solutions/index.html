@@ -341,12 +341,12 @@
     let currentBrandPage = 1;
     const brandLabels = {
         featured: 'FEATURED',
-        'food-beverage': 'FOOD & BEVERAGE BRANDS',
-        'lifestyle-entertainment': 'LIFESTYLE & ENTERTAINMENT BRANDS',
-        sports: 'SPORTS BRANDS',
-        'retail-automotive': 'RETAIL & AUTOMOTIVE BRANDS',
-        'health-wellness': 'HEALTH, WELLNESS & PET BRANDS',
-        all: 'ALL BRAND PARTNERS'
+        'food-beverage': 'FOOD & BEVERAGE',
+        'lifestyle-entertainment': 'LIFESTYLE & ENTERTAINMENT',
+        sports: 'SPORTS',
+        'retail-automotive': 'RETAIL & AUTOMOTIVE',
+        'health-wellness': 'HEALTH, WELLNESS & PET',
+        all: 'ALL BRANDS'
       };
     function getMatchingBrands() {
       return Array.from(document.querySelectorAll('.bp-featured-card')).filter(card => {
@@ -395,7 +395,7 @@
       currentBrandPage = 1;
       document.querySelectorAll('.bp-type-item').forEach(i => i.classList.remove('active'));
       document.querySelector('[data-filter="all"]').classList.add('active');
-      document.getElementById('brandGridTitle').textContent = query ? 'SEARCH RESULTS' : 'ALL BRAND PARTNERS';
+      document.getElementById('brandGridTitle').textContent = query ? 'SEARCH RESULTS' : 'ALL BRANDS';
       renderBrandPage();
     }
     function openBrandProgram(card) {
