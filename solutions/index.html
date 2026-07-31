@@ -19,7 +19,7 @@
     .bp-header { max-width: 1440px; margin: 0 auto; padding: 16px 32px 20px; text-align: left; }
     .bp-title { font-size: 48px; font-weight: 900; color: var(--navy); letter-spacing: 1px; margin: 0 0 4px; }
     .bp-subtitle { font-size: 20px; font-weight: 500; color: var(--text-light); margin-left: 8px; letter-spacing: 0; }
-    .bp-filter-wrap { display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
+    .bp-filter-wrap { display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; border: 0; padding: 0; background: transparent; font-family: inherit; }
     .bp-filter-text { font-size: 18px; font-weight: 700; letter-spacing: 1px; color: var(--navy); text-transform: uppercase; }
     .bp-filter-arrow { width: 20px; height: 20px; transition: transform 0.3s; flex-shrink: 0; }
     .bp-filter-arrow.collapsed { transform: rotate(180deg); }
@@ -29,7 +29,7 @@
     .bp-product-type { max-width: 1440px; margin: 0 auto; padding: 0 32px 40px; text-align: left; border-bottom: 1px solid var(--gray-200); }
     .bp-type-label { font-size: 24px; font-weight: 700; letter-spacing: 1.5px; color: var(--navy); text-transform: uppercase; margin-bottom: 16px; text-decoration: underline; }
     .bp-type-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-    .bp-type-item { padding: 12px 24px; border: 1px solid var(--gray-200); border-radius: 50px; font-size: 15px; color: var(--navy); cursor: pointer; transition: all 0.2s; background: #fff; white-space: nowrap; }
+    .bp-type-item { padding: 12px 24px; border: 1px solid var(--gray-200); border-radius: 50px; font: inherit; font-size: 15px; color: var(--navy); cursor: pointer; transition: all 0.2s; background: #fff; white-space: nowrap; }
     .bp-type-item:hover, .bp-type-item.active { background: var(--navy); color: #fff; border-color: var(--navy); }
 
     .bp-featured { background: #fff; padding: 32px 0 40px; }
@@ -43,6 +43,7 @@
     .bp-featured-card-body { padding: 12px; }
     .bp-featured-card-body h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin: 0 0 4px; }
     .bp-featured-card-body p { font-size: 12px; color: var(--text-light); margin: 0; }
+    .bp-empty-state { max-width: 1440px; margin: 0 auto; padding: 28px 32px 8px; color: var(--text-light); font-size: 16px; }
 
     .bp-you-may-like { background: #fff; padding: 0 0 40px; }
     .bp-carousel-header { max-width: 1440px; margin: 0 auto 16px; padding: 0 32px; }
@@ -134,10 +135,10 @@
   <!-- Title + Filter -->
   <div class="bp-header">
     <h1 class="bp-title">BRAND PROGRAMS <span class="bp-subtitle">Turning brand stories into merchandise people use, share, and remember.</span></h1>
-    <div class="bp-filter-wrap" onclick="toggleFilter()">
+    <button class="bp-filter-wrap" type="button" onclick="toggleFilter()" aria-controls="typeContent" aria-expanded="true">
       <span class="bp-filter-text">FILTER</span>
       <svg class="bp-filter-arrow" id="filterArrow" viewBox="0 0 24 24" fill="none" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-    </div>
+    </button>
   </div>
 
   <!-- Search Bar -->
@@ -155,13 +156,13 @@
     <div class="bp-type-content" id="typeContent">
       <div class="bp-type-label">BRAND CATEGORY</div>
       <div class="bp-type-grid">
-        <span class="bp-type-item active" data-filter="featured">Featured Brands</span>
-        <span class="bp-type-item" data-filter="food-beverage">Food &amp; Beverage</span>
-        <span class="bp-type-item" data-filter="lifestyle-entertainment">Lifestyle &amp; Entertainment</span>
-        <span class="bp-type-item" data-filter="sports">Sports</span>
-        <span class="bp-type-item" data-filter="retail-automotive">Retail &amp; Automotive</span>
-        <span class="bp-type-item" data-filter="health-wellness">Health, Wellness &amp; Pet</span>
-        <span class="bp-type-item" data-filter="all">All Brands</span>
+        <button class="bp-type-item active" type="button" data-filter="featured">Featured Brands</button>
+        <button class="bp-type-item" type="button" data-filter="food-beverage">Food &amp; Beverage</button>
+        <button class="bp-type-item" type="button" data-filter="lifestyle-entertainment">Lifestyle &amp; Entertainment</button>
+        <button class="bp-type-item" type="button" data-filter="sports">Sports</button>
+        <button class="bp-type-item" type="button" data-filter="retail-automotive">Retail &amp; Automotive</button>
+        <button class="bp-type-item" type="button" data-filter="health-wellness">Health, Wellness &amp; Pet</button>
+        <button class="bp-type-item" type="button" data-filter="all">All Brands</button>
       </div>
     </div>
   </div>
@@ -197,6 +198,7 @@
       <div class="bp-featured-card" data-cat="health-wellness"><div class="bp-brand-placeholder">Librela</div><div class="bp-featured-card-body"><h4>Librela</h4><p>Health, Wellness &amp; Pet</p></div></div>
       <div class="bp-featured-card" data-cat="health-wellness"><div class="bp-brand-placeholder">IntelliSkin</div><div class="bp-featured-card-body"><h4>IntelliSkin</h4><p>Health, Wellness &amp; Pet</p></div></div>
     </div>
+    <p class="bp-empty-state" id="brandEmptyState" role="status" hidden>We couldn’t find a match. Try another brand name or explore a different category.</p>
     <div class="bp-carousel-pagination" id="brandPagination" hidden>
       <div class="bp-pagination-bar"><div class="bp-pagination-bar-fill" id="brandPaginationFill" style="width:100%;"></div></div>
       <div class="bp-pagination-arrows">
@@ -319,8 +321,10 @@
     function toggleFilter() {
       const arrow = document.getElementById('filterArrow');
       const content = document.getElementById('typeContent');
+      const toggle = document.querySelector('.bp-filter-wrap');
       arrow.classList.toggle('collapsed');
       content.classList.toggle('collapsed');
+      toggle.setAttribute('aria-expanded', String(!content.classList.contains('collapsed')));
     }
     document.querySelectorAll('.bp-type-item').forEach(item => {
       item.addEventListener('click', function() {
@@ -364,6 +368,7 @@
       });
       const pagination = document.getElementById('brandPagination');
       pagination.hidden = totalPages <= 1;
+      document.getElementById('brandEmptyState').hidden = matchingBrands.length !== 0;
       document.getElementById('brandPageNum').textContent = currentBrandPage + '/' + totalPages;
       document.getElementById('brandPaginationFill').style.width = (currentBrandPage / totalPages * 100) + '%';
       document.getElementById('brandPrev').classList.toggle('disabled', currentBrandPage === 1);
