@@ -180,6 +180,11 @@ app.use((req, res, next) => {
   }
   next();
 });
+app.get('/solutions/brand-program.html', (req, res) => {
+  const queryIndex = req.originalUrl.indexOf('?');
+  const queryString = queryIndex >= 0 ? req.originalUrl.slice(queryIndex) : '';
+  res.redirect(302, '/solutions/brand-program-v2.html' + queryString);
+});
 app.get('/solutions/brand-program-v2.html', (req, res) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   res.sendFile(path.join(SITE_ROOT_DIR, 'solutions', 'brand-program.html'));
