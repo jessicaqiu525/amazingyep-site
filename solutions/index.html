@@ -36,8 +36,9 @@
     .bp-featured-header { max-width: 1440px; margin: 0 auto 16px; padding: 0 32px; }
     .bp-featured-header .section-label { display: block; margin-bottom: 4px; }
     .bp-featured-grid { max-width: 1440px; margin: 0 auto; padding: 0 32px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-    .bp-featured-card { border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s; background: var(--gray-50); }
-    .bp-featured-card:hover { transform: translateY(-2px); }
+    .bp-featured-card { border-radius: 12px; overflow: hidden; cursor: pointer; background: var(--gray-50); box-shadow: var(--shadow-sm); transition: var(--transition); }
+    .bp-featured-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .bp-featured-card:focus-visible { outline: 3px solid var(--orange); outline-offset: 4px; transform: translateY(-6px); box-shadow: var(--shadow-lg); }
     .bp-featured-card-img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; background: var(--gray-100); }
     .bp-brand-placeholder { aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center; padding: 24px; text-align: center; color: var(--navy); background: linear-gradient(145deg, #fff8f3, #f2f5f8); font-size: clamp(20px, 2vw, 30px); font-weight: 800; letter-spacing: -0.02em; }
     .bp-featured-card-body { padding: 12px; }
@@ -397,6 +398,23 @@
       document.getElementById('brandGridTitle').textContent = query ? 'SEARCH RESULTS' : 'ALL BRAND PARTNERS';
       renderBrandPage();
     }
+    function openBrandProgram(card) {
+      const brandName = card.querySelector('h4')?.textContent?.trim();
+      if (brandName) window.location.href = 'brand-program.html?brand=' + encodeURIComponent(brandName);
+    }
+    document.querySelectorAll('.bp-featured-card').forEach(card => {
+      card.setAttribute('role', 'link');
+      card.setAttribute('tabindex', '0');
+      const brandName = card.querySelector('h4')?.textContent?.trim() || 'brand';
+      card.setAttribute('aria-label', 'View ' + brandName + ' brand program');
+      card.addEventListener('click', () => openBrandProgram(card));
+      card.addEventListener('keydown', event => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          openBrandProgram(card);
+        }
+      });
+    });
     showBrandCategory('featured');
   </script>
 

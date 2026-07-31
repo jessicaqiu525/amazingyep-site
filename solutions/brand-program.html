@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brand Program - Amazing Yep Inc.</title>
+  <meta name="description" content="Explore custom merchandise created for Amazing Yep brand partners.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .brand-detail { background: #fff; padding: 34px 0 64px; }
+    .brand-detail-breadcrumb { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; margin-bottom: 30px; color: var(--text-light); font-size: 14px; }
+    .brand-detail-breadcrumb a { color: inherit; text-decoration: none; }
+    .brand-detail-breadcrumb a:hover { color: var(--orange); }
+    .brand-detail-hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(320px, .95fr); gap: 42px; align-items: center; }
+    .brand-detail-media { min-height: 390px; border-radius: var(--radius); overflow: hidden; background: linear-gradient(145deg, #fff8f3, #f2f5f8); box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: center; }
+    .brand-detail-media img { width: 100%; height: 100%; min-height: 390px; object-fit: cover; display: block; }
+    .brand-detail-monogram { padding: 40px; color: var(--navy); font-size: clamp(36px, 5vw, 72px); line-height: 1.05; font-weight: 900; text-align: center; letter-spacing: -.04em; }
+    .brand-detail-category { color: var(--orange); font-size: 14px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 12px; }
+    .brand-detail-copy h1 { color: var(--navy); font-size: clamp(38px, 5vw, 68px); line-height: 1.02; margin: 0 0 18px; }
+    .brand-detail-copy p { color: var(--text-light); font-size: 18px; line-height: 1.7; margin: 0 0 24px; }
+    .brand-products { padding: 64px 0; background: var(--gray-50); }
+    .brand-products-empty { margin-top: 22px; padding: 34px; border: 1px solid var(--gray-200); border-radius: var(--radius); background: #fff; color: var(--text-light); font-size: 16px; }
+    .brand-products-empty strong { display: block; color: var(--navy); font-size: 20px; margin-bottom: 8px; }
+    @media (max-width: 768px) {
+      .brand-detail { padding-top: 24px; }
+      .brand-detail-hero { grid-template-columns: 1fr; gap: 28px; }
+      .brand-detail-media, .brand-detail-media img { min-height: 260px; }
+      .brand-detail-copy p { font-size: 16px; }
+      .brand-products { padding: 44px 0; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo"><img src="../assets/logo-2026.png" alt="Amazing Yep Inc."></a>
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../collections/plush-mascots.html">Plush &amp; Mascots</a></li>
+        <li><a href="../collections/keychains.html">Keychains</a></li>
+        <li><a href="../collections/drinkware.html">Drinkware</a></li>
+        <li><a href="../collections/bags.html">Bags</a></li>
+        <li><a href="../case-studies/index.html">Ideas &amp; Use Cases</a></li>
+        <li><a href="index.html" class="active">Brand Programs</a></li>
+        <li class="has-dropdown">
+          <a href="../collections/index.html" class="dropdown-toggle">Collections <svg class="dropdown-arrow" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <ul class="nav-dropdown">
+            <li><a href="../collections/bags.html">Bags</a></li><li><a href="../collections/drinkware.html">Drinkware</a></li><li><a href="../collections/keychains.html">Keychains &amp; Accessories</a></li><li><a href="../collections/office.html">Office &amp; Stationery</a></li><li><a href="../collections/outdoor-leisure.html">Outdoor &amp; Leisure</a></li><li><a href="../collections/plush-mascots.html">Plush &amp; Mascots</a></li><li><a href="../collections/technology.html">Technology</a></li><li><a href="../collections/trade-show.html">Trade Show</a></li><li><a href="../collections/apparel.html">Wearables</a></li>
+          </ul>
+        </li>
+      </ul>
+      <div class="nav-cta">
+        <form class="nav-search" role="search" action="/collections/index.html" method="get"><svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input type="search" name="search" placeholder="Search" aria-label="Search products"></form>
+        <a href="../contact/index.html" class="btn btn-primary btn-sm">Start a Project</a>
+        <button class="nav-mobile-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section class="brand-detail">
+      <div class="container">
+        <div class="brand-detail-breadcrumb"><a href="../index.html">Home</a><span>/</span><a href="index.html">Brand Programs</a><span>/</span><span id="breadcrumbBrand">Brand Program</span></div>
+        <div class="brand-detail-hero">
+          <div class="brand-detail-media" id="brandMedia"><div class="brand-detail-monogram" id="brandMonogram">Brand Program</div></div>
+          <div class="brand-detail-copy">
+            <div class="brand-detail-category" id="brandCategory">Brand Program</div>
+            <h1 id="brandTitle">Brand Program</h1>
+            <p>Explore custom merchandise developed to help this brand connect with its audience through products people use, share, and remember.</p>
+            <a href="../contact/index.html" class="btn btn-primary">Start a Similar Project</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="brand-products">
+      <div class="container">
+        <span class="section-label">BRAND PROJECTS</span>
+        <h2 class="section-title" id="productsTitle">Products Created for This Brand</h2>
+        <div class="brand-products-empty">
+          <strong>More project details are coming soon.</strong>
+          Product photography and program details will be added here as they are prepared.
+        </div>
+      </div>
+    </section>
+
+    <section class="hww-section">
+      <div class="container">
+        <div class="hww-header"><span class="section-label">HOW WE WORK</span><h2 class="section-title">Simple, Fast, Reliable</h2><p class="section-subtitle">A straightforward process designed to get you from idea to delivery with minimal friction.</p></div>
+        <div class="hww-steps">
+          <div class="hww-step"><div class="hww-num">1</div><h3>Share Your Idea</h3><p>Send us your design, sketch, or concept. Tell us about your brand, audience, and goals.</p></div>
+          <div class="hww-arrow"><svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg></div>
+          <div class="hww-step"><div class="hww-num">2</div><h3>Receive Mockup &amp; Pricing</h3><p>Within 24 hours, receive a free digital mockup and detailed pricing options.</p></div>
+          <div class="hww-arrow"><svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg></div>
+          <div class="hww-step"><div class="hww-num">3</div><h3>Sampling &amp; Approval</h3><p>Review physical samples, request adjustments, and approve before full production.</p></div>
+          <div class="hww-arrow"><svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg></div>
+          <div class="hww-step"><div class="hww-num">4</div><h3>Production &amp; Delivery</h3><p>We handle manufacturing and worldwide shipping. Track your order every step.</p></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand"><img src="../assets/logo-2026.png" alt="Amazing Yep Inc."><p>Custom merchandise and sourcing support for brands,<br>events, retail programs, and promotional campaigns.</p><div class="footer-social"><a href="#" aria-label="LinkedIn">in</a><a href="#" aria-label="Instagram">ig</a><a href="#" aria-label="Facebook">fb</a></div></div>
+        <div class="footer-col"><h4>Solutions</h4><ul><li><a href="index.html">Brand Programs</a></li><li><a href="conference-event-merch.html">Event &amp; Trade Show Merch</a></li><li><a href="employee-welcome-kits.html">Employee Welcome Kits</a></li><li><a href="retail-plush-development.html">Retail Merchandise</a></li></ul></div>
+        <div class="footer-col"><h4>Product Categories</h4><ul><li><a href="../collections/plush-mascots.html">Plush &amp; Mascots</a></li><li><a href="../collections/keychains.html">Keychains &amp; Accessories</a></li><li><a href="../collections/bags.html">Bags &amp; Totes</a></li><li><a href="../collections/drinkware.html">Drinkware</a></li><li><a href="../collections/apparel.html">Wearables</a></li></ul></div>
+        <div class="footer-col"><h4>Company</h4><ul><li><a href="../about/index.html">About Us</a></li><li><a href="../case-studies/index.html">Case Studies</a></li><li><a href="../about/index.html#faq">FAQ</a></li><li><a href="../contact/index.html">Contact</a></li><li><a href="mailto:info@amazingyep.com">info@amazingyep.com</a></li></ul></div>
+      </div>
+      <div class="footer-bottom"><p>&copy; 2026 Amazing Yep Inc.</p><p>Bringing Custom Merchandise Ideas to Life. Built for Brands, Events &amp; Promotional Programs.</p></div>
+    </div>
+  </footer>
+
+  <script>
+    const brandPrograms = {
+      'Tropicana': ['Food & Beverage', ''], "King's Hawaiian": ['Food & Beverage', ''], 'OLIPOP': ['Food & Beverage', '../assets/olipop-brand-program.jpg'], 'Pabst': ['Food & Beverage', ''], 'Aperol': ['Food & Beverage', ''], 'Deer Park': ['Food & Beverage', ''], 'Naked': ['Food & Beverage', ''], 'Mauna Loa': ['Food & Beverage', ''], 'Espolòn': ['Food & Beverage', ''], 'Rainier': ['Food & Beverage', ''], 'Lone Star': ['Food & Beverage', ''], 'Long Drink': ['Food & Beverage', ''], "Grillo's": ['Food & Beverage', ''], 'Splash Refresher': ['Food & Beverage', ''],
+      'Playboy': ['Lifestyle & Entertainment', ''], 'John Wayne': ['Lifestyle & Entertainment', ''], 'Mythical': ['Lifestyle & Entertainment', ''], 'Steve-O': ['Lifestyle & Entertainment', ''], "World's Strongest Man": ['Sports', ''], 'BMW': ['Retail & Automotive', ''], '7-Eleven': ['Retail & Automotive', '../assets/7-eleven-brand-program.jpg'], 'Librela': ['Health, Wellness & Pet', ''], 'IntelliSkin': ['Health, Wellness & Pet', '']
+    };
+    const requestedBrand = new URLSearchParams(window.location.search).get('brand') || '';
+    const brandName = Object.keys(brandPrograms).find(name => name.toLowerCase() === requestedBrand.toLowerCase()) || 'Brand Program';
+    const brandData = brandPrograms[brandName] || ['Custom Merchandise', ''];
+    document.title = brandName + ' Brand Program - Amazing Yep Inc.';
+    document.getElementById('breadcrumbBrand').textContent = brandName;
+    document.getElementById('brandCategory').textContent = brandData[0];
+    document.getElementById('brandTitle').textContent = brandName;
+    document.getElementById('brandMonogram').textContent = brandName;
+    document.getElementById('productsTitle').textContent = 'Products Created for ' + brandName;
+    if (brandData[1]) document.getElementById('brandMedia').innerHTML = '<img src="' + brandData[1] + '" alt="' + brandName.replace(/&/g, '&amp;').replace(/"/g, '&quot;') + ' brand merchandise">';
+  </script>
+  <script src="../script.js"></script>
+</body>
+</html>
