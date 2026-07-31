@@ -187,7 +187,43 @@ app.get('/solutions/brand-program.html', (req, res) => {
 });
 app.get('/solutions/brand-program-v2.html', (req, res) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-  res.sendFile(path.join(SITE_ROOT_DIR, 'solutions', 'brand-program.html'));
+  const detailPath = path.join(SITE_ROOT_DIR, 'solutions', 'brand-program.html');
+  fs.readFile(detailPath, 'utf8', (error, html) => {
+    if (error) {
+      res.status(500).send('Unable to load the brand program page.');
+      return;
+    }
+    const breadcrumbBootstrap = `<script>
+      document.addEventListener('DOMContentLoaded', function () {
+        if (document.querySelector('.brand-back-bar')) return;
+        var categories = {
+          "tropicana":"Food & Beverage","king's hawaiian":"Food & Beverage","olipop":"Food & Beverage","pabst":"Food & Beverage","aperol":"Food & Beverage","deer park":"Food & Beverage","naked":"Food & Beverage","mauna loa":"Food & Beverage","espolòn":"Food & Beverage","rainier":"Food & Beverage","lone star":"Food & Beverage","long drink":"Food & Beverage","grillo's":"Food & Beverage","splash refresher":"Food & Beverage",
+          "playboy":"Lifestyle & Entertainment","john wayne":"Lifestyle & Entertainment","mythical":"Lifestyle & Entertainment","steve-o":"Lifestyle & Entertainment","world's strongest man":"Sports","bmw":"Retail & Automotive","7-eleven":"Retail & Automotive","librela":"Health, Wellness & Pet","intelliskin":"Health, Wellness & Pet"
+        };
+        var brand = new URLSearchParams(window.location.search).get('brand') || 'Brand Program';
+        var bar = document.createElement('div');
+        bar.className = 'brand-back-bar';
+        bar.setAttribute('aria-label', 'Breadcrumb');
+        bar.style.cssText = 'background:#fff;border-bottom:1px solid #e5e7eb;';
+        var inner = document.createElement('div');
+        inner.className = 'container';
+        inner.style.cssText = 'min-height:54px;display:flex;align-items:center;gap:9px;color:#667085;font-size:14px;';
+        var link = document.createElement('a');
+        link.href = 'index.html';
+        link.textContent = '← Brand Programs';
+        link.style.cssText = 'color:#082746;font-weight:700;text-decoration:none;';
+        var category = document.createElement('span');
+        category.textContent = categories[brand.toLowerCase()] || 'Brand Program';
+        var current = document.createElement('span');
+        current.textContent = brand;
+        inner.append(link, document.createTextNode('/'), category, document.createTextNode('/'), current);
+        bar.appendChild(inner);
+        var nav = document.querySelector('nav.nav');
+        if (nav) nav.insertAdjacentElement('afterend', bar);
+      });
+    <\/script>`;
+    res.type('html').send(html.replace('</body>', breadcrumbBootstrap + '</body>'));
+  });
 });
 app.use('/uploads', express.static(UPLOAD_DIR));
 app.use('/assets', express.static(SITE_ASSETS_DIR));
