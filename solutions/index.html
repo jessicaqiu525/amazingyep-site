@@ -64,6 +64,7 @@
     .bp-pagination-arrow { width: 28px; height: 28px; border: 1px solid var(--gray-200); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; background: #fff; transition: all 0.2s; }
     .bp-pagination-arrow:hover { border-color: var(--navy); background: var(--navy); }
     .bp-pagination-arrow:hover svg { stroke: #fff; }
+    .bp-pagination-arrow.disabled { opacity: 0.35; pointer-events: none; }
     .bp-pagination-arrow svg { width: 12px; height: 12px; stroke: var(--text-light); transition: stroke 0.2s; }
     .bp-pagination-num { font-size: 13px; color: var(--text-light); min-width: 28px; text-align: center; }
 
@@ -132,7 +133,7 @@
 
   <!-- Title + Filter -->
   <div class="bp-header">
-    <h1 class="bp-title">BRAND PROGRAMS <span class="bp-subtitle">Complete solutions for your clients' needs</span></h1>
+    <h1 class="bp-title">BRAND PROGRAMS <span class="bp-subtitle">Turning brand stories into merchandise people use, share, and remember.</span></h1>
     <div class="bp-filter-wrap" onclick="toggleFilter()">
       <span class="bp-filter-text">FILTER</span>
       <svg class="bp-filter-arrow" id="filterArrow" viewBox="0 0 24 24" fill="none" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
@@ -159,7 +160,7 @@
         <span class="bp-type-item" data-filter="lifestyle-entertainment">Lifestyle &amp; Entertainment</span>
         <span class="bp-type-item" data-filter="sports">Sports</span>
         <span class="bp-type-item" data-filter="retail-automotive">Retail &amp; Automotive</span>
-        <span class="bp-type-item" data-filter="health-wellness">Health &amp; Wellness</span>
+        <span class="bp-type-item" data-filter="health-wellness">Health, Wellness &amp; Pet</span>
         <span class="bp-type-item" data-filter="all">All Brands</span>
       </div>
     </div>
@@ -193,8 +194,20 @@
       <div class="bp-featured-card" data-cat="lifestyle-entertainment"><div class="bp-brand-placeholder">Mythical</div><div class="bp-featured-card-body"><h4>Mythical</h4><p>Lifestyle &amp; Entertainment</p></div></div>
       <div class="bp-featured-card" data-cat="lifestyle-entertainment"><div class="bp-brand-placeholder">Steve-O</div><div class="bp-featured-card-body"><h4>Steve-O</h4><p>Lifestyle &amp; Entertainment</p></div></div>
       <div class="bp-featured-card" data-cat="sports"><div class="bp-brand-placeholder">World's Strongest Man</div><div class="bp-featured-card-body"><h4>World's Strongest Man</h4><p>Sports</p></div></div>
-      <div class="bp-featured-card" data-cat="health-wellness"><div class="bp-brand-placeholder">Librela</div><div class="bp-featured-card-body"><h4>Librela</h4><p>Health &amp; Wellness</p></div></div>
-      <div class="bp-featured-card" data-cat="health-wellness"><div class="bp-brand-placeholder">IntelliSkin</div><div class="bp-featured-card-body"><h4>IntelliSkin</h4><p>Health &amp; Wellness</p></div></div>
+      <div class="bp-featured-card" data-cat="health-wellness"><div class="bp-brand-placeholder">Librela</div><div class="bp-featured-card-body"><h4>Librela</h4><p>Health, Wellness &amp; Pet</p></div></div>
+      <div class="bp-featured-card" data-cat="health-wellness"><div class="bp-brand-placeholder">IntelliSkin</div><div class="bp-featured-card-body"><h4>IntelliSkin</h4><p>Health, Wellness &amp; Pet</p></div></div>
+    </div>
+    <div class="bp-carousel-pagination" id="brandPagination" hidden>
+      <div class="bp-pagination-bar"><div class="bp-pagination-bar-fill" id="brandPaginationFill" style="width:100%;"></div></div>
+      <div class="bp-pagination-arrows">
+        <button class="bp-pagination-arrow" id="brandPrev" type="button" onclick="changeBrandPage(-1)" aria-label="Previous brands page">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+        </button>
+        <span class="bp-pagination-num" id="brandPageNum">1/1</span>
+        <button class="bp-pagination-arrow" id="brandNext" type="button" onclick="changeBrandPage(1)" aria-label="Next brands page">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+        </button>
+      </div>
     </div>
   </section>
 
@@ -317,31 +330,67 @@
         showBrandCategory(this.dataset.filter || 'featured');
       });
     });
-    function showBrandCategory(category) {
-      const labels = {
+    const brandsPerPage = 8;
+    let activeBrandCategory = 'featured';
+    let activeBrandQuery = '';
+    let currentBrandPage = 1;
+    const brandLabels = {
         featured: 'FEATURED BRANDS',
         'food-beverage': 'FOOD & BEVERAGE BRANDS',
         'lifestyle-entertainment': 'LIFESTYLE & ENTERTAINMENT BRANDS',
         sports: 'SPORTS BRANDS',
         'retail-automotive': 'RETAIL & AUTOMOTIVE BRANDS',
-        'health-wellness': 'HEALTH & WELLNESS BRANDS',
+        'health-wellness': 'HEALTH, WELLNESS & PET BRANDS',
         all: 'ALL BRAND PARTNERS'
       };
-      document.getElementById('brandGridTitle').textContent = labels[category] || labels.featured;
-      document.querySelectorAll('.bp-featured-card').forEach(card => {
-        card.style.display = category === 'all' || (category === 'featured' ? card.dataset.featured === 'true' : card.dataset.cat === category) ? '' : 'none';
+    function getMatchingBrands() {
+      return Array.from(document.querySelectorAll('.bp-featured-card')).filter(card => {
+        const name = (card.querySelector('h4')?.textContent || '').toLowerCase();
+        const category = (card.dataset.cat || '').toLowerCase();
+        if (activeBrandQuery) return name.includes(activeBrandQuery) || category.includes(activeBrandQuery);
+        if (activeBrandCategory === 'all') return true;
+        if (activeBrandCategory === 'featured') return card.dataset.featured === 'true';
+        return card.dataset.cat === activeBrandCategory;
       });
+    }
+    function renderBrandPage() {
+      const matchingBrands = getMatchingBrands();
+      const totalPages = Math.max(1, Math.ceil(matchingBrands.length / brandsPerPage));
+      currentBrandPage = Math.min(currentBrandPage, totalPages);
+      const pageStart = (currentBrandPage - 1) * brandsPerPage;
+      const visibleBrands = new Set(matchingBrands.slice(pageStart, pageStart + brandsPerPage));
+      document.querySelectorAll('.bp-featured-card').forEach(card => {
+        card.style.display = visibleBrands.has(card) ? '' : 'none';
+      });
+      const pagination = document.getElementById('brandPagination');
+      pagination.hidden = totalPages <= 1;
+      document.getElementById('brandPageNum').textContent = currentBrandPage + '/' + totalPages;
+      document.getElementById('brandPaginationFill').style.width = (currentBrandPage / totalPages * 100) + '%';
+      document.getElementById('brandPrev').classList.toggle('disabled', currentBrandPage === 1);
+      document.getElementById('brandNext').classList.toggle('disabled', currentBrandPage === totalPages);
+    }
+    function showBrandCategory(category) {
+      activeBrandCategory = category;
+      activeBrandQuery = '';
+      currentBrandPage = 1;
+      document.getElementById('brandGridTitle').textContent = brandLabels[category] || brandLabels.featured;
+      renderBrandPage();
+    }
+    function changeBrandPage(direction) {
+      const totalPages = Math.max(1, Math.ceil(getMatchingBrands().length / brandsPerPage));
+      currentBrandPage = Math.max(1, Math.min(totalPages, currentBrandPage + direction));
+      renderBrandPage();
+      document.getElementById('brandGridTitle').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
     function filterBrandPrograms() {
       const query = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+      activeBrandCategory = 'all';
+      activeBrandQuery = query;
+      currentBrandPage = 1;
       document.querySelectorAll('.bp-type-item').forEach(i => i.classList.remove('active'));
       document.querySelector('[data-filter="all"]').classList.add('active');
       document.getElementById('brandGridTitle').textContent = query ? 'SEARCH RESULTS' : 'ALL BRAND PARTNERS';
-      document.querySelectorAll('.bp-featured-card').forEach(card => {
-        const name = (card.querySelector('h4')?.textContent || '').toLowerCase();
-        const cat = (card.dataset.cat || '').toLowerCase();
-        card.style.display = (!query || name.includes(query) || cat.includes(query)) ? '' : 'none';
-      });
+      renderBrandPage();
     }
     showBrandCategory('featured');
   </script>
