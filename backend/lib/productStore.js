@@ -85,7 +85,7 @@ const WEBSITE_PRODUCT_TYPE_RULES = [
   ['Bottle Opener Keychains', /\bbottle opener\b/i],
   ['LED Keychains', /\bled\b/i],
   ['Leather Keychains', /\bleather\b/i],
-  ['Mini Plush Keychains', /\b(plush|stuffed animal).{0,30}\bkeychain\b|\bkeychain.{0,30}\b(plush|stuffed animal)\b/i],
+  ['Plush Keychains', /\b(plush|stuffed animal).{0,30}\bkeychain\b|\bkeychain.{0,30}\b(plush|stuffed animal)\b/i],
   ['Pins', /\bpin(s)?\b/i],
   ['Patches', /\bpatch(es)?\b/i],
   ['Mugs and Tumblers', /\b(mug|tumbler)\b/i],
@@ -94,10 +94,9 @@ const WEBSITE_PRODUCT_TYPE_RULES = [
   ['Blankets', /\bblanket\b/i],
   ['Sweaters', /\bsweater\b/i],
   ['Plush Pillows', /\b(pillow|cushion)\b/i],
-  ['Holiday Plush', /\b(holiday|christmas|seasonal).{0,30}\b(plush|mascot|character)\b/i],
-  ['Brand Mascots', /\bmascot\b/i],
-  ['Stuffed Animals', /\bstuffed animal\b/i],
-  ['Custom Plush Characters', /\b(plush|character|doll)\b/i],
+  ['Holiday & Seasonal Plush', /\b(holiday|christmas|seasonal).{0,30}\b(plush|mascot|character)\b/i],
+  ['Brand & Team Mascots', /\bmascot\b/i],
+  ['Custom Plush Toys', /\b(plush|stuffed animal|character|doll)\b/i],
   ['Hoodies & Sweatshirts', /\b(hoodie|sweatshirt)\b/i],
   ['T-Shirts', /\bt[ -]?shirt\b/i],
   ['Hats & Caps', /\b(hat|cap)\b/i]
@@ -105,7 +104,17 @@ const WEBSITE_PRODUCT_TYPE_RULES = [
 
 function derivedWebsiteProductType(product) {
   if (String(product.websiteProductType || '').trim()) {
-    return String(product.websiteProductType).trim();
+    const explicitType = String(product.websiteProductType).trim();
+    const plushTypeAliases = {
+      'Custom Plush Characters': 'Custom Plush Toys',
+      'Custom Shape Plush': 'Custom Plush Toys',
+      'Stuffed Animals': 'Custom Plush Toys',
+      'Brand Mascots': 'Brand & Team Mascots',
+      'Mini Plush Keychains': 'Plush Keychains',
+      'Holiday Plush': 'Holiday & Seasonal Plush',
+      'Seasonal Characters': 'Holiday & Seasonal Plush'
+    };
+    return plushTypeAliases[explicitType] || explicitType;
   }
   const searchable = [
     product.name,
