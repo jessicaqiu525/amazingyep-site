@@ -65,6 +65,8 @@
     <div class="container">
       <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Brand Programs</a>
       <span class="brand-back-separator">/</span>
+      <span id="breadcrumbCategory">Brand Category</span>
+      <span class="brand-back-separator">/</span>
       <span id="breadcrumbBrand">Brand Program</span>
     </div>
   </div>
@@ -132,6 +134,7 @@
     const brandName = Object.keys(brandPrograms).find(name => name.toLowerCase() === requestedBrand.toLowerCase()) || 'Brand Program';
     const brandData = brandPrograms[brandName] || ['Custom Merchandise', ''];
     document.title = brandName + ' Brand Program - Amazing Yep Inc.';
+    document.getElementById('breadcrumbCategory').textContent = brandData[0];
     document.getElementById('breadcrumbBrand').textContent = brandName;
     document.getElementById('brandCategory').textContent = brandData[0];
     document.getElementById('brandTitle').textContent = brandName;
