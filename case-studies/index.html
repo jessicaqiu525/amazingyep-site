@@ -377,5 +377,41 @@
   </script>
 
   <script src="../script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const conferenceTitle = Array.from(document.querySelectorAll('h2, h3, h4')).find(
+        (heading) => heading.textContent.trim() === 'Conference & Event Swag'
+      );
+
+      const conferenceCard = conferenceTitle?.closest(
+        'article, a, .case-card, .featured-card, .card'
+      ) || conferenceTitle?.parentElement;
+
+      if (!conferenceCard) return;
+
+      const conferencePage = '../conference-swag.html';
+
+      if (conferenceCard.tagName === 'A') {
+        conferenceCard.setAttribute('href', conferencePage);
+        return;
+      }
+
+      conferenceCard.style.cursor = 'pointer';
+      conferenceCard.setAttribute('role', 'link');
+      conferenceCard.setAttribute('tabindex', '0');
+
+      const openConferencePage = () => {
+        window.location.href = conferencePage;
+      };
+
+      conferenceCard.addEventListener('click', openConferencePage);
+      conferenceCard.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          openConferencePage();
+        }
+      });
+    });
+  </script>
 </body>
 </html>
