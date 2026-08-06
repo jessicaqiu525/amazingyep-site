@@ -413,5 +413,26 @@
       });
     });
   </script>
+  <script>
+    // Both the category chip and the featured card should open the
+    // Conference & Event Swag detail page.  Capture the click before the
+    // filtering code so it cannot consume the navigation event.
+    document.addEventListener('click', function (event) {
+      let element = event.target;
+
+      for (let depth = 0; element && element !== document.body && depth < 7; depth += 1) {
+        const label = (element.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
+
+        if (label.includes('conference & event swag') && label.length < 500) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          window.location.assign('/conference-swag.html');
+          return;
+        }
+
+        element = element.parentElement;
+      }
+    }, true);
+  </script>
 </body>
 </html>
