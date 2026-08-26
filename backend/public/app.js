@@ -6,7 +6,6 @@ const state = {
   reference: { categories: [], themes: [] },
   user: null,
   users: [],
-  activity: [],
   view: 'products',
   token: window.localStorage.getItem('amazingyepAdminToken') || ''
 };
@@ -23,8 +22,10 @@ const els = {
   validationPanel: document.getElementById('validationPanel'),
   productsView: document.getElementById('productsView'),
   editorView: document.getElementById('editorView'),
+  adminView: document.getElementById('adminView'),
   productsViewBtn: document.getElementById('productsViewBtn'),
   editorViewBtn: document.getElementById('editorViewBtn'),
+  adminViewBtn: document.getElementById('adminViewBtn'),
   title: document.getElementById('pageTitle'),
   search: document.getElementById('searchInput'),
   category: document.getElementById('categoryFilter'),
@@ -42,8 +43,8 @@ const els = {
   themeCount: document.getElementById('themeCount'),
   logoutBtn: document.getElementById('logoutBtn'),
   downloadBackupBtn: document.getElementById('downloadBackupBtn'),
-  restoreBackupBtn: document.getElementById('restoreBackupBtn'),
   viewProductBtn: document.getElementById('viewProductBtn'),
+  saveBtn: document.getElementById('saveBtn'),
   importSageBtn: document.getElementById('importSageBtn'),
   importPanel: document.getElementById('importPanel'),
   closeImportBtn: document.getElementById('closeImportBtn'),
@@ -52,7 +53,6 @@ const els = {
   sagePreviewBtn: document.getElementById('sagePreviewBtn'),
   sageImportProductsBtn: document.getElementById('sageImportProductsBtn'),
   sageImportResult: document.getElementById('sageImportResult'),
-  exportSageBtn: document.getElementById('exportSageBtn'),
   deleteProductBtn: document.getElementById('deleteProductBtn'),
   teamPanel: document.getElementById('teamPanel'),
   userList: document.getElementById('userList'),
@@ -62,9 +62,7 @@ const els = {
   newUserDisplay: document.getElementById('newUserDisplay'),
   newUserPassword: document.getElementById('newUserPassword'),
   newUserRole: document.getElementById('newUserRole'),
-  activityPanel: document.getElementById('activityPanel'),
-  activityList: document.getElementById('activityList'),
-  reloadActivityBtn: document.getElementById('reloadActivityBtn')
+  backupPanel: document.getElementById('backupPanel'),
 };
 
 const DEFAULT_OPTION_QTYS = [100, 500, 1000, 5000, 10000, 100000];
@@ -134,10 +132,9 @@ function isAdmin() {
 function applyPermissions() {
   const admin = isAdmin();
   els.teamPanel.hidden = !admin;
-  els.activityPanel.hidden = !admin;
+  els.backupPanel.hidden = !admin;
+  els.adminViewBtn.hidden = !admin;
   els.downloadBackupBtn.hidden = !admin;
-  els.restoreBackupBtn.hidden = !admin;
-  els.exportSageBtn.hidden = !admin;
   els.deleteProductBtn.hidden = !admin;
 }
 
@@ -172,14 +169,18 @@ function showStatus(message, isError) {
 function setView(view) {
   state.view = view;
   const showProducts = view === 'products';
+  const showAdmin = view === 'admin';
   els.productsView.hidden = !showProducts;
-  els.editorView.hidden = showProducts;
+  els.adminView.hidden = !showAdmin;
+  els.editorView.hidden = showProducts || showAdmin;
   els.productsViewBtn.classList.toggle('active', showProducts);
-  els.editorViewBtn.classList.toggle('active', !showProducts);
-  els.title.textContent = showProducts
-    ? 'Products'
-    : ((state.selected && state.selected.name) || 'New Product');
-  if (!showProducts && els.importPanel) els.importPanel.hidden = true;
+  els.editorViewBtn.classList.toggle('active', !showProducts && !showAdmin);
+  els.adminViewBtn.classList.toggle('active', showAdmin);
+  els.viewProductBtn.hidden = showProducts || showAdmin;
+  els.saveBtn.hidden = showProducts || showAdmin;
+  els.deleteProductBtn.hidden = showProducts || showAdmin || !isAdmin();
+  els.title.textContent = showProducts ? 'Products' : (showAdmin ? 'Administration' : ((state.selected && state.selected.name) || 'New Product'));
+  if ((!showProducts || showAdmin) && els.importPanel) els.importPanel.hidden = true;
 }
 
 function clearSearchAutofill() {
@@ -492,7 +493,7 @@ function renderCatalog() {
 
   els.catalogRows.innerHTML = state.products.map((product) => {
     return '<tr class="catalog-row" data-id="' + escapeHtml(product.id) + '">' +
-      '<td><strong>' + escapeHtml(product.sku || product.itemNumber || product.id || '') + '</strong></td>' +
+      '<td><div class="catalog-product"><div class="catalog-thumb">' + (productImage(product) ? '<img src="' + escapeHtml(productImage(product)) + '" alt="">' : '<span>No image</span>') + '</div><strong>' + escapeHtml(product.sku || product.itemNumber || product.id || '') + '</strong></div></td>' +
       '<td>' + escapeHtml(product.name || 'Untitled Product') + '<div class="catalog-desc">' + escapeHtml((product.description || '').slice(0, 120)) + '</div></td>' +
       '<td>' + escapeHtml(product.category || '') + '<div class="catalog-desc">' + escapeHtml(product.subcategory || '') + '</div></td>' +
       '<td>' + escapeHtml(product.sageCategory1 || '') + '<div class="catalog-desc">' + escapeHtml(product.sageCategory2 || '') + '</div></td>' +
@@ -569,7 +570,6 @@ async function login(username, password) {
   setView('products');
   if (isAdmin()) {
     await loadUsers();
-    await loadActivity();
   }
 }
 
@@ -596,7 +596,6 @@ async function checkSession() {
   setView('products');
   if (isAdmin()) {
     await loadUsers();
-    await loadActivity();
   }
 }
 
@@ -604,73 +603,11 @@ function logout() {
   setAuthToken('');
   state.user = null;
   state.users = [];
-  state.activity = [];
   state.products = [];
   state.selected = null;
   applyPermissions();
   renderList();
   showLogin('You have signed out.');
-}
-
-function formatActivityTime(value) {
-  if (!value) return '';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '';
-  return date.toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-}
-
-function activityLabel(event) {
-  const action = event.action || '';
-  const details = event.details || {};
-  const product = [details.sku, details.name].filter(Boolean).join(' - ');
-  const labels = {
-    'product.created': 'created product',
-    'product.updated': 'saved product',
-    'product.deleted': 'deleted product',
-    'image.uploaded': 'uploaded image',
-    'sage.exported': 'exported SAGE',
-    'backup.created': 'created backup',
-    'backup.restored': 'restored backup',
-    'user.created': 'created user',
-    'user.updated': 'updated user',
-    'user.enabled': 'enabled user',
-    'user.disabled': 'disabled user'
-  };
-  const base = labels[action] || action.replace('.', ' ');
-  if (product) return base + ': ' + product;
-  if (details.username) return base + ': ' + details.username;
-  if (details.filename) return base + ': ' + details.filename;
-  if (details.name) return base + ': ' + details.name;
-  return base;
-}
-
-function renderActivity() {
-  if (!isAdmin()) {
-    els.activityList.innerHTML = '';
-    return;
-  }
-
-  if (!state.activity.length) {
-    els.activityList.innerHTML = '<div class="activity-item"><strong>No activity yet</strong><span>Recent admin actions will appear here.</span></div>';
-    return;
-  }
-
-  els.activityList.innerHTML = state.activity.map((event) => {
-    const actor = event.actor || {};
-    return '<div class="activity-item">' +
-      '<strong>' + escapeHtml(activityLabel(event)) + '</strong>' +
-      '<span>' + escapeHtml(actor.displayName || actor.username || 'Unknown') + ' · ' + escapeHtml(formatActivityTime(event.at)) + '</span>' +
-    '</div>';
-  }).join('');
-}
-
-async function loadActivity() {
-  if (!isAdmin()) return;
-  const res = await authFetch('/api/activity?limit=12');
-  if (!res.ok) throw new Error('Could not load recent activity.');
-  const data = await res.json();
-  state.activity = data.events || [];
-  renderActivity();
 }
 
 function renderUsers() {
@@ -730,7 +667,6 @@ async function addUser() {
   els.newUserPassword.value = '';
   els.newUserRole.value = 'staff';
   await loadUsers();
-  await loadActivity();
   showStatus('Staff account created.');
 }
 
@@ -745,7 +681,6 @@ async function toggleUser(id, active) {
     throw new Error(error.error || 'Could not update user.');
   }
   await loadUsers();
-  await loadActivity();
   showStatus('Team account updated.');
 }
 
@@ -1093,7 +1028,6 @@ async function saveProduct() {
   state.selected = await res.json();
   fillForm(state.selected);
   await loadProducts();
-  if (isAdmin()) await loadActivity();
   showStatus('Product saved.');
 }
 
@@ -1255,7 +1189,6 @@ async function downloadBackup() {
   a.remove();
   URL.revokeObjectURL(url);
   showStatus('Backup downloaded.');
-  if (isAdmin()) await loadActivity();
 }
 
 async function restoreLatestBackup() {
@@ -1272,7 +1205,6 @@ async function restoreLatestBackup() {
   state.selected = null;
   els.form.reset();
   await loadProducts();
-  if (isAdmin()) await loadActivity();
   showStatus('Backup restored: ' + (data.restored && data.restored.name ? data.restored.name : 'latest backup'));
 }
 
@@ -1293,7 +1225,6 @@ async function deleteCurrentProduct() {
   els.form.reset();
   els.title.textContent = 'Edit Product';
   await loadProducts();
-  if (isAdmin()) await loadActivity();
   showStatus('Product deleted. A backup was created before deletion.');
 }
 
@@ -1321,18 +1252,10 @@ els.sageImportProductsBtn.addEventListener('click', () => {
   submitSageImport(false).catch((error) => showStatus(error.message, true));
 });
 
-document.getElementById('exportSageBtn').addEventListener('click', () => {
-  exportSage().catch((error) => showStatus(error.message, true));
-});
-
 els.viewProductBtn.addEventListener('click', viewWebsiteProduct);
 
 els.downloadBackupBtn.addEventListener('click', () => {
   downloadBackup().catch((error) => showStatus(error.message, true));
-});
-
-els.restoreBackupBtn.addEventListener('click', () => {
-  restoreLatestBackup().catch((error) => showStatus(error.message, true));
 });
 
 els.deleteProductBtn.addEventListener('click', () => {
@@ -1341,10 +1264,6 @@ els.deleteProductBtn.addEventListener('click', () => {
 
 els.reloadUsersBtn.addEventListener('click', () => {
   loadUsers().catch((error) => showStatus(error.message, true));
-});
-
-els.reloadActivityBtn.addEventListener('click', () => {
-  loadActivity().catch((error) => showStatus(error.message, true));
 });
 
 els.addUserBtn.addEventListener('click', () => {
@@ -1373,7 +1292,6 @@ els.loginForm.addEventListener('submit', (event) => {
 els.logoutBtn.addEventListener('click', logout);
 
 document.getElementById('newProductBtn').addEventListener('click', blankProduct);
-document.getElementById('refreshBtn').addEventListener('click', () => loadProducts().catch((error) => showStatus(error.message, true)));
 els.clearFiltersBtn.addEventListener('click', () => {
   els.search.value = '';
   els.category.value = '';
@@ -1384,6 +1302,10 @@ els.clearFiltersBtn.addEventListener('click', () => {
 els.productsViewBtn.addEventListener('click', () => {
   setView('products');
   loadProducts().catch((error) => showStatus(error.message, true));
+});
+
+els.adminViewBtn.addEventListener('click', () => {
+  if (isAdmin()) setView('admin');
 });
 
 els.editorViewBtn.addEventListener('click', () => {

@@ -35,66 +35,17 @@
         </div>
       </div>
 
-      <div class="side-section">
-        <label for="searchInput">Search</label>
-        <input id="searchInput" name="productSearchOnly" type="search" placeholder="Search products" autocomplete="new-password" spellcheck="false">
+      <nav class="admin-nav" aria-label="Admin navigation">
+        <button id="productsViewBtn" class="admin-nav-item active" type="button"><span>▦</span> Products</button>
+        <button id="editorViewBtn" class="admin-nav-item" type="button"><span>✎</span> Product Editor</button>
+        <button id="newProductBtn" class="admin-nav-item" type="button"><span>＋</span> Add Product</button>
+        <button id="importSageBtn" class="admin-nav-item" type="button"><span>⇧</span> Import Products</button>
+        <button id="adminViewBtn" class="admin-nav-item" type="button" hidden><span>⚙</span> Administration</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <a class="admin-nav-item" href="/" target="_blank"><span>↗</span> View Website</a>
+        <button id="logoutBtn" class="admin-nav-item" type="button"><span>←</span> Log Out</button>
       </div>
-
-      <div class="side-section">
-        <label for="categoryFilter">Website Category</label>
-        <select id="categoryFilter">
-          <option value="">All Categories</option>
-          <option>Bags</option>
-          <option>Plush & Mascots</option>
-          <option>Keychains & Accessories</option>
-          <option>Drinkware</option>
-          <option>Wearables</option>
-          <option>Office & Stationery</option>
-          <option>Outdoor & Leisure</option>
-          <option>Technology</option>
-          <option>Trade Show</option>
-        </select>
-      </div>
-
-      <div class="side-section">
-        <label for="sageCategoryFilter">SAGE Category</label>
-        <select id="sageCategoryFilter">
-          <option value="">All SAGE Categories</option>
-        </select>
-      </div>
-
-      <div class="side-actions">
-        <button id="newProductBtn" class="btn primary" type="button">New Product</button>
-        <button id="refreshBtn" class="btn ghost" type="button">Refresh</button>
-      </div>
-      <button id="clearFiltersBtn" class="btn ghost full" type="button">Clear Filters</button>
-
-      <div id="teamPanel" class="side-section team-panel" hidden>
-        <div class="side-heading">
-          <span>Team Access</span>
-          <button id="reloadUsersBtn" class="text-btn" type="button">Reload</button>
-        </div>
-        <div id="userList" class="user-list"></div>
-        <div class="team-form">
-          <input id="newUserName" type="text" placeholder="Username">
-          <input id="newUserDisplay" type="text" placeholder="Display name">
-          <input id="newUserPassword" type="password" placeholder="Temporary password">
-          <select id="newUserRole">
-            <option value="staff">Staff</option>
-            <option value="admin">Admin</option>
-          </select>
-          <button id="addUserBtn" class="btn mini" type="button">Add Staff Account</button>
-        </div>
-      </div>
-
-      <div id="activityPanel" class="side-section activity-panel" hidden>
-        <div class="side-heading">
-          <span>Recent Activity</span>
-          <button id="reloadActivityBtn" class="text-btn" type="button">Reload</button>
-        </div>
-        <div id="activityList" class="activity-list"></div>
-      </div>
-
       <div id="productList" class="product-list"></div>
     </aside>
 
@@ -103,18 +54,9 @@
         <div>
           <p class="eyebrow">Product Database</p>
           <h1 id="pageTitle">Edit Product</h1>
-          <div class="view-switch" role="tablist" aria-label="Admin view">
-            <button id="productsViewBtn" class="view-tab active" type="button">Products List</button>
-            <button id="editorViewBtn" class="view-tab" type="button">Product Editor</button>
-          </div>
         </div>
         <div class="top-actions">
-          <button id="logoutBtn" class="btn ghost" type="button">Log Out</button>
-          <button id="downloadBackupBtn" class="btn ghost" type="button">Download Backup</button>
-          <button id="restoreBackupBtn" class="btn ghost warning" type="button">Restore Latest</button>
           <button id="viewProductBtn" class="btn ghost" type="button">View Website Page</button>
-          <button id="importSageBtn" class="btn ghost" type="button">Import SAGE</button>
-          <button id="exportSageBtn" class="btn ghost" type="button">Export SAGE</button>
           <button id="deleteProductBtn" class="btn danger" type="button">Delete Product</button>
           <button id="saveBtn" class="btn primary" type="button">Save Product</button>
         </div>
@@ -158,11 +100,19 @@
             <p id="catalogSummary" class="panel-note">All saved backend products appear here.</p>
           </div>
         </div>
+        <div class="catalog-toolbar">
+          <label class="catalog-search"><span>Search products</span><input id="searchInput" name="productSearchOnly" type="search" placeholder="Item number or product name" autocomplete="new-password" spellcheck="false"></label>
+          <label><span>Website Category</span><select id="categoryFilter">
+            <option value="">All Categories</option><option>Bags</option><option>Plush &amp; Mascots</option><option>Keychains &amp; Accessories</option><option>Drinkware</option><option>Wearables</option><option>Office &amp; Stationery</option><option>Outdoor &amp; Leisure</option><option>Technology</option><option>Trade Show</option>
+          </select></label>
+          <label><span>SAGE Category</span><select id="sageCategoryFilter"><option value="">All SAGE Categories</option></select></label>
+          <button id="clearFiltersBtn" class="btn ghost" type="button">Clear</button>
+        </div>
         <div class="catalog-table-wrap">
           <table class="catalog-table">
             <thead>
               <tr>
-                <th>Item #</th>
+                <th>Product</th>
                 <th>Product Name</th>
                 <th>Website Category</th>
                 <th>SAGE Category</th>
@@ -173,6 +123,22 @@
             </thead>
             <tbody id="catalogRows"></tbody>
           </table>
+        </div>
+      </section>
+
+      <section id="adminView" class="panel span-2 admin-panel" hidden>
+        <div class="panel-head"><div><h2>Administration</h2><p class="panel-note">Manage staff access and occasional data backups.</p></div></div>
+        <div class="management-grid">
+          <section id="teamPanel" class="management-card" hidden>
+            <div class="side-heading"><span>Team Access</span><button id="reloadUsersBtn" class="text-btn" type="button">Reload</button></div>
+            <div id="userList" class="user-list"></div>
+            <div class="team-form"><input id="newUserName" type="text" placeholder="Username"><input id="newUserDisplay" type="text" placeholder="Display name"><input id="newUserPassword" type="password" placeholder="Temporary password"><select id="newUserRole"><option value="staff">Staff</option><option value="admin">Admin</option></select><button id="addUserBtn" class="btn mini" type="button">Add Staff Account</button></div>
+          </section>
+          <section id="backupPanel" class="management-card" hidden>
+            <div class="side-heading"><span>Data Backup</span></div>
+            <p class="panel-note">Download a copy of the current website product data for safekeeping.</p>
+            <button id="downloadBackupBtn" class="btn ghost" type="button">Download Backup</button>
+          </section>
         </div>
       </section>
 
