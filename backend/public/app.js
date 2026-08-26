@@ -180,7 +180,7 @@ function setView(view) {
   els.saveBtn.hidden = showProducts || showAdmin;
   els.deleteProductBtn.hidden = showProducts || showAdmin || !isAdmin();
   els.title.textContent = showProducts ? 'Products' : (showAdmin ? 'Administration' : ((state.selected && state.selected.name) || 'New Product'));
-  if ((!showProducts || showAdmin) && els.importPanel) els.importPanel.hidden = true;
+  if (els.importPanel) els.importPanel.hidden = true;
 }
 
 function clearSearchAutofill() {
