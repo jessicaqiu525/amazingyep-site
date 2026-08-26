@@ -68,6 +68,17 @@ const els = {
 };
 
 const DEFAULT_OPTION_QTYS = [100, 500, 1000, 5000, 10000, 100000];
+const WEBSITE_PRODUCT_TYPES = {
+  'Bags': ['Tote & Shopping Bags', 'Backpacks & Drawstring Bags', 'Messenger & Briefcase Bags', 'Crossbody & Fanny Packs', 'Duffel & Travel Bags', 'Coolers & Lunch Bags', 'Clear Stadium Bags', 'Paper, Plastic & Retail Bags'],
+  'Keychains & Accessories': ['Plush Keychains', 'PVC & Rubber Keychains', 'Metal & Enamel Keychains', 'Acrylic Keychains', 'Bottle Opener Keychains', 'Leather & Fabric Keychains', 'Light-Up & Functional Keychains', 'Pins & Patches'],
+  'Drinkware': ['Tumblers & Travel Mugs', 'Water Bottles', 'Mugs & Cups', 'Can Coolers & Beverage Holders', 'Barware', 'Coasters & Drinkware Accessories'],
+  'Plush & Mascots': ['Plush Keychains', 'Plush Pillows', 'Holiday & Seasonal Plush', 'Brand & Team Mascots', 'Custom Plush Toys'],
+  'Wearables': ['T-Shirts', 'Polo Shirts', 'Hoodies & Sweatshirts', 'Sweaters & Knitwear', 'Jackets & Outerwear', 'Hats & Caps', 'Aprons & Uniforms', 'Activewear'],
+  'Office & Stationery': ['Notebooks & Journals', 'Pens & Writing', 'Desk Accessories & Organizers', 'Sticky Notes', 'Calendars & Planners', 'Mouse Pads'],
+  'Outdoor & Leisure': ['Camping & Hiking Gear', 'Picnic & BBQ', 'Beach Accessories', 'Fishing Gear', 'Outdoor Games', 'Blankets & Towels', 'Travel & Leisure Kits'],
+  'Technology': ['Power Banks', 'USB Drives', 'Phone Accessories', 'Wireless Chargers', 'Speakers & Audio', 'Headphones & Earbuds', 'Cables & Adapters'],
+  'Trade Show': ['Banners & Signs', 'Table Covers', 'Pop-Up Displays', 'Lanyards & Badges', 'Brochure & Literature Holders', 'Flags', 'Booth Accessories']
+};
 const NEW_PRODUCT_DEFAULTS = {
   priceCode: 'CCCCCC',
   priceIncludeColor: '1 color',
@@ -407,6 +418,19 @@ function getField(name) {
   return input ? input.value.trim() : '';
 }
 
+function updateWebsiteProductTypeOptions(category, selectedValue) {
+  const select = els.form.elements.websiteProductType;
+  if (!select) return;
+  const types = WEBSITE_PRODUCT_TYPES[category] || [];
+  select.innerHTML = '<option value="">Automatically detect</option>' + types.map((type) => (
+    '<option value="' + escapeHtml(type) + '">' + escapeHtml(type) + '</option>'
+  )).join('');
+  if (selectedValue && !types.includes(selectedValue)) {
+    select.insertAdjacentHTML('beforeend', '<option value="' + escapeHtml(selectedValue) + '">' + escapeHtml(selectedValue) + ' (existing)</option>');
+  }
+  select.value = selectedValue || '';
+}
+
 function getChecked(name) {
   const input = els.form.elements[name];
   return input ? input.checked : false;
@@ -741,7 +765,7 @@ function fillForm(product) {
   setField('sku', product.sku);
   setField('category', product.category);
   setField('subcategory', product.subcategory);
-  setField('websiteProductType', product.websiteProductType);
+  updateWebsiteProductTypeOptions(product.category, product.websiteProductType);
   setField('sageCategory1', product.sageCategory1);
   setField('sageCategory2', product.sageCategory2);
   setField('name', product.name);
@@ -1402,6 +1426,7 @@ document.addEventListener('click', (event) => {
 });
 
 els.form.elements.mainImage.addEventListener('input', (event) => updatePreview(event.target.value.trim()));
+els.form.elements.category.addEventListener('change', (event) => updateWebsiteProductTypeOptions(event.target.value, ''));
 els.addThemeBtn.addEventListener('click', addSelectedTheme);
 els.themeSearch.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {

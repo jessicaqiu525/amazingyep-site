@@ -43,34 +43,11 @@
     .iu-featured-card-body h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin: 0 0 4px; }
     .iu-featured-card-body p { font-size: 12px; color: var(--text-light); margin: 0; }
 
-    .iu-you-may-like { background: #fff; padding: 0 0 40px; }
-    .iu-carousel-header { max-width: 1440px; margin: 0 auto 16px; padding: 0 32px; }
-    .iu-carousel-header .section-label { display: block; margin-bottom: 4px; }
-    .iu-carousel-wrap { max-width: 1440px; margin: 0 auto; padding: 0 32px; overflow: hidden; }
-    .iu-carousel-track { display: flex; gap: 16px; padding-bottom: 8px; scroll-snap-type: x mandatory; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; scroll-behavior: smooth; }
-    .iu-carousel-track::-webkit-scrollbar { display: none; }
-    .iu-carousel-card { flex: 0 0 calc((100% - 32px) / 3); min-width: 200px; border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s; background: var(--gray-50); scroll-snap-align: start; }
-    .iu-carousel-card:hover { transform: translateY(-2px); }
-    .iu-carousel-card-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; background: var(--gray-100); }
-    .iu-carousel-card-body { padding: 12px; }
-    .iu-carousel-card-body h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin: 0 0 4px; }
-    .iu-carousel-card-body p { font-size: 12px; color: var(--text-light); margin: 0; }
-
-    .iu-carousel-pagination { max-width: 1440px; margin: 20px auto 0; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; }
-    .iu-pagination-bar { flex: 1; max-width: 400px; height: 2px; background: var(--gray-200); border-radius: 2px; position: relative; overflow: hidden; }
-    .iu-pagination-bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--navy); border-radius: 2px; transition: width 0.3s; }
-    .iu-pagination-arrows { display: flex; align-items: center; gap: 12px; }
-    .iu-pagination-arrow { width: 28px; height: 28px; border: 1px solid var(--gray-200); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; background: #fff; transition: all 0.2s; }
-    .iu-pagination-arrow:hover { border-color: var(--navy); background: var(--navy); }
-    .iu-pagination-arrow:hover svg { stroke: #fff; }
-    .iu-pagination-arrow svg { width: 12px; height: 12px; stroke: var(--text-light); transition: stroke 0.2s; }
-    .iu-pagination-num { font-size: 13px; color: var(--text-light); min-width: 28px; text-align: center; }
 
     @media (max-width: 768px) {
       .iu-title { font-size: 30px; letter-spacing: 0; }
       .iu-subtitle { font-size: 14px; display: block; margin-left: 0; margin-top: 4px; }
       .iu-featured-grid { grid-template-columns: repeat(2, 1fr); }
-      .iu-carousel-card { flex: 0 0 calc((100% - 16px) / 2); min-width: 140px; }
       .iu-type-grid { gap: 6px; }
       .iu-type-item { padding: 8px 16px; font-size: 13px; }
     }
@@ -157,7 +134,6 @@
         <span class="iu-type-item" data-href="../use-case-products.html?case=loyalty">Brand Loyalty Programs</span>
         <span class="iu-type-item" data-href="../use-case-products.html?case=travel">Travel &amp; Adventure Collection</span>
         <span class="iu-type-item" data-href="../use-case-products.html?case=golf">Golf &amp; Sports Events</span>
-        <span class="iu-type-item" data-href="../use-case-products.html?case=retail">Retail Plush Development</span>
       </div>
     </div>
   </div>
@@ -176,37 +152,6 @@
       <div class="iu-featured-card" data-cat="School" data-href="../use-case-products.html?case=schools"><img class="iu-featured-card-img" src="../assets/school-mascot-hero.jpg" alt="Schools, Teams &amp; Communities"><div class="iu-featured-card-body"><h4>Schools, Teams &amp; Communities</h4><p>Custom merchandise programs that bring schools, teams, and communities together through shared pride and meaningful engagement.</p></div></div>
       <div class="iu-featured-card" data-cat="Loyalty" data-href="../use-case-products.html?case=loyalty"><img class="iu-featured-card-img" src="../assets/consumer-connections-hero.jpg" alt="Brand Loyalty Programs"><div class="iu-featured-card-body"><h4>Brand Loyalty Programs</h4><p>Thoughtfully designed products that people choose to buy, collect, gift, and share—fostering meaningful connections with brands.</p></div></div>
       <div class="iu-featured-card" data-cat="Travel" data-href="../use-case-products.html?case=travel"><img class="iu-featured-card-img" src="../assets/travel-adventure-hero.jpg" alt="Travel &amp; Adventure Collection"><div class="iu-featured-card-body"><h4>Travel &amp; Adventure Collection</h4><p>From luggage and travel accessories to outdoor essentials for branded products that inspire exploration.</p></div></div>
-    </div>
-  </section>
-
-  <!-- YOU MAY LIKE -->
-  <section class="iu-you-may-like">
-    <div class="iu-carousel-header">
-      <span class="section-label">YOU MIGHT ALSO LIKE</span>
-    </div>
-    <div class="iu-carousel-wrap">
-      <div class="iu-carousel-track">
-        <div class="iu-carousel-card" data-cat="Golf" data-href="../use-case-products.html?case=golf"><img class="iu-carousel-card-img" src="https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=600&h=450&fit=crop" alt="Golf Tournament Kit"><div class="iu-carousel-card-body"><h4>Golf Tournament Kit</h4><p>Golf &amp; Sports Events</p></div></div>
-        <div class="iu-carousel-card" data-cat="Onboarding" data-href="../use-case-products.html?case=employee"><img class="iu-carousel-card-img" src="../assets/employee-engagement-hero.jpg" alt="New Hire Box"><div class="iu-carousel-card-body"><h4>New Hire Box</h4><p>Employee Engagement</p></div></div>
-        <div class="iu-carousel-card" data-cat="Mascot" data-href="../use-case-products.html?case=mascot"><img class="iu-carousel-card-img" src="../assets/character-mascot-hero.jpg" alt="Custom Mascot"><div class="iu-carousel-card-body"><h4>Custom Mascot Design</h4><p>Character &amp; Mascot Programs</p></div></div>
-        <div class="iu-carousel-card" data-cat="School" data-href="../use-case-products.html?case=schools"><img class="iu-carousel-card-img" src="../assets/school-mascot-collection.jpg" alt="Spirit Collection"><div class="iu-carousel-card-body"><h4>Spirit Collection</h4><p>Schools &amp; Teams</p></div></div>
-        <div class="iu-carousel-card" data-cat="Loyalty" data-href="../use-case-products.html?case=loyalty"><img class="iu-carousel-card-img" src="../assets/collections-hero-bg.jpg" alt="Reward Catalog"><div class="iu-carousel-card-body"><h4>Reward Catalog</h4><p>Brand Loyalty Programs</p></div></div>
-        <div class="iu-carousel-card" data-cat="Travel" data-href="../use-case-products.html?case=travel"><img class="iu-carousel-card-img" src="../assets/collections-hero-bg.jpg" alt="Travel Kit"><div class="iu-carousel-card-body"><h4>Travel Essentials Kit</h4><p>Travel &amp; Adventure</p></div></div>
-        <div class="iu-carousel-card" data-cat="Conference" data-href="../conference-swag.html"><img class="iu-carousel-card-img" src="../assets/conference-swag-hero.jpg" alt="Trade Show Booth"><div class="iu-carousel-card-body"><h4>Trade Show Booth Pack</h4><p>Conference &amp; Event Swag</p></div></div>
-        <div class="iu-carousel-card" data-cat="Retail" data-href="../use-case-products.html?case=retail"><img class="iu-carousel-card-img" src="https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=600&h=450&fit=crop" alt="Plush Retail"><div class="iu-carousel-card-body"><h4>Plush Retail Display</h4><p>Retail Plush Development</p></div></div>
-      </div>
-    </div>
-    <div class="iu-carousel-pagination">
-      <div class="iu-pagination-bar"><div class="iu-pagination-bar-fill" id="paginationFill" style="width:33.33%;"></div></div>
-      <div class="iu-pagination-arrows">
-        <div class="iu-pagination-arrow" onclick="prevPage()">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
-        </div>
-        <span class="iu-pagination-num" id="pageNum">1/3</span>
-        <div class="iu-pagination-arrow" onclick="nextPage()">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -286,7 +231,6 @@
             <li><a href="../use-case-products.html?case=loyalty">Brand Loyalty Programs</a></li>
             <li><a href="../use-case-products.html?case=travel">Travel &amp; Adventure Collection</a></li>
             <li><a href="../use-case-products.html?case=golf">Golf &amp; Sports Events</a></li>
-            <li><a href="../use-case-products.html?case=retail">Retail Plush Development</a></li>
           </ul>
         </div>
         <div class="footer-col">
@@ -329,48 +273,9 @@
         this.classList.add('active');
       });
     });
-    let currentPage = 1;
-    const totalPages = 3;
-    const carouselTrack = document.querySelector('.iu-carousel-track');
-    function getScrollPerPage() {
-      const wrap = document.querySelector('.iu-carousel-wrap');
-      return wrap ? wrap.clientWidth : 0;
-    }
-    function updatePagination() {
-      document.getElementById('paginationFill').style.width = (currentPage / totalPages * 100) + '%';
-      document.getElementById('pageNum').textContent = currentPage + '/' + totalPages;
-    }
-    function prevPage() {
-      if (currentPage > 1) {
-        currentPage--;
-        carouselTrack.scrollTo({ left: (currentPage - 1) * getScrollPerPage(), behavior: 'smooth' });
-        updatePagination();
-      }
-    }
-    function nextPage() {
-      if (currentPage < totalPages) {
-        currentPage++;
-        carouselTrack.scrollTo({ left: (currentPage - 1) * getScrollPerPage(), behavior: 'smooth' });
-        updatePagination();
-      }
-    }
-    carouselTrack.addEventListener('scroll', function() {
-      const scrollPerPage = getScrollPerPage();
-      if (scrollPerPage === 0) return;
-      const scrollLeft = carouselTrack.scrollLeft;
-      currentPage = Math.round(scrollLeft / scrollPerPage) + 1;
-      if (currentPage > totalPages) currentPage = totalPages;
-      if (currentPage < 1) currentPage = 1;
-      updatePagination();
-    });
     function filterIdeas() {
       const query = (document.getElementById('searchInput').value || '').toLowerCase();
       document.querySelectorAll('.iu-featured-card').forEach(card => {
-        const name = (card.querySelector('h4')?.textContent || '').toLowerCase();
-        const cat = (card.dataset.cat || '').toLowerCase();
-        card.style.display = (!query || name.includes(query) || cat.includes(query)) ? '' : 'none';
-      });
-      document.querySelectorAll('.iu-carousel-card').forEach(card => {
         const name = (card.querySelector('h4')?.textContent || '').toLowerCase();
         const cat = (card.dataset.cat || '').toLowerCase();
         card.style.display = (!query || name.includes(query) || cat.includes(query)) ? '' : 'none';

@@ -191,27 +191,21 @@
           <div class="field-grid four">
             <label>Product ID<input name="id" type="text" placeholder="Auto or SAGE ID"></label>
             <label>Item Number<input name="sku" type="text" required placeholder="AK468"></label>
-            <label>Website Category<input name="category" type="text" list="websiteCategoryList" placeholder="Bags"></label>
+            <label>Website Category<select name="category" id="editorWebsiteCategory">
+              <option value="">Select a collection</option>
+              <option>Bags</option><option>Plush &amp; Mascots</option><option>Keychains &amp; Accessories</option>
+              <option>Drinkware</option><option>Wearables</option><option>Office &amp; Stationery</option>
+              <option>Outdoor &amp; Leisure</option><option>Technology</option><option>Trade Show</option>
+            </select></label>
             <label>Website Subcategory<input name="subcategory" type="text" placeholder="Cooler Bags"></label>
           </div>
           <div class="field-grid two">
-            <label>Website Product Type<input name="websiteProductType" type="text" placeholder="Automatically detected, e.g. Coolers"></label>
+            <label>Website Product Type<select name="websiteProductType" id="editorWebsiteProductType"><option value="">Automatically detect</option></select></label>
           </div>
           <div class="field-grid two">
             <label>Primary Category<input name="sageCategory1" type="text" list="sageCategoryList" placeholder="Coolers"></label>
             <label>Secondary Category<input name="sageCategory2" type="text" list="sageCategoryList"></label>
           </div>
-          <datalist id="websiteCategoryList">
-            <option>Bags</option>
-            <option>Plush & Mascots</option>
-            <option>Keychains & Accessories</option>
-            <option>Drinkware</option>
-            <option>Wearables</option>
-            <option>Office & Stationery</option>
-            <option>Outdoor & Leisure</option>
-            <option>Technology</option>
-            <option>Trade Show</option>
-          </datalist>
           <datalist id="sageCategoryList"></datalist>
           <datalist id="sageThemeList"></datalist>
           <label>Product Name<input name="name" type="text" required placeholder="Caribou Clip Handle Cooler"></label>
