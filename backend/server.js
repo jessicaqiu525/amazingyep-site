@@ -311,10 +311,6 @@ app.get('/api/products/:id', optionalAuth, async (req, res, next) => {
 
 app.use('/api', requireAuth);
 
-app.post('/api/products/recommend-placement', (req, res) => {
-  res.json(productStore.recommendWebsitePlacement(req.body || {}));
-});
-
 app.post('/api/imports/sage/preview', importUpload.fields([
   { name: 'excel', maxCount: 1 },
   { name: 'imagesZip', maxCount: 1 }
