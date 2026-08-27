@@ -877,6 +877,32 @@ function fillForm(product) {
   setEditorTab('website');
 }
 
+async function recommendWebsitePlacement() {
+  const status = document.getElementById('placementRecommendationStatus');
+  const button = document.getElementById('recommendPlacementBtn');
+  button.disabled = true;
+  status.textContent = 'Analyzing product details...';
+  try {
+    const response = await authFetch('/api/products/recommend-placement', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(collectProduct())
+    });
+    if (!response.ok) throw new Error('Could not create recommendations.');
+    const placement = await response.json();
+    setField('category', placement.category);
+    updateWebsiteProductTypeOptions(placement.category, placement.websiteProductType);
+    setSelectedUseCases(placement.useCases || []);
+    status.textContent = placement.category
+      ? 'Recommended fields applied. Please review before saving.'
+      : 'Not enough product information to recommend a category yet.';
+  } catch (error) {
+    status.textContent = error.message;
+  } finally {
+    button.disabled = false;
+  }
+}
+
 function normalizeUseCases(value) {
   return Array.isArray(value) ? value.map(String) : normalizeList(value);
 }
@@ -1455,6 +1481,7 @@ els.loginForm.addEventListener('submit', (event) => {
 els.logoutBtn.addEventListener('click', logout);
 
 document.getElementById('newProductBtn').addEventListener('click', blankProduct);
+document.getElementById('recommendPlacementBtn').addEventListener('click', recommendWebsitePlacement);
 els.clearFiltersBtn.addEventListener('click', () => {
   els.search.value = '';
   els.category.value = '';

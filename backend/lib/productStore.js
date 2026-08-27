@@ -60,6 +60,22 @@ function canonicalWebsiteCategory(value) {
   return group ? group.name : category;
 }
 
+function derivedWebsiteCategory(product) {
+  const directValue = String(product.category || product.sageCategory1 || '').trim();
+  const direct = canonicalWebsiteCategory(directValue);
+  if (WEBSITE_CATEGORY_GROUPS.some((item) => item.name === direct)) return direct;
+  const searchable = [
+    product.name,
+    product.description,
+    product.subcategory,
+    product.sageCategory1,
+    product.sageCategory2,
+    ...listValue(product.keywords)
+  ].filter(Boolean).join(' ').toLowerCase();
+  const inferred = WEBSITE_CATEGORY_GROUPS.find((item) => item.terms.some((term) => searchable.includes(term)));
+  return inferred ? inferred.name : '';
+}
+
 function derivedPriceRange(product) {
   const prices = (product.pricing || [])
     .map((row) => Number(String(row.price || '').replace(/[^0-9.-]/g, '')))
@@ -222,12 +238,57 @@ function derivedWebsiteProductType(product) {
   return match ? match[0] : String(product.subcategory || product.sageCategory2 || product.sageCategory1 || '').trim();
 }
 
+const WEBSITE_USE_CASE_RULES = [
+  ['conference', /\b(conference|convention|trade show|tradeshow|expo|seminar|attendee|event giveaway|event swag|lanyard|badge)\b/i],
+  ['employee', /\b(business|employee|onboarding|office|corporate|appreciation|welcome kit|company store)\b/i],
+  ['mascot', /\b(mascot|character|plush|stuffed animal|doll)\b/i],
+  ['schools', /\b(college|school|university|education|fundraising|team|community|campus)\b/i],
+  ['loyalty', /\b(loyalty|reward|retail|customer|consumer|collectible|brand merchandise)\b/i],
+  ['travel', /\b(travel|camping|outdoor|adventure|vacation|portable|commuter)\b/i],
+  ['golf', /\b(golf|golfing|tournament|athletic event|sports event)\b/i]
+];
+
+function listValue(value) {
+  if (Array.isArray(value)) return value.map((item) => String(item || '').trim()).filter(Boolean);
+  return String(value || '').split(/[,;|]/).map((item) => item.trim()).filter(Boolean);
+}
+
+function derivedUseCases(product, preserveExisting = true) {
+  const existing = listValue(product.useCases || product.useCase);
+  if (preserveExisting && existing.length) return Array.from(new Set(existing));
+  const searchable = [
+    product.name,
+    product.description,
+    product.category,
+    product.subcategory,
+    product.sageCategory1,
+    product.sageCategory2,
+    ...listValue(product.keywords),
+    ...listValue(product.themes)
+  ].filter(Boolean).join(' ');
+  return WEBSITE_USE_CASE_RULES.filter((rule) => rule[1].test(searchable)).map((rule) => rule[0]);
+}
+
+function recommendWebsitePlacement(product) {
+  const category = derivedWebsiteCategory(product);
+  const normalized = { ...product, category };
+  return {
+    category,
+    websiteProductType: derivedWebsiteProductType(normalized),
+    useCases: derivedUseCases(normalized, false)
+  };
+}
+
 function productForDisplay(product) {
-  return product ? {
-    ...product,
-    priceRange: derivedPriceRange(product),
-    websiteProductType: derivedWebsiteProductType(product)
-  } : product;
+  if (!product) return product;
+  const category = derivedWebsiteCategory(product);
+  const normalized = { ...product, category };
+  return {
+    ...normalized,
+    priceRange: derivedPriceRange(normalized),
+    websiteProductType: derivedWebsiteProductType(normalized),
+    useCases: derivedUseCases(normalized)
+  };
 }
 
 function ensureStore() {
@@ -394,13 +455,14 @@ function normalizeProduct(product, existing) {
     id: product.id !== undefined && product.id !== null && product.id !== ''
       ? product.id
       : ((existing && existing.id) || nextId()),
-    category: canonicalWebsiteCategory(product.category),
+    category: derivedWebsiteCategory(product),
     published: product.published === true,
     updatedAt: now,
     createdAt: (existing && existing.createdAt) || product.createdAt || now
   };
   normalized.priceRange = derivedPriceRange(normalized);
   normalized.websiteProductType = derivedWebsiteProductType(normalized);
+  normalized.useCases = derivedUseCases(normalized);
   return normalized;
 }
 
@@ -620,7 +682,11 @@ module.exports = {
   latestBackup,
   listBackups,
   restoreBackup,
+  canonicalWebsiteCategory,
+  derivedWebsiteCategory,
   derivedWebsiteProductType,
+  derivedUseCases,
+  recommendWebsitePlacement,
   usingPostgres: USE_POSTGRES,
   ensurePostgresStore
 };

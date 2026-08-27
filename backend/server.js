@@ -311,6 +311,10 @@ app.get('/api/products/:id', optionalAuth, async (req, res, next) => {
 
 app.use('/api', requireAuth);
 
+app.post('/api/products/recommend-placement', (req, res) => {
+  res.json(productStore.recommendWebsitePlacement(req.body || {}));
+});
+
 app.post('/api/imports/sage/preview', importUpload.fields([
   { name: 'excel', maxCount: 1 },
   { name: 'imagesZip', maxCount: 1 }
@@ -324,17 +328,20 @@ app.post('/api/imports/sage/preview', importUpload.fields([
     const parsed = parseSageWorkbook(excel.path);
     const manifest = imagesZip ? readImageZipManifest(imagesZip.path) : { items: {}, warnings: [] };
     res.json({
-      products: parsed.products.slice(0, 25).map((product) => ({
-        sku: product.sku || product.itemNumber,
-        name: product.name,
-        category: product.category,
-        productType: product.websiteProductType,
-        themes: product.themes,
-        useCases: product.useCases,
-        productionTime: [product.productionTimeLo, product.productionTimeHi].filter(Boolean).join('-'),
-        mainImages: manifest.items[normalizeSku(product.sku || product.itemNumber)]?.mainCount || 0,
-        colorImages: manifest.items[normalizeSku(product.sku || product.itemNumber)]?.colorCount || 0
-      })),
+      products: parsed.products.slice(0, 25).map((product) => {
+        const placement = productStore.recommendWebsitePlacement(product);
+        return {
+          sku: product.sku || product.itemNumber,
+          name: product.name,
+          category: placement.category,
+          productType: placement.websiteProductType,
+          themes: product.themes,
+          useCases: placement.useCases,
+          productionTime: [product.productionTimeLo, product.productionTimeHi].filter(Boolean).join('-'),
+          mainImages: manifest.items[normalizeSku(product.sku || product.itemNumber)]?.mainCount || 0,
+          colorImages: manifest.items[normalizeSku(product.sku || product.itemNumber)]?.colorCount || 0
+        };
+      }),
       totalProducts: parsed.products.length,
       totalImageSkus: Object.keys(manifest.items).length,
       warnings: [...(parsed.warnings || []), ...(manifest.warnings || [])]
