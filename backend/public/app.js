@@ -893,8 +893,14 @@ async function recommendWebsitePlacement() {
     setField('category', placement.category);
     updateWebsiteProductTypeOptions(placement.category, placement.websiteProductType);
     setSelectedUseCases(placement.useCases || []);
+    const useCaseNames = (placement.useCases || []).map((value) => ({
+      conference: 'Conference & Event Swag', employee: 'Employee Engagement Kits',
+      mascot: 'Character & Mascot Programs', schools: 'Schools, Teams & Communities',
+      loyalty: 'Brand Loyalty Programs', travel: 'Travel & Adventure Collection',
+      golf: 'Golf & Sports Events'
+    })[value] || value);
     status.textContent = placement.category
-      ? 'Recommended fields applied. Please review before saving.'
+      ? `Applied: ${placement.category}${placement.websiteProductType ? ` / ${placement.websiteProductType}` : ''}${useCaseNames.length ? `; Use Cases: ${useCaseNames.join(', ')}` : '; no Use Case confidently matched'}. Review and save when ready.`
       : 'Not enough product information to recommend a category yet.';
   } catch (error) {
     status.textContent = error.message;

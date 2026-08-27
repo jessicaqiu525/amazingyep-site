@@ -270,8 +270,11 @@ function derivedUseCases(product, preserveExisting = true) {
 }
 
 function recommendWebsitePlacement(product) {
-  const category = derivedWebsiteCategory(product);
-  const normalized = { ...product, category };
+  // Recommendations must be independent from any existing website placement;
+  // otherwise pressing the button only echoes the current selections.
+  const source = { ...product, category: '', websiteProductType: '' };
+  const category = derivedWebsiteCategory(source);
+  const normalized = { ...source, category };
   return {
     category,
     websiteProductType: derivedWebsiteProductType(normalized),
