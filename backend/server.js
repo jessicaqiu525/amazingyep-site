@@ -4,7 +4,6 @@ const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
 const { v2: cloudinary } = require('cloudinary');
-const { exportSageWorkbook } = require('./exporters/sageExport');
 const { parseSageWorkbook } = require('./importers/sageImport');
 const { importImageZip, normalizeSku, readImageZipManifest } = require('./importers/imageZip');
 const auditStore = require('./lib/auditStore');
@@ -14,10 +13,7 @@ const { optionalAuth, requireAdmin, requireAuth, signToken, verifyCredentials } 
 
 const app = express();
 const PORT = process.env.PORT || 4000;
-const DEFAULT_SAGE_TEMPLATE_PATH = path.join(__dirname, 'data', 'SAGE_BPU_ProductList_AmazingYep.xls');
-const SAGE_TEMPLATE_PATH = process.env.SAGE_TEMPLATE_PATH || (fs.existsSync(DEFAULT_SAGE_TEMPLATE_PATH) ? DEFAULT_SAGE_TEMPLATE_PATH : '');
 const UPLOAD_DIR = process.env.UPLOAD_DIR || path.join(__dirname, 'uploads');
-const EXPORT_DIR = process.env.EXPORT_DIR || path.join(__dirname, 'exports');
 const ADMIN_DIR = path.join(__dirname, 'public');
 const SITE_ASSETS_DIR = path.join(__dirname, '..', 'assets');
 const SITE_ROOT_DIR = path.join(__dirname, '..');
@@ -28,7 +24,6 @@ const CLOUDINARY_ENABLED = Boolean(
 );
 
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-fs.mkdirSync(EXPORT_DIR, { recursive: true });
 
 if (CLOUDINARY_ENABLED && !process.env.CLOUDINARY_URL) {
   cloudinary.config({
@@ -623,25 +618,6 @@ app.post('/api/products/:id/images-zip', importUpload.single('imagesZip'), async
     next(error);
   } finally {
     removeTempUpload(req.file && req.file.path);
-  }
-});
-
-app.post('/api/exports/sage/products', requireAdmin, async (req, res, next) => {
-  try {
-    const ids = Array.isArray(req.body.ids) ? req.body.ids : [];
-    const products = Array.isArray(req.body.products) && req.body.products.length
-      ? req.body.products
-      : (ids.length
-        ? (await Promise.all(ids.map((id) => productStore.findProductAsync(id)))).filter(Boolean)
-        : await productStore.readProductsAsync());
-    const templatePath = req.body.templatePath || SAGE_TEMPLATE_PATH;
-    const outputPath = req.body.outputPath || path.join(EXPORT_DIR, 'sage-products-' + Date.now() + '.xls');
-    const result = exportSageWorkbook({ templatePath, outputPath, products });
-    auditStore.record(req, 'sage.exported', { productCount: products.length });
-
-    res.download(result.outputPath, 'SAGE_BPU_ProductList_AmazingYep.xls');
-  } catch (error) {
-    next(error);
   }
 });
 

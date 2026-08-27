@@ -272,7 +272,7 @@ function renderValidation(result) {
   if (!required.length && !sageWarnings.length) {
     els.validationPanel.hidden = false;
     els.validationPanel.className = 'validation-panel ok';
-    els.validationPanel.innerHTML = '<strong>Product Check</strong><span>Looks ready for website and SAGE export.</span>';
+    els.validationPanel.innerHTML = '<strong>Product Check</strong><span>Looks ready for the website.</span>';
     return;
   }
 
@@ -1286,40 +1286,6 @@ async function submitSageImport(preview) {
     els.sagePreviewBtn.disabled = false;
     els.sageImportProductsBtn.disabled = false;
   }
-}
-
-async function exportSage() {
-  const product = state.selected || collectProduct();
-  const currentProduct = collectProduct();
-  const validation = validateProduct(currentProduct);
-  renderValidation(validation);
-  if (validation.required.length) {
-    showStatus('Please complete the required fields before exporting SAGE.', true);
-    return;
-  }
-  if (validation.sageWarnings.length) {
-    const confirmed = window.confirm('Some SAGE fields may be incomplete:\n\n- ' + validation.sageWarnings.join('\n- ') + '\n\nExport anyway?');
-    if (!confirmed) return;
-  }
-  const res = await authFetch('/api/exports/sage/products', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ids: product.id || product.sku ? [product.id || product.sku] : [] })
-  });
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({}));
-    throw new Error(error.error || 'SAGE export failed.');
-  }
-  const blob = await res.blob();
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'SAGE_BPU_ProductList_AmazingYep.xls';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-  showStatus('SAGE file exported.');
 }
 
 function viewWebsiteProduct() {
