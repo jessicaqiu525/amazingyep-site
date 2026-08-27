@@ -4,9 +4,11 @@ const state = {
   products: [],
   selected: null,
   reference: { categories: [], themes: [] },
+  brandReference: { brands: [], categories: [] },
   user: null,
   users: [],
   view: 'products',
+  editorTab: 'website',
   token: window.localStorage.getItem('amazingyepAdminToken') || ''
 };
 
@@ -34,6 +36,7 @@ const els = {
   catalogRows: document.getElementById('catalogRows'),
   catalogSummary: document.getElementById('catalogSummary'),
   imagePreview: document.getElementById('imagePreview'),
+  galleryPreview: document.getElementById('galleryPreview'),
   pricingRows: document.getElementById('pricingRows'),
   colorRows: document.getElementById('colorRows'),
   optionRows: document.getElementById('optionRows'),
@@ -77,6 +80,17 @@ const WEBSITE_PRODUCT_TYPES = {
   'Technology': ['Power Banks', 'USB Drives', 'Phone Accessories', 'Wireless Chargers', 'Speakers & Audio', 'Headphones & Earbuds', 'Cables & Adapters'],
   'Trade Show': ['Banners & Signs', 'Table Covers', 'Pop-Up Displays', 'Lanyards & Badges', 'Brochure & Literature Holders', 'Flags', 'Booth Accessories']
 };
+const BRAND_CATEGORIES = {
+  'Tropicana': 'Food & Beverage', "King's Hawaiian": 'Food & Beverage', 'OLIPOP': 'Food & Beverage',
+  'Pabst': 'Food & Beverage', 'Aperol': 'Food & Beverage', 'Deer Park': 'Food & Beverage',
+  'Naked': 'Food & Beverage', 'Mauna Loa': 'Food & Beverage', 'Espolon': 'Food & Beverage',
+  'Rainier': 'Food & Beverage', 'Lone Star': 'Food & Beverage', 'Long Drink': 'Food & Beverage',
+  "Grillo's": 'Food & Beverage', 'Splash Refresher': 'Food & Beverage',
+  'Playboy': 'Lifestyle & Entertainment', 'John Wayne': 'Lifestyle & Entertainment',
+  'Mythical': 'Lifestyle & Entertainment', 'Steve-O': 'Lifestyle & Entertainment',
+  "World's Strongest Man": 'Sports', 'BMW': 'Retail & Automotive', '7-Eleven': 'Retail & Automotive',
+  'Librela': 'Health, Wellness & Pet', 'IntelliSkin': 'Health, Wellness & Pet'
+};
 const NEW_PRODUCT_DEFAULTS = {
   priceCode: 'CCCCCC',
   priceIncludeColor: '1 color',
@@ -92,7 +106,7 @@ const NEW_PRODUCT_DEFAULTS = {
   rushTimeHi: '',
   shipPointCountry: 'China',
   shipPointPostalCode: '',
-  shippingByAir: '10-20 days',
+  shippingByAir: '5-7 days',
   shippingBySea: '22-30 days'
 };
 
@@ -453,6 +467,32 @@ function updatePreview(src) {
   els.imagePreview.innerHTML = '<span class="image-preview-badge">Website Main Image / Left Image</span><img src="' + previewSrc + '" alt="">';
 }
 
+function renderGalleryPreview(images) {
+  const items = Array.isArray(images) ? images.filter(Boolean) : [];
+  if (!items.length) {
+    els.galleryPreview.innerHTML = '<p class="panel-note">No additional images yet.</p>';
+    return;
+  }
+  els.galleryPreview.innerHTML = items.map((src, index) =>
+    '<div class="gallery-thumb"><img src="' + escapeHtml(src.replace(/^\.\.\//, '/')) + '" alt="Additional product image"><button type="button" class="remove-gallery-image" data-index="' + index + '" aria-label="Remove image">×</button></div>'
+  ).join('');
+}
+
+function updateCalculatedPriceRange() {
+  const values = Array.from(document.querySelectorAll('.price-value'))
+    .map((input) => Number(input.value))
+    .filter((value) => Number.isFinite(value) && value > 0);
+  const field = els.form.elements.priceRange;
+  if (!field) return;
+  if (!values.length) {
+    field.value = '';
+    return;
+  }
+  const low = Math.min(...values);
+  const high = Math.max(...values);
+  field.value = '$' + low.toFixed(2) + (low === high ? '' : '-$' + high.toFixed(2));
+}
+
 function renderList() {
   if (!state.products.length) {
     els.list.innerHTML = '<div class="product-item"><strong>No products</strong><span>Create your first product.</span></div>';
@@ -514,6 +554,58 @@ function escapeHtml(value) {
   }[char]));
 }
 
+function populateBrandReferences() {
+  const names = new Set(Object.keys(BRAND_CATEGORIES));
+  const categories = new Set(Object.values(BRAND_CATEGORIES));
+  (state.brandReference.brands || []).forEach((brand) => {
+    if (brand.name) names.add(brand.name);
+    if (brand.category) categories.add(brand.category);
+  });
+  (state.brandReference.categories || []).forEach((category) => categories.add(category));
+  state.products.forEach((product) => {
+    if (product.brandName) names.add(product.brandName);
+    if (product.brandCategory) categories.add(product.brandCategory);
+  });
+  const nameList = document.getElementById('brandNameList');
+  const categoryList = document.getElementById('brandCategoryList');
+  if (nameList) nameList.innerHTML = Array.from(names).sort().map((value) => '<option value="' + escapeHtml(value) + '"></option>').join('');
+  if (categoryList) categoryList.innerHTML = Array.from(categories).sort().map((value) => '<option value="' + escapeHtml(value) + '"></option>').join('');
+}
+
+function applyKnownBrandCategory() {
+  const entered = getField('brandName').toLowerCase();
+  const known = Object.entries(BRAND_CATEGORIES).find(([name]) => name.toLowerCase() === entered);
+  const saved = (state.brandReference.brands || []).find((brand) => String(brand.name || '').toLowerCase() === entered);
+  if (saved && saved.category) setField('brandCategory', saved.category);
+  else if (known) setField('brandCategory', known[1]);
+  updateBrandAssignmentStatus();
+}
+
+function updateBrandAssignmentStatus() {
+  const status = document.getElementById('brandAssignmentStatus');
+  if (!status) return;
+  const name = getField('brandName');
+  const category = getField('brandCategory');
+  status.classList.toggle('assigned', Boolean(name || category));
+  status.textContent = name
+    ? 'Assigned to ' + name + (category ? ' · ' + category : ' · category not selected')
+    : (category ? 'Category selected: ' + category + ' · brand not selected' : 'No brand program assigned to this product.');
+}
+
+function rememberBrandReference(product) {
+  const name = String(product.brandName || '').trim();
+  const category = String(product.brandCategory || '').trim();
+  if (category && !(state.brandReference.categories || []).some((item) => item.toLowerCase() === category.toLowerCase())) {
+    state.brandReference.categories.push(category);
+  }
+  if (name) {
+    const existing = (state.brandReference.brands || []).find((item) => item.name.toLowerCase() === name.toLowerCase());
+    if (existing) existing.category = category || existing.category;
+    else state.brandReference.brands.push({ name, category });
+  }
+  populateBrandReferences();
+}
+
 async function loadProducts() {
   const params = new URLSearchParams();
   if (els.search.value.trim()) params.set('search', els.search.value.trim());
@@ -523,6 +615,7 @@ async function loadProducts() {
   if (!res.ok) throw new Error('Could not load products.');
   const data = await res.json();
   state.products = data.products || [];
+  populateBrandReferences();
   if (state.selected && !state.products.some((product) => String(product.id) === String(state.selected.id))) {
     state.selected = null;
   }
@@ -548,6 +641,13 @@ async function loadReference() {
     .join('');
 }
 
+async function loadBrandReference() {
+  const res = await authFetch('/api/reference/brands');
+  if (!res.ok) return;
+  state.brandReference = await res.json();
+  populateBrandReferences();
+}
+
 async function login(username, password) {
   const res = await fetch(API + '/api/auth/login', {
     method: 'POST',
@@ -565,6 +665,7 @@ async function login(username, password) {
   hideLogin();
   els.search.value = '';
   await loadReference();
+  await loadBrandReference();
   clearSearchAutofill();
   await loadProducts();
   setView('products');
@@ -591,6 +692,7 @@ async function checkSession() {
   hideLogin();
   els.search.value = '';
   await loadReference();
+  await loadBrandReference();
   clearSearchAutofill();
   await loadProducts();
   setView('products');
@@ -701,6 +803,9 @@ function fillForm(product) {
   setField('category', product.category);
   setField('subcategory', product.subcategory);
   updateWebsiteProductTypeOptions(product.category, product.websiteProductType);
+  setField('brandName', product.brandName);
+  setField('brandCategory', product.brandCategory);
+  updateBrandAssignmentStatus();
   setField('sageCategory1', product.sageCategory1);
   setField('sageCategory2', product.sageCategory2);
   setField('name', product.name);
@@ -708,6 +813,7 @@ function fillForm(product) {
   setField('priceRange', product.priceRange);
   setField('keywords', Array.isArray(product.keywords) ? product.keywords.join(', ') : product.keywords);
   setSelectedThemes(product.themes);
+  setSelectedUseCases(product.useCases || product.useCase || []);
   setField('catalogPage1', product.catalogPage1 || (product.sage && product.sage.page1));
   setField('catalogPage2', product.catalogPage2 || (product.sage && product.sage.page2));
   setField('expirationDate', product.expirationDate || (product.sage && product.sage.expirationDate));
@@ -717,14 +823,15 @@ function fillForm(product) {
   setChecked('notPictured', product.notPictured);
   setField('mainImage', productImage(product));
   setField('gallery', arrayToLines(product.gallery || []));
+  renderGalleryPreview(product.gallery || []);
   setField('sagePictureUrl', product.sagePictureUrl);
-  setField('madeInCountry', product.madeInCountry || (product.sage && product.sage.madeInCountry));
-  setField('assembledInCountry', product.assembledInCountry || (product.sage && product.sage.assembledInCountry));
-  setField('decoratedInCountry', product.decoratedInCountry || (product.sage && product.sage.decoratedInCountry));
-  setField('shipPointCountry', product.shipPointCountry || (product.sage && product.sage.shipPointCountry));
+  setField('madeInCountry', 'China');
+  setField('assembledInCountry', 'China');
+  setField('decoratedInCountry', 'China');
+  setField('shipPointCountry', 'China');
   setField('shipPointPostalCode', product.shipPointPostalCode || (product.sage && product.sage.shipPointPostalCode));
   setField('setupCharge', product.setupCharge);
-  setField('setupChargeCode', product.setupChargeCode || (product.sage && product.sage.setupChargeCode));
+  setField('setupChargeCode', 'C');
   setField('imprintLocation', product.imprintLocation);
   setField('imprintArea', product.imprintArea);
   setField('secondaryImprintArea', product.secondaryImprintArea || product.secondImprintArea);
@@ -738,7 +845,7 @@ function fillForm(product) {
   setField('dimensionUnits', product.dimensionUnits || (product.dimensions && product.dimensions.units));
   setField('imprintMethod', product.imprintMethod);
   setField('packaging', product.packaging);
-  setField('priceCode', product.priceCode);
+  setField('priceCode', 'CCCCCC');
   setField('priceIncludeColor', product.priceIncludeColor || (product.priceIncludes && product.priceIncludes.colors));
   setField('priceIncludeSide', product.priceIncludeSide || (product.priceIncludes && product.priceIncludes.sides));
   setField('priceIncludeLocation', product.priceIncludeLocation || (product.priceIncludes && product.priceIncludes.locations));
@@ -757,16 +864,45 @@ function fillForm(product) {
   setField('cartonLength', product.cartonLength || (product.carton && product.carton.length));
   setField('cartonWidth', product.cartonWidth || (product.carton && product.carton.width));
   setField('cartonHeight', product.cartonHeight || (product.carton && product.carton.height));
-  setField('sampleTime', product.shippingTimeline && product.shippingTimeline.sample);
+  setField('sampleTime', product.sampleTime || (product.shippingTimeline && product.shippingTimeline.sample));
   setField('productionTimeLo', product.productionTimeLo || (product.production && product.production.timeLo));
   setField('productionTimeHi', product.productionTimeHi || (product.production && product.production.timeHi));
   setField('rushTimeLo', product.rushTimeLo || (product.production && product.production.rushLo));
   setField('rushTimeHi', product.rushTimeHi || (product.production && product.production.rushHi));
-  setField('shippingByAir', product.shippingTimeline && product.shippingTimeline.shippingByAir);
-  setField('shippingBySea', product.shippingTimeline && product.shippingTimeline.shippingBySea);
+  setField('shippingByAir', '5-7 days');
+  setField('shippingBySea', '22-30 days');
   renderColors(product.colorOptions || []);
   updatePreview(productImage(product));
   resizeTextareas();
+  setEditorTab('website');
+}
+
+function normalizeUseCases(value) {
+  return Array.isArray(value) ? value.map(String) : normalizeList(value);
+}
+
+function setSelectedUseCases(value) {
+  const selected = new Set(normalizeUseCases(value));
+  els.form.querySelectorAll('input[name="useCases"]').forEach((input) => {
+    input.checked = selected.has(input.value);
+  });
+}
+
+function getSelectedUseCases() {
+  return Array.from(els.form.querySelectorAll('input[name="useCases"]:checked')).map((input) => input.value);
+}
+
+function setEditorTab(tab) {
+  state.editorTab = tab || 'website';
+  document.querySelectorAll('[data-editor-tab]').forEach((button) => {
+    const active = button.dataset.editorTab === state.editorTab;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-selected', active ? 'true' : 'false');
+  });
+  document.querySelectorAll('[data-editor-section]').forEach((section) => {
+    section.hidden = section.dataset.editorSection !== state.editorTab;
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function blankProduct() {
@@ -796,6 +932,7 @@ function blankProduct() {
 function renderPricing(pricing) {
   const rows = pricing.length ? pricing : [{ quantity: '', price: '' }];
   els.pricingRows.innerHTML = rows.map((row) => priceRowHtml(row.quantity, row.price, row.piecesPerUnit || 1)).join('');
+  updateCalculatedPriceRange();
 }
 
 function priceRowHtml(quantity, price, piecesPerUnit) {
@@ -921,6 +1058,8 @@ function collectProduct() {
     category: getField('category'),
     subcategory: getField('subcategory'),
     websiteProductType: getField('websiteProductType'),
+    brandName: getField('brandName'),
+    brandCategory: getField('brandCategory'),
     sageCategory1: getField('sageCategory1'),
     sageCategory2: getField('sageCategory2'),
     description: getField('description'),
@@ -928,6 +1067,7 @@ function collectProduct() {
     priceRange: getField('priceRange'),
     keywords: normalizeList(getField('keywords')),
     themes: getSelectedThemes(),
+    useCases: getSelectedUseCases(),
     catalogPage1: getField('catalogPage1'),
     catalogPage2: getField('catalogPage2'),
     expirationDate: getField('expirationDate') || currentCatalogExpirationDate(),
@@ -940,13 +1080,13 @@ function collectProduct() {
     colorOptions: collectColors(),
     pricing: collectPricing(),
     sagePictureUrl: getField('sagePictureUrl'),
-    madeInCountry: getField('madeInCountry'),
-    assembledInCountry: getField('assembledInCountry'),
-    decoratedInCountry: getField('decoratedInCountry'),
-    shipPointCountry: getField('shipPointCountry'),
+    madeInCountry: 'China',
+    assembledInCountry: 'China',
+    decoratedInCountry: 'China',
+    shipPointCountry: 'China',
     shipPointPostalCode: getField('shipPointPostalCode'),
     setupCharge: getField('setupCharge') ? Number(getField('setupCharge')) : '',
-    setupChargeCode: getField('setupChargeCode'),
+    setupChargeCode: 'C',
     imprintLocation: getField('imprintLocation'),
     imprintArea,
     secondaryImprintLocation: getField('secondaryImprintLocation'),
@@ -958,7 +1098,7 @@ function collectProduct() {
     dimensions,
     imprintMethod,
     packaging,
-    priceCode: getField('priceCode'),
+    priceCode: 'CCCCCC',
     priceIncludeColor: getField('priceIncludeColor'),
     priceIncludeSide: getField('priceIncludeSide'),
     priceIncludeLocation: getField('priceIncludeLocation'),
@@ -1002,8 +1142,8 @@ function collectProduct() {
     shippingTimeline: {
       sample: getField('sampleTime'),
       production: [getField('productionTimeLo'), getField('productionTimeHi')].filter(Boolean).join('-') + (getField('productionTimeLo') || getField('productionTimeHi') ? ' working days' : ''),
-      shippingByAir: getField('shippingByAir'),
-      shippingBySea: getField('shippingBySea')
+      shippingByAir: '5-7 days',
+      shippingBySea: '22-30 days'
     }
   };
 }
@@ -1026,6 +1166,7 @@ async function saveProduct() {
   });
   if (!res.ok) throw new Error('Could not save product.');
   state.selected = await res.json();
+  rememberBrandReference(state.selected);
   fillForm(state.selected);
   await loadProducts();
   showStatus('Product saved.');
@@ -1055,6 +1196,7 @@ async function uploadGalleryImages(files) {
   }
   const existing = linesToArray(getField('gallery'));
   setField('gallery', existing.concat(uploaded).join('\n'));
+  renderGalleryPreview(existing.concat(uploaded));
   if (!getField('mainImage') && uploaded[0]) {
     setField('mainImage', uploaded[0]);
     updatePreview(uploaded[0]);
@@ -1066,6 +1208,27 @@ async function uploadColorImage(row, file) {
   const data = await uploadImageFile(file);
   row.querySelector('.color-image').value = data.url;
   showStatus('Color image uploaded.');
+}
+
+async function uploadProductImagesZip(file) {
+  if (!state.selected || !state.selected.id) {
+    throw new Error('Save or select the product before uploading its image ZIP.');
+  }
+  const form = new FormData();
+  form.append('imagesZip', file);
+  showStatus('Uploading and matching product images…');
+  const res = await authFetch('/api/products/' + encodeURIComponent(state.selected.id) + '/images-zip', {
+    method: 'POST',
+    body: form
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'Product image ZIP upload failed.');
+  state.selected = data.product;
+  fillForm(state.selected);
+  await loadProducts();
+  setView('editor');
+  setEditorTab('media');
+  showStatus('ZIP matched: ' + data.mainImages + ' main/additional image(s), ' + data.colorImages + ' color image(s).');
 }
 
 function openImportPanel() {
@@ -1317,6 +1480,32 @@ els.editorViewBtn.addEventListener('click', () => {
   setView('editor');
 });
 
+document.querySelectorAll('[data-editor-tab]').forEach((button) => {
+  button.addEventListener('click', () => setEditorTab(button.dataset.editorTab));
+});
+
+els.form.elements.brandName.addEventListener('change', applyKnownBrandCategory);
+els.form.elements.brandName.addEventListener('blur', applyKnownBrandCategory);
+els.form.elements.brandCategory.addEventListener('change', updateBrandAssignmentStatus);
+els.form.elements.brandCategory.addEventListener('input', updateBrandAssignmentStatus);
+
+document.getElementById('addBrandNameBtn').addEventListener('click', () => {
+  const name = window.prompt('Enter the new brand name:');
+  if (!name || !name.trim()) return;
+  setField('brandName', name.trim());
+  applyKnownBrandCategory();
+  els.form.elements.brandCategory.focus();
+  showStatus('New brand entered. Choose or add its category, then save the product to remember it.');
+});
+
+document.getElementById('addBrandCategoryBtn').addEventListener('click', () => {
+  const category = window.prompt('Enter the new brand category:');
+  if (!category || !category.trim()) return;
+  setField('brandCategory', category.trim());
+  updateBrandAssignmentStatus();
+  showStatus('New brand category entered. Save the product to remember it.');
+});
+
 document.getElementById('addPriceBtn').addEventListener('click', () => {
   els.pricingRows.insertAdjacentHTML('beforeend', priceRowHtml('', ''));
 });
@@ -1332,6 +1521,7 @@ document.getElementById('addOptionBtn').addEventListener('click', () => {
 document.addEventListener('click', (event) => {
   if (event.target.classList.contains('remove-row')) {
     event.target.closest('.row-line').remove();
+    updateCalculatedPriceRange();
   }
   if (event.target.classList.contains('remove-option')) {
     event.target.closest('.option-card').remove();
@@ -1344,6 +1534,12 @@ document.addEventListener('click', (event) => {
   }
   if (event.target.classList.contains('remove-option-value')) {
     event.target.closest('.option-value-row').remove();
+  }
+  if (event.target.classList.contains('remove-gallery-image')) {
+    const images = linesToArray(getField('gallery'));
+    images.splice(Number(event.target.dataset.index), 1);
+    setField('gallery', images.join('\n'));
+    renderGalleryPreview(images);
   }
 });
 
@@ -1366,6 +1562,8 @@ els.selectedThemes.addEventListener('click', (event) => {
 });
 els.form.addEventListener('input', (event) => {
   if (event.target.tagName === 'TEXTAREA') resizeTextareas();
+  if (event.target.classList.contains('price-value')) updateCalculatedPriceRange();
+  if (event.target.name === 'gallery') renderGalleryPreview(linesToArray(event.target.value));
   if (!els.validationPanel.hidden) {
     renderValidation(validateProduct(collectProduct()));
   }
@@ -1379,6 +1577,12 @@ document.getElementById('imageUpload').addEventListener('change', (event) => {
 document.getElementById('galleryUpload').addEventListener('change', (event) => {
   const files = Array.from(event.target.files || []);
   if (files.length) uploadGalleryImages(files).catch((error) => showStatus(error.message, true));
+  event.target.value = '';
+});
+
+document.getElementById('productImagesZip').addEventListener('change', (event) => {
+  const file = event.target.files && event.target.files[0];
+  if (file) uploadProductImagesZip(file).catch((error) => showStatus(error.message, true));
   event.target.value = '';
 });
 

@@ -145,10 +145,18 @@
       <div id="editorView" class="editor-view" hidden>
       <div id="validationPanel" class="validation-panel" hidden></div>
 
+      <nav class="editor-tabs" aria-label="Product editor sections">
+        <button class="editor-tab active" type="button" data-editor-tab="website">Website</button>
+        <button class="editor-tab" type="button" data-editor-tab="media">Media</button>
+        <button class="editor-tab" type="button" data-editor-tab="sage">SAGE Details</button>
+        <button class="editor-tab" type="button" data-editor-tab="pricing">Pricing &amp; Options</button>
+        <button class="editor-tab" type="button" data-editor-tab="logistics">Logistics</button>
+      </nav>
+
       <form id="productForm" class="form-grid">
-        <section class="panel span-2">
+        <section class="panel span-2 editor-section" data-editor-section="website">
           <div class="panel-head">
-            <h2>General</h2>
+            <div><h2>Website &amp; Core Details</h2><p class="panel-note">Choose how this product appears and where customers can find it.</p></div>
           </div>
           <div class="publish-box">
             <label><input name="published" type="checkbox"> Published on Website</label>
@@ -168,6 +176,31 @@
           <div class="field-grid two">
             <label>Website Product Type<select name="websiteProductType" id="editorWebsiteProductType"><option value="">Automatically detect</option></select></label>
           </div>
+          <fieldset class="use-case-picker">
+            <legend>Website Use Cases</legend>
+            <p class="panel-note">Suggested from SAGE themes during import. Review these before publishing.</p>
+            <div class="check-row use-case-options">
+              <label><input name="useCases" type="checkbox" value="conference"> Conference &amp; Event Swag</label>
+              <label><input name="useCases" type="checkbox" value="employee"> Employee Engagement Kits</label>
+              <label><input name="useCases" type="checkbox" value="mascot"> Character &amp; Mascot Programs</label>
+              <label><input name="useCases" type="checkbox" value="schools"> Schools, Teams &amp; Communities</label>
+              <label><input name="useCases" type="checkbox" value="loyalty"> Brand Loyalty Programs</label>
+              <label><input name="useCases" type="checkbox" value="travel"> Travel &amp; Adventure Collection</label>
+              <label><input name="useCases" type="checkbox" value="golf"> Golf &amp; Sports Events</label>
+            </div>
+          </fieldset>
+          <fieldset class="use-case-picker brand-assignment">
+            <legend>Brand Program (Optional)</legend>
+            <p class="panel-note">Select an existing value, or use the buttons below to create a new brand or category.</p>
+            <div class="field-grid two">
+              <div class="brand-field"><label>Brand Name<input name="brandName" type="text" list="brandNameList" placeholder="Choose an existing brand"></label><button id="addBrandNameBtn" class="btn mini" type="button">+ Add New Brand</button></div>
+              <div class="brand-field"><label>Brand Category<input name="brandCategory" type="text" list="brandCategoryList" placeholder="Choose an existing category"></label><button id="addBrandCategoryBtn" class="btn mini" type="button">+ Add New Category</button></div>
+            </div>
+            <div id="brandAssignmentStatus" class="brand-assignment-status">No brand program assigned to this product.</div>
+            <datalist id="brandNameList"></datalist>
+            <datalist id="brandCategoryList"><option>Food &amp; Beverage</option><option>Lifestyle &amp; Entertainment</option><option>Sports</option><option>Retail &amp; Automotive</option><option>Health, Wellness &amp; Pet</option></datalist>
+          </fieldset>
+          <div class="source-divider"><span>SAGE source fields</span></div>
           <div class="field-grid two">
             <label>Primary Category<input name="sageCategory1" type="text" list="sageCategoryList" placeholder="Coolers"></label>
             <label>Secondary Category<input name="sageCategory2" type="text" list="sageCategoryList"></label>
@@ -176,9 +209,6 @@
           <datalist id="sageThemeList"></datalist>
           <label>Product Name<input name="name" type="text" required placeholder="Caribou Clip Handle Cooler"></label>
           <label>Description<textarea name="description" rows="7" placeholder="Short product description for the website and export."></textarea></label>
-          <div class="field-grid three">
-            <label>Price Range<input name="priceRange" type="text" placeholder="$3.62-$10.44"></label>
-          </div>
           <label>Keywords<textarea class="keywords-textarea" name="keywords" rows="5" placeholder="cooler, bag, custom"></textarea></label>
           <div class="theme-picker">
             <label for="themeSearch">Themes (up to 5)</label>
@@ -202,40 +232,33 @@
           </div>
         </section>
 
-        <section class="panel">
+        <section class="panel span-2 editor-section" data-editor-section="media" hidden>
           <div class="panel-head">
             <h2>Images</h2>
+          </div>
+          <div class="zip-image-import">
+            <div>
+              <h3>Upload Product Image ZIP</h3>
+              <p>ZIP or folder name: product item number. Use <strong>Main</strong> for the main image, <strong>Main-1, Main-2…</strong> for additional images, and color names such as <strong>Blue, Red, Black</strong> for color images.</p>
+            </div>
+            <label class="btn zip-upload-btn">Choose ZIP<input id="productImagesZip" type="file" accept=".zip,application/zip"></label>
           </div>
           <div class="image-preview" id="imagePreview">Website Main Image / Left Image</div>
           <label>Upload Main Image (Website Left Image)<input id="imageUpload" type="file" accept="image/*"></label>
           <label>Main Image URL (Website Left Image)<input name="mainImage" type="text" placeholder="Auto-filled after upload"></label>
-          <label>Upload Gallery Images<input id="galleryUpload" type="file" accept="image/*" multiple></label>
-          <label>Gallery Image URLs<textarea name="gallery" rows="5" placeholder="Auto-filled after upload, one image URL per line"></textarea></label>
+          <div class="gallery-heading"><div><h3>Additional Images</h3><p class="panel-note">These images appear below or beside the main product image on the website.</p></div><label class="btn mini gallery-upload-btn">Add Images<input id="galleryUpload" type="file" accept="image/*" multiple></label></div>
+          <div id="galleryPreview" class="gallery-preview"><p class="panel-note">No additional images yet.</p></div>
+          <details class="advanced-fields"><summary>Image URLs</summary><label>Gallery Image URLs<textarea name="gallery" rows="4" placeholder="Auto-filled after upload, one image URL per line"></textarea></label></details>
         </section>
 
-        <section class="panel">
-          <div class="panel-head">
-            <h2>Origin Information & Decoration</h2>
-          </div>
-          <label>SAGE Picture URL<input name="sagePictureUrl" type="url" placeholder="https://..."></label>
-          <h3 class="group-title">Origin Information</h3>
-          <div class="field-grid three">
-            <label>Made In<input name="madeInCountry" type="text" placeholder="China"></label>
-            <label>Assembled In<input name="assembledInCountry" type="text" placeholder="China"></label>
-            <label>Decorated In<input name="decoratedInCountry" type="text" placeholder="China"></label>
-          </div>
-          <h3 class="group-title">Decoration</h3>
-          <label>Decoration Method<input name="imprintMethod" type="text" placeholder="Screen printed"></label>
-          <div class="check-row compact">
-            <label><input name="noDecorationOffered" type="checkbox"> No decoration offered</label>
-            <label><input name="printOnDemand" type="checkbox"> Print on Demand</label>
-          </div>
-        </section>
-
-        <section class="panel span-2">
+        <section class="panel span-2 editor-section" data-editor-section="pricing" hidden>
           <div class="panel-head">
             <h2>Pricing</h2>
             <button id="addPriceBtn" class="btn mini" type="button">Add Tier</button>
+          </div>
+          <div class="computed-field">
+            <label>Price Range<input name="priceRange" type="text" readonly placeholder="Calculated from pricing tiers"></label>
+            <span>Automatically calculated from the highest and lowest prices below.</span>
           </div>
           <div id="pricingRows" class="rows"></div>
           <div class="check-row">
@@ -243,7 +266,7 @@
           </div>
           <h3 class="group-title">Price Includes</h3>
           <div class="field-grid four mt-16">
-            <label>Price Code<input name="priceCode" type="text" placeholder="CCCCCC"></label>
+            <label>Price Code<input name="priceCode" type="text" value="CCCCCC" readonly></label>
             <label>Colors<input name="priceIncludeColor" type="text" placeholder="1 color"></label>
             <label>Sides<input name="priceIncludeSide" type="text" placeholder="1 side"></label>
             <label>Locations<input name="priceIncludeLocation" type="text" placeholder="1 location"></label>
@@ -254,7 +277,7 @@
           <h3 class="group-title">Setup Charges</h3>
           <div class="field-grid four">
             <label>Setup Charge<input name="setupCharge" type="number" min="0" step="0.01" placeholder="80"></label>
-            <label>Code<input name="setupChargeCode" type="text" placeholder="C"></label>
+            <label>Code<input name="setupChargeCode" type="text" value="C" readonly></label>
             <label>Screen Charge<input name="screenCharge" type="number" min="0" step="0.01"></label>
             <label>Code<input name="screenChargeCode" type="text"></label>
             <label>Die Charge<input name="dieCharge" type="number" min="0" step="0.01"></label>
@@ -264,7 +287,7 @@
           </div>
         </section>
 
-        <section class="panel span-2">
+        <section class="panel span-2 editor-section" data-editor-section="pricing" hidden>
           <div class="panel-head">
             <h2>Options / Upcharges</h2>
             <button id="addOptionBtn" class="btn mini" type="button">Add Option</button>
@@ -272,7 +295,7 @@
           <div id="optionRows" class="option-list"></div>
         </section>
 
-        <section class="panel">
+        <section class="panel span-2 editor-section" data-editor-section="media" hidden>
           <div class="panel-head">
             <h2>Colors</h2>
             <button id="addColorBtn" class="btn mini" type="button">Add Color</button>
@@ -280,9 +303,9 @@
           <div id="colorRows" class="rows"></div>
         </section>
 
-        <section class="panel">
+        <section class="panel span-2 editor-section" data-editor-section="sage" hidden>
           <div class="panel-head">
-            <h2>Product Details</h2>
+            <div><h2>Product Details &amp; Decoration</h2><p class="panel-note">Physical specifications and decoration information imported from SAGE.</p></div>
           </div>
           <label>Material<textarea name="material" rows="2"></textarea></label>
           <h3 class="group-title">Dimensions</h3>
@@ -302,9 +325,16 @@
             <label>Area<input name="secondaryImprintArea" type="text" placeholder="Optional"></label>
             <label>Location<input name="secondaryImprintLocation" type="text" placeholder="Back"></label>
           </div>
+          <h3 class="group-title">Decoration</h3>
+          <label>Decoration Method<input name="imprintMethod" type="text" placeholder="Screen printed"></label>
+          <div class="check-row compact">
+            <label><input name="noDecorationOffered" type="checkbox"> No decoration offered</label>
+            <label><input name="printOnDemand" type="checkbox"> Print on Demand</label>
+          </div>
+          <details class="advanced-fields"><summary>SAGE source image URL</summary><label>SAGE Picture URL<input name="sagePictureUrl" type="url" placeholder="https://..."></label></details>
         </section>
 
-        <section class="panel span-2">
+        <section class="panel span-2 editor-section" data-editor-section="logistics" hidden>
           <div class="panel-head">
             <h2>Packaging, Carton & Production</h2>
           </div>
@@ -331,12 +361,16 @@
             <label>Working Days<input name="rushTimeLo" type="number" min="0" step="1"></label>
             <label>Working Days<input name="rushTimeHi" type="number" min="0" step="1"></label>
           </div>
-          <h3 class="group-title">Shipping Point</h3>
-          <div class="field-grid two">
-            <label>Country<input name="shipPointCountry" type="text" placeholder="China"></label>
-            <label>Zip / Postal Code<input name="shipPointPostalCode" type="text"></label>
-            <label>Air Shipping<input name="shippingByAir" type="text" placeholder="10-20 days"></label>
-            <label>Sea Shipping<input name="shippingBySea" type="text" placeholder="22-30 days"></label>
+          <h3 class="group-title">Shipping</h3>
+          <div class="field-grid two fixed-fields">
+            <label>Air Shipping<input name="shippingByAir" type="text" value="5-7 days" readonly></label>
+            <label>Sea Shipping<input name="shippingBySea" type="text" value="22-30 days" readonly></label>
+          </div>
+          <div class="origin-summary">
+            <h3>Origin Information</h3>
+            <p>Made in China · Assembled in China · Decorated in China · Shipping point: China</p>
+            <span>Fixed company defaults—no manual entry required.</span>
+            <input name="madeInCountry" type="hidden" value="China"><input name="assembledInCountry" type="hidden" value="China"><input name="decoratedInCountry" type="hidden" value="China"><input name="shipPointCountry" type="hidden" value="China"><input name="shipPointPostalCode" type="hidden" value="">
           </div>
         </section>
       </form>

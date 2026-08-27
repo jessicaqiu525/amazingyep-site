@@ -126,6 +126,16 @@ function mergeColorOptions(existingOptions, importedOptions, zipColors) {
 
 function mergeImportedProduct(existing, imported, imagesForSku) {
   const product = { ...(existing || {}), ...imported };
+  // Website placement is editorial data. A later SAGE refresh must not undo
+  // choices already reviewed by the website team.
+  if (existing) {
+    ['category', 'subcategory', 'websiteProductType', 'brandName', 'brandCategory', 'published'].forEach((key) => {
+      if (existing[key] !== undefined && existing[key] !== '') product[key] = existing[key];
+    });
+    if (Array.isArray(existing.useCases) && existing.useCases.length) {
+      product.useCases = existing.useCases;
+    }
+  }
   const uploadedMain = (imagesForSku && imagesForSku.main ? imagesForSku.main : []).map((item) => item.url).filter(Boolean);
   if (uploadedMain.length) {
     product.images = [uploadedMain[0]];
@@ -318,6 +328,10 @@ app.post('/api/imports/sage/preview', importUpload.fields([
         sku: product.sku || product.itemNumber,
         name: product.name,
         category: product.category,
+        productType: product.websiteProductType,
+        themes: product.themes,
+        useCases: product.useCases,
+        productionTime: [product.productionTimeLo, product.productionTimeHi].filter(Boolean).join('-'),
         mainImages: manifest.items[normalizeSku(product.sku || product.itemNumber)]?.mainCount || 0,
         colorImages: manifest.items[normalizeSku(product.sku || product.itemNumber)]?.colorCount || 0
       })),
@@ -405,6 +419,28 @@ app.get('/api/reference/sage', (req, res) => {
   const categories = require('./data/sageCategories.json');
   const themes = require('./data/sageThemes.json');
   res.json({ categories, themes });
+});
+
+app.get('/api/reference/brands', async (req, res, next) => {
+  try {
+    const products = await productStore.listProductsAsync({});
+    const brands = [];
+    const categories = new Set([
+      'Food & Beverage', 'Lifestyle & Entertainment', 'Sports',
+      'Retail & Automotive', 'Health, Wellness & Pet'
+    ]);
+    products.forEach((product) => {
+      const name = String(product.brandName || '').trim();
+      const category = String(product.brandCategory || '').trim();
+      if (category) categories.add(category);
+      if (name && !brands.some((item) => item.name.toLowerCase() === name.toLowerCase())) {
+        brands.push({ name, category });
+      }
+    });
+    res.json({ brands, categories: Array.from(categories).sort() });
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.get('/api/backups', requireAdmin, (req, res) => {
@@ -521,6 +557,54 @@ app.post('/api/uploads/images', upload.single('image'), async (req, res, next) =
   } catch (error) {
     if (req.file) removeTempUpload(req.file.path);
     next(error);
+  }
+});
+
+app.post('/api/products/:id/images-zip', importUpload.single('imagesZip'), async (req, res, next) => {
+  try {
+    if (!req.file) {
+      res.status(400).json({ error: 'Choose a ZIP file first.' });
+      return;
+    }
+    const product = await productStore.findProductAsync(req.params.id);
+    if (!product) {
+      res.status(404).json({ error: 'Product not found.' });
+      return;
+    }
+    const sku = normalizeSku(product.sku || product.itemNumber || product.id);
+    const imageMap = await importImageZip(req.file.path, { uploadImage: uploadImportedImage, defaultSku: sku });
+    const matched = imageMap[sku];
+    if (!matched || (!(matched.main || []).length && !(matched.colors || []).length)) {
+      res.status(400).json({ error: 'No matching images were found. Name the folder with item number ' + sku + ', or put Main and color images directly in the ZIP.' });
+      return;
+    }
+    const mainUrls = (matched.main || []).map((item) => item.url).filter(Boolean);
+    const updated = { ...product };
+    if (mainUrls.length) {
+      updated.images = [mainUrls[0]];
+      updated.gallery = mainUrls.slice(1);
+    }
+    updated.colorOptions = mergeColorOptions(product.colorOptions, [], matched.colors);
+    updated.colors = Array.from(new Set([
+      ...(product.colors || []),
+      ...updated.colorOptions.map((option) => option.name).filter(Boolean)
+    ]));
+    const saved = await productStore.saveProductAsync(updated);
+    auditStore.record(req, 'product.images_zip_imported', {
+      id: saved.id,
+      sku,
+      mainImages: mainUrls.length,
+      colorImages: (matched.colors || []).length
+    });
+    res.json({
+      product: saved,
+      mainImages: mainUrls.length,
+      colorImages: (matched.colors || []).length
+    });
+  } catch (error) {
+    next(error);
+  } finally {
+    removeTempUpload(req.file && req.file.path);
   }
 });
 

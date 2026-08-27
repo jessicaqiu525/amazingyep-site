@@ -21,7 +21,17 @@ function naturalSort(a, b) {
   return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
 }
 
-function classifyEntry(entryName) {
+function mainSequence(entryName) {
+  const base = path.basename(entryName, path.extname(entryName));
+  const match = base.match(/^main(?:[ _-]?(\d+))?$/i);
+  return match ? Number(match[1] || 0) : Number.MAX_SAFE_INTEGER;
+}
+
+function imageRole(base) {
+  return /^main(?:[ _-]?\d+)?$/i.test(base) ? { type: 'main', colorName: '' } : { type: 'color', colorName: base };
+}
+
+function classifyEntry(entryName, defaultSku = '') {
   if (isIgnored(entryName)) return null;
   const ext = path.extname(entryName).toLowerCase();
   if (!IMAGE_EXTS.has(ext)) return null;
@@ -36,8 +46,9 @@ function classifyEntry(entryName) {
   }
   if (parts.length >= 2) {
     const sku = normalizeSku(parts[parts.length - 2]);
-    return { sku, type: 'main', colorName: '' };
+    return { sku, ...imageRole(base) };
   }
+  if (defaultSku) return { sku: normalizeSku(defaultSku), ...imageRole(base) };
   const match = base.match(/^([A-Za-z0-9-]+)[ _-]+(.+)$/);
   if (!match) return null;
   const suffix = match[2].trim();
@@ -49,13 +60,13 @@ function classifyEntry(entryName) {
   };
 }
 
-function readImageZipManifest(zipPath) {
+function readImageZipManifest(zipPath, options = {}) {
   const zip = new AdmZip(zipPath);
   const items = {};
   const warnings = [];
   zip.getEntries().forEach((entry) => {
     if (entry.isDirectory) return;
-    const info = classifyEntry(entry.entryName);
+    const info = classifyEntry(entry.entryName, options.defaultSku);
     if (!info || !info.sku) return;
     if (!items[info.sku]) items[info.sku] = { mainCount: 0, colorCount: 0, colors: [] };
     if (info.type === 'color') {
@@ -71,16 +82,21 @@ function readImageZipManifest(zipPath) {
   return { items, warnings };
 }
 
-async function importImageZip(zipPath, { uploadImage }) {
+async function importImageZip(zipPath, { uploadImage, defaultSku = '' }) {
   const zip = new AdmZip(zipPath);
   const grouped = {};
   const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'sage-images-'));
   try {
     const entries = zip.getEntries()
       .filter((entry) => !entry.isDirectory)
-      .map((entry) => ({ entry, info: classifyEntry(entry.entryName) }))
+      .map((entry) => ({ entry, info: classifyEntry(entry.entryName, defaultSku) }))
       .filter((item) => item.info && item.info.sku)
-      .sort((a, b) => naturalSort(a.entry.entryName, b.entry.entryName));
+      .sort((a, b) => {
+        if (a.info.sku === b.info.sku && a.info.type === 'main' && b.info.type === 'main') {
+          return mainSequence(a.entry.entryName) - mainSequence(b.entry.entryName);
+        }
+        return naturalSort(a.entry.entryName, b.entry.entryName);
+      });
 
     for (const { entry, info } of entries) {
       if (!grouped[info.sku]) grouped[info.sku] = { main: [], colors: [] };

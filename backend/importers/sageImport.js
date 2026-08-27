@@ -15,7 +15,7 @@ const DEFAULTS = {
   rushTimeHi: '',
   shipPointCountry: 'China',
   shipPointPostalCode: '',
-  shippingByAir: '10-20 days',
+  shippingByAir: '5-7 days',
   shippingBySea: '22-30 days'
 };
 
@@ -26,6 +26,7 @@ const ALIASES = {
   description: ['description', 'desc'],
   page1: ['page1', 'page 1'],
   page2: ['page2', 'page 2'],
+  expirationDate: ['expirationdate', 'expiration date', 'expires'],
   category: ['cat1name', 'website category', 'category'],
   subcategory: ['cat2name', 'website subcategory', 'subcategory'],
   websiteProductType: ['website product type', 'product type', 'website type'],
@@ -37,45 +38,47 @@ const ALIASES = {
   verified: ['verified'],
   discontinued: ['discontinued'],
   notPictured: ['not pictured', 'notpictured'],
-  madeIn: ['made in'],
-  assembledIn: ['assembled in'],
-  decoratedIn: ['decorated in'],
+  madeIn: ['made in', 'madeincountry', 'made in country'],
+  assembledIn: ['assembled in', 'assembledincountry', 'assembled in country'],
+  decoratedIn: ['decorated in', 'decoratedincountry', 'decorated in country'],
   material: ['material'],
   productSize: ['product size', 'size'],
-  imprintMethod: ['imprint method'],
-  imprintArea: ['imprint area', 'primary imprint area'],
-  imprintLocation: ['imprint location', 'primary imprint location'],
-  secondaryImprintArea: ['secondary imprint area'],
-  secondaryImprintLocation: ['secondary imprint location'],
+  imprintMethod: ['imprint method', 'decorationmethod', 'decoration method'],
+  imprintSize1: ['imprintsize1', 'imprint size 1'],
+  imprintSize2: ['imprintsize2', 'imprint size 2'],
+  imprintLocation: ['imprint location', 'primary imprint location', 'imprintloc'],
+  secondaryImprintSize1: ['secondimprintsize1', 'second imprint size 1'],
+  secondaryImprintSize2: ['secondimprintsize2', 'second imprint size 2'],
+  secondaryImprintLocation: ['secondary imprint location', 'secondimprintloc'],
   packaging: ['packaging'],
   unitsPerCarton: ['units/ctn', 'units per carton', 'case quantity'],
   weightPerCarton: ['weight/ctn', 'weight per carton', 'carton weight'],
   cartonL: ['carton l', 'carton length'],
   cartonW: ['carton w', 'carton width'],
   cartonH: ['carton h', 'carton height'],
-  productL: ['product l', 'product length'],
-  productW: ['product w', 'product width'],
-  productH: ['product h', 'product height'],
-  productUnit: ['product unit', 'dimension unit'],
-  picture: ['picture', 'image', 'image url'],
+  productL: ['product l', 'product length', 'dimension1'],
+  productW: ['product w', 'product width', 'dimension2'],
+  productH: ['product h', 'product height', 'dimension3'],
+  productUnit: ['product unit', 'dimension unit', 'dimension1units'],
+  picture: ['picture', 'image', 'image url', 'newpictureurl'],
   priceCode: ['prcode', 'price code'],
   priceIncludeColor: ['price include color', 'colors included'],
   priceIncludeSide: ['price include side', 'sides'],
   priceIncludeLocation: ['price include location', 'locations'],
-  setupCharge: ['setup charge', 'setup'],
-  setupChargeCode: ['setup charge code', 'setup code'],
-  screenCharge: ['screen charge'],
-  screenChargeCode: ['screen charge code'],
-  dieCharge: ['die charge'],
-  dieChargeCode: ['die charge code'],
-  additionalColorSetup: ["add'l color/location setup", 'additional color setup'],
-  additionalColorSetupCode: ["add'l color/location setup code", 'additional color setup code'],
+  setupCharge: ['setup charge', 'setup', 'setupchg'],
+  setupChargeCode: ['setup charge code', 'setup code', 'setupchgcode'],
+  screenCharge: ['screen charge', 'screenchg'],
+  screenChargeCode: ['screen charge code', 'screenchgcode'],
+  dieCharge: ['die charge', 'diechg'],
+  dieChargeCode: ['die charge code', 'diechgcode'],
+  additionalColorSetup: ["add'l color/location setup", 'additional color setup', 'addclrchg'],
+  additionalColorSetupCode: ["add'l color/location setup code", 'additional color setup code', 'addclrchgcode'],
   sampleTime: ['sample', 'sample time'],
-  productionTimeLo: ['production time lo', 'production time low', 'production lo'],
-  productionTimeHi: ['production time hi', 'production time high', 'production hi'],
-  rushTimeLo: ['rush service lo', 'rush lo'],
-  rushTimeHi: ['rush service hi', 'rush hi'],
-  shipPointCountry: ['ship point country', 'shipping point country'],
+  productionTimeLo: ['production time lo', 'production time low', 'production lo', 'prodtimelo'],
+  productionTimeHi: ['production time hi', 'production time high', 'production hi', 'prodtimehi'],
+  rushTimeLo: ['rush service lo', 'rush lo', 'rushprodtimelo'],
+  rushTimeHi: ['rush service hi', 'rush hi', 'rushprodtimehi'],
+  shipPointCountry: ['ship point country', 'shipping point country', 'shippointcountry'],
   shipPointPostalCode: ['shippointzip', 'ship point zip', 'zip / postal code'],
   shippingByAir: ['air shipping'],
   shippingBySea: ['sea shipping']
@@ -123,6 +126,36 @@ function moneyText(value) {
   return Number.isFinite(numeric) ? '$' + numeric.toFixed(2).replace(/\.00$/, '') : raw;
 }
 
+function countryName(value) {
+  const raw = text(value);
+  const countries = { CN: 'China', US: 'United States', CA: 'Canada', MX: 'Mexico' };
+  return countries[raw.toUpperCase()] || raw;
+}
+
+function dimensionUnit(value) {
+  const raw = text(value);
+  return ({ '1': 'Inches', '2': 'Feet', '3': 'Millimeters', '4': 'Centimeters' })[raw] || raw || 'Inches';
+}
+
+function areaText(first, second, unit) {
+  const values = [numberText(first), numberText(second)].filter(Boolean);
+  return values.length ? values.join(' x ') + ' ' + dimensionUnit(unit) : '';
+}
+
+function suggestedUseCases(themes, keywords, name) {
+  const textValue = [...themes, ...keywords, name].join(' ').toLowerCase();
+  const rules = [
+    ['conference', /conference|convention|trade show|expo|seminar/],
+    ['employee', /business|employee|onboarding|office|corporate|appreciation/],
+    ['mascot', /mascot|character|plush|stuffed animal/],
+    ['schools', /college|school|university|education|fundraising|team|community/],
+    ['loyalty', /loyalty|reward|retail|customer|consumer|collectible/],
+    ['travel', /travel|camping|outdoor|adventure|vacation/],
+    ['golf', /golf|sport|tournament|athletic/]
+  ];
+  return rules.filter(([, pattern]) => pattern.test(textValue)).map(([value]) => value);
+}
+
 function list(value) {
   return text(value)
     .split(/[,;\n|]+/)
@@ -166,7 +199,8 @@ function pricingFrom(row, headerMap) {
     if (text(qty) || text(price)) {
       pricing.push({
         quantity: numberText(qty),
-        codedPrice: moneyText(price),
+        price: numberText(price),
+        codedPrice: numberText(price),
         piecesPerUnit: numberText(pieces) || '1'
       });
     }
@@ -198,7 +232,9 @@ function parseSageWorkbook(filePath) {
     const picture = text(get(row, headerMap, 'picture'));
     const pricing = pricingFrom(row, headerMap);
     const productSize = text(get(row, headerMap, 'productSize'));
-    const imprintArea = text(get(row, headerMap, 'imprintArea'));
+    const dimensionUnits = get(row, headerMap, 'productUnit');
+    const imprintArea = areaText(get(row, headerMap, 'imprintSize1'), get(row, headerMap, 'imprintSize2'), dimensionUnits);
+    const secondaryImprintArea = areaText(get(row, headerMap, 'secondaryImprintSize1'), get(row, headerMap, 'secondaryImprintSize2'), dimensionUnits);
     const imprintMethod = text(get(row, headerMap, 'imprintMethod'));
     const packaging = text(get(row, headerMap, 'packaging')) || DEFAULTS.packaging;
 
@@ -210,6 +246,9 @@ function parseSageWorkbook(filePath) {
       description: text(get(row, headerMap, 'description')),
       page1: text(get(row, headerMap, 'page1')),
       page2: text(get(row, headerMap, 'page2')),
+      catalogPage1: text(get(row, headerMap, 'page1')),
+      catalogPage2: text(get(row, headerMap, 'page2')),
+      expirationDate: text(get(row, headerMap, 'expirationDate')),
       category: text(get(row, headerMap, 'category')),
       subcategory: text(get(row, headerMap, 'subcategory')),
       websiteProductType: text(get(row, headerMap, 'websiteProductType')),
@@ -219,13 +258,14 @@ function parseSageWorkbook(filePath) {
       colors,
       colorOptions: colors.map((color) => ({ name: color, image: '' })),
       themes,
+      useCases: suggestedUseCases(themes, list(get(row, headerMap, 'keywords')), name),
       verified: bool(get(row, headerMap, 'verified')),
       discontinued: bool(get(row, headerMap, 'discontinued')),
       notPictured: bool(get(row, headerMap, 'notPictured')),
       published: !bool(get(row, headerMap, 'discontinued')),
-      madeIn: text(get(row, headerMap, 'madeIn')),
-      assembledIn: text(get(row, headerMap, 'assembledIn')),
-      decoratedIn: text(get(row, headerMap, 'decoratedIn')),
+      madeInCountry: 'China',
+      assembledInCountry: 'China',
+      decoratedInCountry: 'China',
       images: picture ? [picture] : [],
       gallery: [],
       sagePictureUrl: picture,
@@ -247,22 +287,23 @@ function parseSageWorkbook(filePath) {
         length: numberText(get(row, headerMap, 'productL')),
         width: numberText(get(row, headerMap, 'productW')),
         height: numberText(get(row, headerMap, 'productH')),
-        unit: text(get(row, headerMap, 'productUnit')) || 'Inches'
+        units: dimensionUnit(dimensionUnits)
       },
       carton: {
         units: numberText(get(row, headerMap, 'unitsPerCarton')),
+        unitsPerCarton: numberText(get(row, headerMap, 'unitsPerCarton')),
         weight: numberText(get(row, headerMap, 'weightPerCarton')),
         length: numberText(get(row, headerMap, 'cartonL')),
         width: numberText(get(row, headerMap, 'cartonW')),
         height: numberText(get(row, headerMap, 'cartonH'))
       },
       pricing,
-      priceCode: text(get(row, headerMap, 'priceCode')) || DEFAULTS.priceCode,
+      priceCode: DEFAULTS.priceCode,
       priceIncludeColor: text(get(row, headerMap, 'priceIncludeColor')) || DEFAULTS.priceIncludeColor,
       priceIncludeSide: text(get(row, headerMap, 'priceIncludeSide')) || DEFAULTS.priceIncludeSide,
       priceIncludeLocation: text(get(row, headerMap, 'priceIncludeLocation')) || DEFAULTS.priceIncludeLocation,
       setupCharge: numberText(get(row, headerMap, 'setupCharge')) || DEFAULTS.setupCharge,
-      setupChargeCode: text(get(row, headerMap, 'setupChargeCode')) || DEFAULTS.setupChargeCode,
+      setupChargeCode: DEFAULTS.setupChargeCode,
       screenCharge: numberText(get(row, headerMap, 'screenCharge')),
       screenChargeCode: text(get(row, headerMap, 'screenChargeCode')),
       dieCharge: numberText(get(row, headerMap, 'dieCharge')),
@@ -270,15 +311,19 @@ function parseSageWorkbook(filePath) {
       additionalColorSetup: numberText(get(row, headerMap, 'additionalColorSetup')),
       additionalColorSetupCode: text(get(row, headerMap, 'additionalColorSetupCode')),
       packaging,
+      imprintArea,
+      imprintLocation: text(get(row, headerMap, 'imprintLocation')),
+      secondaryImprintArea,
+      secondaryImprintLocation: text(get(row, headerMap, 'secondaryImprintLocation')),
       sampleTime: text(get(row, headerMap, 'sampleTime')) || DEFAULTS.sampleTime,
       productionTimeLo: numberText(get(row, headerMap, 'productionTimeLo')) || DEFAULTS.productionTimeLo,
       productionTimeHi: numberText(get(row, headerMap, 'productionTimeHi')) || DEFAULTS.productionTimeHi,
       rushTimeLo: numberText(get(row, headerMap, 'rushTimeLo')) || DEFAULTS.rushTimeLo,
       rushTimeHi: numberText(get(row, headerMap, 'rushTimeHi')) || DEFAULTS.rushTimeHi,
-      shipPointCountry: text(get(row, headerMap, 'shipPointCountry')) || DEFAULTS.shipPointCountry,
+      shipPointCountry: DEFAULTS.shipPointCountry,
       shipPointPostalCode: text(get(row, headerMap, 'shipPointPostalCode')) || DEFAULTS.shipPointPostalCode,
-      shippingByAir: text(get(row, headerMap, 'shippingByAir')) || DEFAULTS.shippingByAir,
-      shippingBySea: text(get(row, headerMap, 'shippingBySea')) || DEFAULTS.shippingBySea
+      shippingByAir: DEFAULTS.shippingByAir,
+      shippingBySea: DEFAULTS.shippingBySea
     });
   });
 

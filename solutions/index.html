@@ -318,6 +318,7 @@
     </div>
   </footer>
 
+  <script src="../api-config.js?v=20260827"></script>
   <script>
     function toggleFilter() {
       const arrow = document.getElementById('filterArrow');
@@ -400,9 +401,9 @@
     }
     function openBrandProgram(card) {
       const brandName = card.querySelector('h4')?.textContent?.trim();
-      if (brandName) window.location.href = 'brand-program-v2.html?brand=' + encodeURIComponent(brandName);
+      if (brandName) window.location.href = 'brand-program.html?brand=' + encodeURIComponent(brandName);
     }
-    document.querySelectorAll('.bp-featured-card').forEach(card => {
+    function bindBrandCard(card) {
       card.setAttribute('role', 'link');
       card.setAttribute('tabindex', '0');
       const brandName = card.querySelector('h4')?.textContent?.trim() || 'brand';
@@ -414,7 +415,50 @@
           openBrandProgram(card);
         }
       });
-    });
+    }
+    document.querySelectorAll('.bp-featured-card').forEach(bindBrandCard);
+
+    const localBrandHosts = ['localhost', '127.0.0.1', '::1'];
+    const brandApiBase = (window.API_CONFIG && window.API_CONFIG.BASE_URL) || (localBrandHosts.includes(location.hostname) ? location.origin : 'https://amazingyep-sitebackend.onrender.com');
+    const brandCategorySlugs = {'Food & Beverage':'food-beverage','Lifestyle & Entertainment':'lifestyle-entertainment','Sports':'sports','Retail & Automotive':'retail-automotive','Health, Wellness & Pet':'health-wellness'};
+    function categorySlug(category) { return brandCategorySlugs[category] || String(category || 'other').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+    function bindCategoryButton(button) {
+      button.addEventListener('click', function() {
+        document.querySelectorAll('.bp-type-item').forEach(item => item.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById('searchInput').value = '';
+        showBrandCategory(this.dataset.filter || 'all');
+      });
+    }
+    fetch(brandApiBase + '/api/products').then(response => response.ok ? response.json() : Promise.reject()).then(data => {
+      const existingNames = new Set(Array.from(document.querySelectorAll('.bp-featured-card h4')).map(node => node.textContent.trim().toLowerCase()));
+      const productsByBrand = new Map();
+      (data.products || []).forEach(product => {
+        const name = String(product.brandName || '').trim();
+        if (!name) return;
+        const key = name.toLowerCase();
+        if (!productsByBrand.has(key)) productsByBrand.set(key, { name, category: product.brandCategory || 'Other', product });
+      });
+      const allButton = document.querySelector('.bp-type-item[data-filter="all"]');
+      productsByBrand.forEach(brand => {
+        const slug = categorySlug(brand.category);
+        if (!brandLabels[slug]) {
+          brandLabels[slug] = String(brand.category).toUpperCase();
+          const button = document.createElement('button');
+          button.className = 'bp-type-item'; button.type = 'button'; button.dataset.filter = slug; button.textContent = brand.category;
+          allButton.parentNode.insertBefore(button, allButton); bindCategoryButton(button);
+        }
+        if (existingNames.has(brand.name.toLowerCase())) return;
+        const rawImage = (brand.product.images && brand.product.images[0]) || (brand.product.gallery && brand.product.gallery[0]) || '../assets/logo-2026.png';
+        const image = /^https?:\/\//i.test(rawImage) ? rawImage : (rawImage.startsWith('/') ? brandApiBase + rawImage : rawImage);
+        const card = document.createElement('div'); card.className = 'bp-featured-card'; card.dataset.cat = slug;
+        const img = document.createElement('img'); img.className = 'bp-featured-card-img'; img.src = image; img.alt = brand.name + ' brand merchandise';
+        const body = document.createElement('div'); body.className = 'bp-featured-card-body';
+        const title = document.createElement('h4'); title.textContent = brand.name; const label = document.createElement('p'); label.textContent = brand.category;
+        body.append(title, label); card.append(img, body); document.getElementById('featuredGrid').appendChild(card); bindBrandCard(card);
+      });
+      renderBrandPage();
+    }).catch(() => {});
     const requestedBrandCategory = new URLSearchParams(window.location.search).get('category');
     const requestedCategoryButton = requestedBrandCategory ? document.querySelector('.bp-type-item[data-filter="' + requestedBrandCategory + '"]') : null;
     if (requestedCategoryButton) {
