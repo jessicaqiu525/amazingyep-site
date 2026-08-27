@@ -126,15 +126,30 @@ function mergeColorOptions(existingOptions, importedOptions, zipColors) {
 
 function mergeImportedProduct(existing, imported, imagesForSku) {
   const product = { ...(existing || {}), ...imported };
+  const existingPlacementComplete = existing
+    && Boolean(productStore.recommendWebsitePlacement(existing).category)
+    && Array.isArray(existing.useCases)
+    && existing.useCases.length > 0;
   // Website placement is editorial data. A later SAGE refresh must not undo
   // choices already reviewed by the website team.
   if (existing) {
-    ['category', 'subcategory', 'websiteProductType', 'brandName', 'brandCategory', 'published'].forEach((key) => {
+    ['category', 'subcategory', 'websiteProductType', 'brandName', 'brandCategory'].forEach((key) => {
       if (existing[key] !== undefined && existing[key] !== '') product[key] = existing[key];
     });
+    if (existingPlacementComplete) product.published = existing.published;
     if (Array.isArray(existing.useCases) && existing.useCases.length) {
       product.useCases = existing.useCases;
     }
+  }
+  const placement = productStore.recommendWebsitePlacement(product);
+  if (!product.category) product.category = placement.category;
+  if (!product.websiteProductType) product.websiteProductType = placement.websiteProductType;
+  if (!Array.isArray(product.useCases) || !product.useCases.length) product.useCases = placement.useCases;
+  const placementComplete = Boolean(placement.category)
+    && Array.isArray(product.useCases)
+    && product.useCases.length > 0;
+  if (!existingPlacementComplete) {
+    product.published = imported.published !== false && placementComplete;
   }
   const uploadedMain = (imagesForSku && imagesForSku.main ? imagesForSku.main : []).map((item) => item.url).filter(Boolean);
   if (uploadedMain.length) {
