@@ -506,10 +506,8 @@ img { max-width: 100%; height: auto; display: block; }
   position: relative;
   z-index: 1;
   width: 100%;
-  height: clamp(420px, 29vw, 560px);
+  height: auto;
   display: block;
-  object-fit: cover;
-  object-position: center;
 }
 
 /* Consistent hero treatment across collection, ideas, and program pages */
@@ -524,16 +522,7 @@ img { max-width: 100%; height: auto; display: block; }
 .page-hero > img {
   display: block;
   width: 100%;
-  height: clamp(420px, 29vw, 560px);
-  object-fit: cover;
-  object-position: center;
-}
-
-@media (max-width: 767px) {
-  .collection-hero > img,
-  .page-hero > img {
-    height: clamp(300px, 62vw, 420px);
-  }
+  height: auto;
 }
 
 /* Content sections - full width */
