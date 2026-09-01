@@ -19,12 +19,13 @@
     .brand-back-category:hover { color: var(--orange) !important; text-decoration: underline; text-underline-offset: 3px; }
     .brand-back-current { color: var(--text-light); }
     .brand-detail { padding: 24px 0 28px; background: #fff; }
-    .brand-detail-hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px; align-items: center; padding: 30px 36px; border: 1px solid #e8edf2; border-radius: 18px; background: linear-gradient(135deg, #fafbfd 0%, #fff 70%, #fff7f2 100%); }
-    .brand-detail-kicker { display: block; margin-bottom: 10px; color: var(--orange); font-size: 15px; font-weight: 800; letter-spacing: .1em; }
+    .brand-detail-hero { position: relative; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px; align-items: center; min-height: 240px; padding: 38px 46px; border-radius: 20px; background: linear-gradient(120deg, #082a49 0%, #0d3a61 72%, #135078 100%); box-shadow: 0 18px 40px rgba(8, 42, 73, .16); }
+    .brand-detail-hero::after { content: ''; position: absolute; width: 240px; height: 240px; right: 8%; top: -145px; border: 48px solid rgba(255,255,255,.05); border-radius: 50%; }
+    .brand-detail-kicker { display: inline-flex; align-items: center; margin-bottom: 14px; padding: 7px 12px; border: 1px solid rgba(255,255,255,.2); border-radius: 999px; color: #fff; background: rgba(255,255,255,.08); font-size: 12px; font-weight: 700; letter-spacing: .04em; }
     .brand-detail-copy { position: relative; z-index: 1; }
-    .brand-detail-copy h1 { color: var(--navy); font-size: clamp(34px, 4vw, 46px); line-height: 1.05; letter-spacing: -.035em; margin: 0 0 12px; }
-    .brand-detail-copy p { max-width: 720px; color: var(--text-light); font-size: 15px; line-height: 1.6; margin: 0; }
-    .brand-detail-action { position: relative; z-index: 1; white-space: nowrap; padding: 13px 22px; font-size: 14px; }
+    .brand-detail-copy h1 { color: #fff; font-size: clamp(44px, 5vw, 68px); line-height: 1; letter-spacing: -.045em; margin: 0 0 14px; }
+    .brand-detail-subtitle { color: rgba(255,255,255,.72); font-size: 17px; font-weight: 600; letter-spacing: .01em; }
+    .brand-detail-action { position: relative; z-index: 1; white-space: nowrap; padding: 14px 24px; font-size: 14px; border: 1px solid rgba(255,255,255,.2); }
     .brand-products { padding: 38px 0 64px; background: #f6f8fa; }
     .brand-products-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; }
     .brand-products .section-label { display: block; margin-bottom: 8px; color: var(--orange); font-size: 15px; font-weight: 800; letter-spacing: .1em; }
@@ -40,8 +41,7 @@
     .brand-product-card p { margin: 0; color: var(--text-light); font-size: 12px; font-weight: 600; }
     @media (max-width: 768px) {
       .brand-detail { padding: 20px 0 24px; }
-      .brand-detail-hero { grid-template-columns: 1fr; gap: 20px; padding: 24px 20px; border-radius: 15px; }
-      .brand-detail-copy p { font-size: 16px; }
+      .brand-detail-hero { grid-template-columns: 1fr; gap: 22px; min-height: 0; padding: 30px 24px; border-radius: 16px; }
       .brand-detail-action { justify-self: start; }
       .brand-products { padding: 44px 0; }
       .brand-product-grid { grid-template-columns: 1fr; }
@@ -90,9 +90,9 @@
       <div class="container">
         <div class="brand-detail-hero">
           <div class="brand-detail-copy">
-            <span class="brand-detail-kicker">BRAND PROGRAM</span>
+            <span class="brand-detail-kicker" id="brandCategoryBadge">BRAND PROGRAM</span>
             <h1 id="brandTitle">Brand Program</h1>
-            <p id="brandDescription">Explore custom merchandise developed for this brand to support brand campaigns, customer engagement, events, and promotional programs.</p>
+            <div class="brand-detail-subtitle">Custom Merchandise Program</div>
           </div>
           <a href="../contact/index.html" class="btn btn-primary brand-detail-action">Start a Similar Project</a>
         </div>
@@ -102,7 +102,7 @@
     <section class="brand-products">
       <div class="container">
         <div class="brand-products-heading">
-          <div><span class="section-label">BRAND PROJECTS</span><h2 class="section-title" id="productsTitle">Products Created for This Brand</h2></div>
+          <div><span class="section-label">BRAND PROJECTS</span><h2 class="section-title" id="productsTitle">Featured Projects</h2></div>
         </div>
         <div class="brand-product-grid" id="brandProductGrid"></div>
         <div class="brand-products-empty" id="brandProductsEmpty">
@@ -156,8 +156,7 @@
     document.getElementById('breadcrumbCategory').href = 'index.html?category=' + (categorySlugs[brandData[0]] || 'all');
     document.getElementById('breadcrumbBrand').textContent = brandName;
     document.getElementById('brandTitle').textContent = brandName;
-    document.getElementById('brandDescription').textContent = 'Explore custom merchandise developed for ' + brandName + ' to support brand campaigns, customer engagement, events, and promotional programs.';
-    document.getElementById('productsTitle').textContent = 'Products Created for ' + brandName;
+    document.getElementById('brandCategoryBadge').textContent = brandData[0];
 
     const localHosts = ['localhost', '127.0.0.1', '::1'];
     const apiBase = (window.API_CONFIG && window.API_CONFIG.BASE_URL) || (localHosts.includes(location.hostname) ? location.origin : 'https://amazingyep-sitebackend.onrender.com');
@@ -175,6 +174,7 @@
       const category = (products[0] && products[0].brandCategory) || brandData[0];
       document.getElementById('breadcrumbCategory').textContent = category;
       document.getElementById('breadcrumbCategory').href = 'index.html?category=' + (categorySlugsByName[category] || 'all');
+      document.getElementById('brandCategoryBadge').textContent = category;
       const grid = document.getElementById('brandProductGrid');
       grid.innerHTML = products.map(product => '<a class="brand-product-card" href="../collections/product.html?id=' + encodeURIComponent(product.id || product.sku) + '"><img src="' + safe(productImage(product)) + '" alt="' + safe(product.name) + '"><div><h3>' + safe(product.name) + '</h3><p>' + safe(product.websiteProductType || product.category || '') + '</p></div></a>').join('');
       document.getElementById('brandProductsEmpty').hidden = products.length > 0;
