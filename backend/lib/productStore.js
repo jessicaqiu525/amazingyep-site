@@ -46,7 +46,7 @@ const WEBSITE_CATEGORY_GROUPS = [
   },
   {
     name: 'Wearables',
-    terms: ['wearable', 'apparel', 'sweater', 'shirt', 'jacket', 'hoodie', 'cap', 'hat']
+    terms: ['wearable', 'apparel', 'sweater', 'shirt', 'jacket', 'hoodie', 'cap', 'hat', 'footwear', 'slipper', 'shoe', 'sock', 'snowsuit', 'jumpsuit', 'outerwear', 'snow gear', 'alpine wear']
   }
 ];
 
@@ -61,6 +61,17 @@ function canonicalWebsiteCategory(value) {
 }
 
 function derivedWebsiteCategory(product) {
+  const identity = [product.name, ...listValue(product.keywords)].filter(Boolean).join(' ');
+  // Strong product-identity terms override stale manual placement and broad
+  // SAGE departments. A snowsuit filed under SAGE "Skis" is still apparel.
+  if (/\b(slipper|slippers|footwear|shoe|shoes|sock|socks|snowsuit|jumpsuit|outerwear|snow gear|alpine wear)\b/i.test(identity)) {
+    return 'Wearables';
+  }
+  // A formal SAGE primary category is stronger evidence than descriptive words
+  // in the product name. For example, fleece slippers may contain "plush" in
+  // their copy but still belong under Wearables rather than Plush & Mascots.
+  const sageCategory = canonicalWebsiteCategory(product.sageCategory1);
+  if (WEBSITE_CATEGORY_GROUPS.some((item) => item.name === sageCategory)) return sageCategory;
   const directValue = String(product.category || product.sageCategory1 || '').trim();
   const direct = canonicalWebsiteCategory(directValue);
   if (WEBSITE_CATEGORY_GROUPS.some((item) => item.name === direct)) return direct;
@@ -143,11 +154,13 @@ const WEBSITE_PRODUCT_TYPE_RULES = {
     ['Custom Plush Toys', /\b(plush|stuffed animal|character|doll)\b/i]
   ],
   'Wearables': [
+    ['Slippers & Footwear', /\b(slipper|slippers|footwear|shoe|shoes)\b/i],
+    ['Socks', /\b(sock|socks)\b/i],
     ['T-Shirts', /\bt[ -]?shirt\b/i],
     ['Polo Shirts', /\bpolo\b/i],
     ['Hoodies & Sweatshirts', /\b(hoodie|sweatshirt)\b/i],
     ['Sweaters & Knitwear', /\b(sweater|knitwear|cardigan)\b/i],
-    ['Jackets & Outerwear', /\b(jacket|outerwear|coat|vest)\b/i],
+    ['Jackets & Outerwear', /\b(jacket|outerwear|coat|vest|snowsuit|jumpsuit|snow suit|alpine wear)\b/i],
     ['Hats & Caps', /\b(hat|cap|beanie)\b/i],
     ['Aprons & Uniforms', /\b(apron|uniform)\b/i],
     ['Activewear', /\b(activewear|athletic|sportswear|shorts|leggings)\b/i]
@@ -240,7 +253,13 @@ function derivedWebsiteProductType(product) {
       'Holiday Plush': 'Holiday & Seasonal Plush',
       'Seasonal Characters': 'Holiday & Seasonal Plush'
     };
-    return productTypeAliases[explicitType] || explicitType;
+    const canonicalType = productTypeAliases[explicitType] || explicitType;
+    const websiteCategory = derivedWebsiteCategory(product);
+    const validTypes = (WEBSITE_PRODUCT_TYPE_RULES[websiteCategory] || []).map((rule) => rule[0]);
+    // Do not preserve a product type belonging to a different website category.
+    // This also repairs previously imported records such as slippers saved as
+    // Brand & Team Mascots.
+    if (!validTypes.length || validTypes.includes(canonicalType)) return canonicalType;
   }
   const searchable = [
     product.name,
