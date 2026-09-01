@@ -88,6 +88,24 @@ function derivedPriceRange(product) {
     : '$' + min.toFixed(2) + '-$' + max.toFixed(2);
 }
 
+function numericCatalogValue(value) {
+  if (value === undefined || value === null || value === '') return value;
+  const cleaned = String(value).replace(/[^0-9.-]/g, '');
+  if (!cleaned) return value;
+  const parsed = Number(cleaned);
+  return Number.isFinite(parsed) ? parsed : value;
+}
+
+function normalizedPricing(pricing) {
+  if (!Array.isArray(pricing)) return [];
+  return pricing.map((row) => ({
+    ...row,
+    quantity: numericCatalogValue(row.quantity),
+    price: numericCatalogValue(row.price),
+    piecesPerUnit: numericCatalogValue(row.piecesPerUnit)
+  }));
+}
+
 const WEBSITE_PRODUCT_TYPE_RULES = {
   'Bags': [
     ['Tote & Shopping Bags', /\b(tote|shopper|shopping bag)\b/i],
@@ -285,7 +303,7 @@ function recommendWebsitePlacement(product) {
 function productForDisplay(product) {
   if (!product) return product;
   const category = derivedWebsiteCategory(product);
-  const normalized = { ...product, category };
+  const normalized = { ...product, category, pricing: normalizedPricing(product.pricing) };
   return {
     ...normalized,
     priceRange: derivedPriceRange(normalized),
@@ -463,6 +481,7 @@ function normalizeProduct(product, existing) {
     updatedAt: now,
     createdAt: (existing && existing.createdAt) || product.createdAt || now
   };
+  normalized.pricing = normalizedPricing(normalized.pricing);
   normalized.priceRange = derivedPriceRange(normalized);
   normalized.websiteProductType = derivedWebsiteProductType(normalized);
   normalized.useCases = derivedUseCases(normalized);
