@@ -514,7 +514,7 @@ img { max-width: 100%; height: auto; display: block; }
 .page-hero {
   width: 100%;
   margin: 0;
-  padding: 0;
+  padding: 72px 0 0; /* keep the artwork below the fixed navigation */
   overflow: hidden;
   background: #f5f3ef;
 }
@@ -523,6 +523,15 @@ img { max-width: 100%; height: auto; display: block; }
   display: block;
   width: 100%;
   height: auto;
+}
+
+/* Give campaign artwork a little more vertical room on wide screens. */
+@media (min-width: 769px) {
+  .page-hero > img {
+    aspect-ratio: 2.35 / 1;
+    object-fit: cover;
+    object-position: center top;
+  }
 }
 
 /* Content sections - full width */
