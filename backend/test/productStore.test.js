@@ -100,3 +100,21 @@ test('uses the reviewed use cases for current catalog products', () => {
     useCases: []
   }), ['employee', 'loyalty']);
 });
+
+test('repairs the old keychain type and cooler subcategory on AK764', () => {
+  const product = {
+    sku: 'AK764',
+    name: 'Custom 7-Eleven x PacMan Enamel Pin Set',
+    category: 'Keychains & Accessories',
+    subcategory: 'Cooler Bags',
+    sageCategory1: 'Pins',
+    websiteProductType: 'Metal & Enamel Keychains',
+    useCases: ['employee', 'loyalty']
+  };
+
+  const placement = recommendWebsitePlacement(product);
+  assert.equal(placement.category, 'Keychains & Accessories');
+  assert.equal(placement.websiteProductType, 'Pins & Patches');
+  assert.deepEqual(placement.useCases, ['conference', 'loyalty']);
+  assert.equal(derivedWebsiteSubcategory(product), '');
+});

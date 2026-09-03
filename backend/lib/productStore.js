@@ -235,6 +235,16 @@ const WEBSITE_PRODUCT_TYPE_RULES = {
 };
 
 function derivedWebsiteProductType(product) {
+  const identity = [
+    product.name,
+    product.sageCategory1,
+    product.sageCategory2,
+    ...listValue(product.keywords)
+  ].filter(Boolean).join(' ');
+  if (derivedWebsiteCategory(product) === 'Keychains & Accessories'
+    && /\b(enamel pin|lapel pin|pinback|button badge|button set|badge pin|pin set|pins|patch|patches)\b/i.test(identity)) {
+    return 'Pins & Patches';
+  }
   if (String(product.websiteProductType || '').trim()) {
     const explicitType = String(product.websiteProductType).trim();
     const productTypeAliases = {
@@ -348,6 +358,7 @@ const CURATED_WEBSITE_USE_CASES = {
   AK757: ['conference', 'employee', 'mascot', 'schools', 'loyalty'],
   AK759: ['employee', 'mascot', 'loyalty'],
   AK763: ['conference', 'employee', 'mascot', 'loyalty'],
+  AK764: ['conference', 'loyalty'],
   AK765: ['conference', 'loyalty'],
   AK766: ['conference', 'loyalty'],
   AK768: ['conference', 'loyalty'],
