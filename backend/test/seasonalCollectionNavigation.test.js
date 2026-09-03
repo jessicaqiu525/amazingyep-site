@@ -70,6 +70,9 @@ test('collections filters and cards use the same alphabetical order', () => {
     const positions = categories.map((category) => section.indexOf(`data-category="${category}"`));
     assert.deepEqual(positions, [...positions].sort((a, b) => a - b));
   }
+
+  assert.doesNotMatch(page, /FEATURED ['"]?\s*\+\s*categoryName/);
+  assert.doesNotMatch(page, /categoryName\.toUpperCase\(\)\s*\+\s*['"] PRODUCTS/);
 });
 
 test('keychains page title reflects the full category scope', () => {
