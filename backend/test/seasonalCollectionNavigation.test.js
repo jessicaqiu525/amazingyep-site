@@ -36,6 +36,35 @@ test('every collections dropdown includes gifts and seasonal', () => {
   for (const file of dropdownPages) {
     const page = fs.readFileSync(file, 'utf8');
     assert.match(page, /gifts-seasonal\.html"[^>]*>Gifts &amp; Seasonal</, path.relative(root, file));
+
+    const dropdown = page.match(/<ul class="nav-dropdown">([\s\S]*?)<\/ul>/)[1];
+    const expectedOrder = [
+      '>Bags</a>',
+      '>Drinkware</a>',
+      '>Gifts &amp; Seasonal</a>',
+      '>Keychains &amp; Accessories</a>',
+      '>Office &amp; Stationery</a>',
+      '>Outdoor &amp; Leisure</a>',
+      '>Plush &amp; Mascots</a>',
+      '>Technology</a>',
+      '>Trade Show</a>',
+      '>Wearables</a>'
+    ];
+    const positions = expectedOrder.map((label) => dropdown.indexOf(label));
+    assert.ok(positions.every((position) => position >= 0), path.relative(root, file));
+    assert.deepEqual(positions, [...positions].sort((a, b) => a - b), path.relative(root, file));
+  }
+});
+
+test('collections filters and cards use the same alphabetical order', () => {
+  const page = fs.readFileSync(path.join(root, 'collections', 'index.html'), 'utf8');
+  const categories = ['bags', 'drinkware', 'seasonal', 'keychains', 'office', 'outdoor', 'plush', 'technology', 'trade-show', 'wearables'];
+  const filter = page.match(/<div class="collections-type-grid">([\s\S]*?)<\/div>/)[1];
+  const grid = page.match(/<div class="collections-grid">([\s\S]*?)\n\s*<\/div>\n\n\s*<\/main>/)[1];
+
+  for (const section of [filter, grid]) {
+    const positions = categories.map((category) => section.indexOf(`data-category="${category}"`));
+    assert.deepEqual(positions, [...positions].sort((a, b) => a - b));
   }
 });
 
