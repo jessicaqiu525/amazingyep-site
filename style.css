@@ -244,6 +244,29 @@ img { max-width: 100%; height: auto; display: block; }
   color: rgba(10, 37, 64, 0.45);
 }
 
+/* Keep the header search visually consistent across browsers. Chrome adds a
+   native clear icon and autofill tint that do not belong to the site UI. */
+.nav-search input[type="search"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.nav-search input[type="search"]::-webkit-search-cancel-button,
+.nav-search input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
+.nav-search input:-webkit-autofill,
+.nav-search input:-webkit-autofill:hover,
+.nav-search input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--navy);
+  -webkit-box-shadow: 0 0 0 1000px #fff inset;
+  box-shadow: 0 0 0 1000px #fff inset;
+  caret-color: var(--navy);
+}
+
 .collections-search-results {
   max-width: 1440px;
   margin: 0 auto;
