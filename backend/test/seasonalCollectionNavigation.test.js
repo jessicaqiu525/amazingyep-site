@@ -77,6 +77,32 @@ test('collections filters and cards use the same alphabetical order', () => {
   assert.match(page, /collectionsCatalog\.hidden = pageProducts\.length === 0/);
 });
 
+test('collections category controls link to dedicated category pages', () => {
+  const page = fs.readFileSync(path.join(root, 'collections', 'index.html'), 'utf8');
+  const targets = {
+    all: 'index.html', bags: 'bags.html', drinkware: 'drinkware.html',
+    seasonal: 'gifts-seasonal.html', games: 'games-activities.html',
+    keychains: 'keychains.html', office: 'office.html', outdoor: 'outdoor-leisure.html',
+    plush: 'plush-mascots.html', technology: 'technology.html',
+    'trade-show': 'trade-show.html', wearables: 'apparel.html'
+  };
+
+  for (const [category, href] of Object.entries(targets)) {
+    assert.match(page, new RegExp(`<a href="${href.replace('.', '\\.') }" class="collections-type-item[^>]*" data-category="${category}"`));
+  }
+  assert.doesNotMatch(page, /showCollection\(this\.dataset\.category/);
+});
+
+test('dedicated collection pages link back through the collections breadcrumb', () => {
+  const pages = ['bags', 'drinkware', 'gifts-seasonal', 'games-activities', 'keychains', 'office',
+    'outdoor-leisure', 'plush-mascots', 'technology', 'trade-show', 'apparel'];
+
+  for (const name of pages) {
+    const page = fs.readFileSync(path.join(root, 'collections', `${name}.html`), 'utf8');
+    assert.match(page, /<a href="index\.html">Collections<\/a>/, name);
+  }
+});
+
 test('keychains page title reflects the full category scope', () => {
   const page = fs.readFileSync(path.join(root, 'collections', 'keychains.html'), 'utf8');
   assert.match(page, /ALL KEYCHAINS &amp; ACCESSORIES/);

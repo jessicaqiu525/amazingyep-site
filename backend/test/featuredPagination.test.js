@@ -40,11 +40,9 @@ test('every product collection page uses the shared grid initializer', () => {
   }
 });
 
-test('collections category chips load products directly', () => {
+test('collections category controls navigate to dedicated pages', () => {
   const page = fs.readFileSync(path.join(root, 'collections', 'index.html'), 'utf8');
-  assert.match(page, /async function showCollection\(categoryKey\)/);
-  assert.match(page, /\/api\/products\?category=/);
-  assert.match(page, /renderProductCard\(product, 'search'\)/);
-  assert.match(page, /const productPageSize = 12/);
-  assert.match(page, /showCollection\(this\.dataset\.category \|\| 'all'\)/);
+  assert.match(page, /href="bags\.html" class="collections-type-item" data-category="bags"/);
+  assert.match(page, /href="plush-mascots\.html" class="collections-type-item" data-category="plush"/);
+  assert.doesNotMatch(page, /showCollection\(this\.dataset\.category \|\| 'all'\)/);
 });

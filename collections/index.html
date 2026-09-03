@@ -26,7 +26,7 @@
     .collections-product-type { max-width: 1440px; margin: 0 auto; padding: 0 32px 40px; text-align: left; border-bottom: 1px solid var(--gray-200); }
     .collections-type-label { font-size: 24px; font-weight: 700; letter-spacing: 1.5px; color: var(--navy); text-transform: uppercase; margin-bottom: 16px; text-decoration: underline; }
     .collections-type-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-    .collections-type-item { padding: 12px 24px; border: 1px solid var(--gray-200); border-radius: 50px; font-size: 15px; color: var(--navy); cursor: pointer; transition: all 0.2s; background: #fff; white-space: nowrap; }
+    .collections-type-item { padding: 12px 24px; border: 1px solid var(--gray-200); border-radius: 50px; font-size: 15px; color: var(--navy); cursor: pointer; transition: all 0.2s; background: #fff; white-space: nowrap; text-decoration: none; }
     .collections-type-item:hover, .collections-type-item.active { background: var(--navy); color: #fff; border-color: var(--navy); }
     .collections-main { max-width: 1440px; margin: 0 auto; padding: 32px 32px 72px; }
     .collections-featured-header { margin-bottom: 16px; }
@@ -179,18 +179,18 @@
     <div class="collections-type-content" id="typeContent">
       <div class="collections-type-label">PRODUCT TYPE</div>
       <div class="collections-type-grid">
-        <span class="collections-type-item active" data-category="all">All Collections</span>
-        <span class="collections-type-item" data-category="bags">Bags</span>
-        <span class="collections-type-item" data-category="drinkware">Drinkware</span>
-        <span class="collections-type-item" data-category="seasonal">Gifts &amp; Seasonal</span>
-        <span class="collections-type-item" data-category="games">Games &amp; Activities</span>
-        <span class="collections-type-item" data-category="keychains">Keychains &amp; Accessories</span>
-        <span class="collections-type-item" data-category="office">Office &amp; Stationery</span>
-        <span class="collections-type-item" data-category="outdoor">Outdoor &amp; Leisure</span>
-        <span class="collections-type-item" data-category="plush">Plush &amp; Mascots</span>
-        <span class="collections-type-item" data-category="technology">Technology</span>
-        <span class="collections-type-item" data-category="trade-show">Trade Show</span>
-        <span class="collections-type-item" data-category="wearables">Wearables</span>
+        <a href="index.html" class="collections-type-item active" data-category="all">All Collections</a>
+        <a href="bags.html" class="collections-type-item" data-category="bags">Bags</a>
+        <a href="drinkware.html" class="collections-type-item" data-category="drinkware">Drinkware</a>
+        <a href="gifts-seasonal.html" class="collections-type-item" data-category="seasonal">Gifts &amp; Seasonal</a>
+        <a href="games-activities.html" class="collections-type-item" data-category="games">Games &amp; Activities</a>
+        <a href="keychains.html" class="collections-type-item" data-category="keychains">Keychains &amp; Accessories</a>
+        <a href="office.html" class="collections-type-item" data-category="office">Office &amp; Stationery</a>
+        <a href="outdoor-leisure.html" class="collections-type-item" data-category="outdoor">Outdoor &amp; Leisure</a>
+        <a href="plush-mascots.html" class="collections-type-item" data-category="plush">Plush &amp; Mascots</a>
+        <a href="technology.html" class="collections-type-item" data-category="technology">Technology</a>
+        <a href="trade-show.html" class="collections-type-item" data-category="trade-show">Trade Show</a>
+        <a href="apparel.html" class="collections-type-item" data-category="wearables">Wearables</a>
       </div>
     </div>
   </div>
@@ -519,14 +519,6 @@
         resultsGrid.innerHTML = '<div class="collections-search-empty"><h3>We couldn\'t load the results</h3><p>Please try again in a moment.</p></div>';
       }
     }
-
-    document.querySelectorAll('.collections-type-item').forEach(item => {
-      item.addEventListener('click', function() {
-        document.querySelectorAll('.collections-type-item').forEach(option => option.classList.remove('active'));
-        this.classList.add('active');
-        showCollection(this.dataset.category || 'all');
-      });
-    });
 
     document.getElementById('searchInput').addEventListener('input', filterCollections);
 
