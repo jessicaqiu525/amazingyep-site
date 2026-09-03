@@ -24,7 +24,7 @@ test('gifts and seasonal has a collection page and catalog card', () => {
   assert.match(seasonalPage, />Holiday Decorations</);
   assert.match(seasonalPage, />Gift Wrap &amp; Packaging</);
   assert.doesNotMatch(seasonalPage, />Gift Bags &amp; Boxes</);
-  assert.match(seasonalPage, /Custom merchandise for holidays, celebrations, gifting, and seasonal campaigns/);
+  assert.match(seasonalPage, /Make every season worth celebrating/);
   assert.match(catalogPage, /href="gifts-seasonal\.html" data-category="seasonal"/);
   assert.match(catalogPage, /data-category="seasonal">Gifts &amp; Seasonal</);
 });
