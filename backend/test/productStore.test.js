@@ -85,6 +85,18 @@ test('classifies wrapping paper as gift packaging', () => {
   assert.equal(placement.websiteProductType, 'Gift Wrap & Packaging');
 });
 
+test('merges gift bags and boxes into gift wrap and packaging', () => {
+  for (const name of ['Custom Gift Bag', 'Branded Gift Box']) {
+    const placement = recommendWebsitePlacement({
+      name,
+      category: 'Gifts & Seasonal',
+      websiteProductType: 'Gift Bags & Boxes'
+    });
+    assert.equal(placement.category, 'Gifts & Seasonal');
+    assert.equal(placement.websiteProductType, 'Gift Wrap & Packaging');
+  }
+});
+
 test('keeps a reusable tote out of gifts and seasonal', () => {
   const placement = recommendWebsitePlacement({
     sku: 'AW572',

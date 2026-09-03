@@ -240,8 +240,7 @@ const WEBSITE_PRODUCT_TYPE_RULES = {
   'Gifts & Seasonal': [
     ['Holiday Decorations', /\b(holiday|christmas|halloween|easter).{0,30}\b(decoration|decor)\b/i],
     ['Ornaments', /\b(ornament|tree hanging|tree decoration)\b/i],
-    ['Gift Wrap & Packaging', /\b(gift wrap|wrapping paper|packaging paper)\b/i],
-    ['Gift Bags & Boxes', /\b(gift bag|gift box)\b/i],
+    ['Gift Wrap & Packaging', /\b(gift wrap|wrapping paper|packaging paper|gift bag|gift box|tissue paper|ribbon|gift tag)\b/i],
     ['Seasonal Gifts', /\b(holiday|christmas|halloween|easter|seasonal)\b/i]
   ],
   'Games & Activities': [

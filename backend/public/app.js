@@ -79,7 +79,7 @@ const WEBSITE_PRODUCT_TYPES = {
   'Outdoor & Leisure': ['Camping & Hiking Gear', 'Picnic & BBQ', 'Beach Accessories', 'Fishing Gear', 'Outdoor Games', 'Blankets & Towels', 'Travel & Leisure Kits'],
   'Technology': ['Power Banks', 'USB Drives', 'Phone Accessories', 'Wireless Chargers', 'Speakers & Audio', 'Headphones & Earbuds', 'Cables & Adapters'],
   'Trade Show': ['Banners & Signs', 'Table Covers', 'Pop-Up Displays', 'Lanyards & Badges', 'Brochure & Literature Holders', 'Flags', 'Booth Accessories'],
-  'Gifts & Seasonal': ['Holiday Decorations', 'Ornaments', 'Gift Wrap & Packaging', 'Gift Bags & Boxes', 'Seasonal Gifts'],
+  'Gifts & Seasonal': ['Holiday Decorations', 'Ornaments', 'Gift Wrap & Packaging', 'Seasonal Gifts'],
   'Games & Activities': ['Puzzles', 'Board Games', 'Card Games & Playing Cards', 'Educational & Brain Games', 'Activity Kits']
 };
 const BRAND_CATEGORIES = {
