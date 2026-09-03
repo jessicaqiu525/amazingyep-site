@@ -38,3 +38,9 @@ test('every collections dropdown includes gifts and seasonal', () => {
     assert.match(page, /gifts-seasonal\.html"[^>]*>Gifts &amp; Seasonal</, path.relative(root, file));
   }
 });
+
+test('keychains page title reflects the full category scope', () => {
+  const page = fs.readFileSync(path.join(root, 'collections', 'keychains.html'), 'utf8');
+  assert.match(page, /ALL KEYCHAINS &amp; ACCESSORIES/);
+  assert.match(page, /<span>Keychains &amp; Accessories<\/span>/);
+});
