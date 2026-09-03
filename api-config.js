@@ -334,7 +334,13 @@
       const res = responses[0];
       if (!res.ok) throw new Error('Failed to load products');
       const data = await res.json();
-      const products = data.products || [];
+      // Defensively enforce the page category on the client too. The API
+      // normally filters this response, but older stored category values or a
+      // cached backend response must never leak products into the wrong page.
+      const products = (data.products || []).filter(function(product) {
+        return !apiCategory
+          || String(product.category || '').trim().toLowerCase() === apiCategory.toLowerCase();
+      });
       let allProducts = products;
       if (responses[1] && responses[1].ok) {
         const allData = await responses[1].json();

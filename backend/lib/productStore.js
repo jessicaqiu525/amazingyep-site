@@ -627,7 +627,7 @@ async function nextIdAsync() {
 }
 
 function productMatches(product, query) {
-  if (query.category && canonicalWebsiteCategory(product.category) !== canonicalWebsiteCategory(query.category)) {
+  if (query.category && derivedWebsiteCategory(product) !== canonicalWebsiteCategory(query.category)) {
     return false;
   }
 
@@ -832,6 +832,7 @@ module.exports = {
   derivedWebsiteProductType,
   derivedUseCases,
   recommendWebsitePlacement,
+  productMatches,
   usingPostgres: USE_POSTGRES,
   ensurePostgresStore
 };

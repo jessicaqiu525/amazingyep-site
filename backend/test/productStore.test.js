@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const {
   derivedUseCases,
   derivedWebsiteSubcategory,
+  productMatches,
   recommendWebsitePlacement
 } = require('../lib/productStore');
 
@@ -117,4 +118,17 @@ test('repairs the old keychain type and cooler subcategory on AK764', () => {
   assert.equal(placement.websiteProductType, 'Pins & Patches');
   assert.deepEqual(placement.useCases, ['conference']);
   assert.equal(derivedWebsiteSubcategory(product), '');
+});
+
+test('category API filtering uses the repaired website category', () => {
+  const stalePin = {
+    sku: 'AK765',
+    name: 'Custom 7-Eleven BigGulp Enamel Pin',
+    category: 'Drinkware',
+    sageCategory1: 'Pins',
+    keywords: ['Lapel Pin', 'Soft Enamel Pin']
+  };
+
+  assert.equal(productMatches(stalePin, { category: 'Drinkware' }), false);
+  assert.equal(productMatches(stalePin, { category: 'Keychains & Accessories' }), true);
 });
