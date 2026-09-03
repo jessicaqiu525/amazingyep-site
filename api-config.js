@@ -304,7 +304,7 @@
     return score >= 3;
   }
 
-  // Initialize a category page: always show 12 cards (real + samples)
+  // Initialize a category page with 12 products per page.
   // category: e.g. 'Bags', 'Drinkware'
   // gridId: the ID of the grid container (default: 'featuredGrid')
   // cardClassPrefix: CSS class prefix (e.g. 'bags', 'dw', 'plush')
@@ -349,8 +349,17 @@
       const recommendationTrack = document.querySelector('.' + cardClassPrefix + '-carousel-track');
       const recommendationPagination = document.querySelector('.' + cardClassPrefix + '-carousel-pagination');
       const recommendationPageSize = 5;
+      const featuredPageSize = 12;
+      let featuredPage = 0;
+      let selectedProductType = '';
+      let featuredSearchQuery = '';
       let recommendationProducts = [];
       let recommendationPage = 0;
+      const featuredPagination = document.createElement('nav');
+      featuredPagination.className = cardClassPrefix + '-featured-pagination';
+      featuredPagination.setAttribute('aria-label', category + ' product pages');
+      featuredPagination.style.cssText = 'display:none;align-items:center;justify-content:center;gap:14px;margin:28px auto 4px;padding:0 32px;';
+      grid.insertAdjacentElement('afterend', featuredPagination);
       if (recommendationTrack) {
         recommendationTrack.style.display = 'grid';
         recommendationTrack.style.gridTemplateColumns = 'repeat(5, minmax(180px, 1fr))';
@@ -418,17 +427,67 @@
         typeItems = Array.from(document.querySelectorAll('.' + cardClassPrefix + '-type-item'));
       }
 
-      function renderProducts(selectedType) {
-        const filteredProducts = selectedType
+      function drawFeaturedPagination(pageCount, resultCount) {
+        if (pageCount <= 1) {
+          featuredPagination.style.display = 'none';
+          featuredPagination.innerHTML = '';
+          return;
+        }
+        featuredPagination.style.display = 'flex';
+        featuredPagination.innerHTML =
+          '<button type="button" data-featured-prev aria-label="Previous product page" style="padding:10px 18px;border:1px solid #d0d5dd;border-radius:24px;background:#fff;color:#082a4a;font-weight:700;cursor:pointer;">&larr; Previous</button>' +
+          '<span style="min-width:110px;text-align:center;color:#667085;font-weight:600;">Page ' + (featuredPage + 1) + ' of ' + pageCount + '</span>' +
+          '<button type="button" data-featured-next aria-label="Next product page" style="padding:10px 18px;border:1px solid #d0d5dd;border-radius:24px;background:#fff;color:#082a4a;font-weight:700;cursor:pointer;">Next &rarr;</button>' +
+          '<span class="sr-only" aria-live="polite">' + resultCount + ' products</span>';
+
+        const previous = featuredPagination.querySelector('[data-featured-prev]');
+        const next = featuredPagination.querySelector('[data-featured-next]');
+        previous.disabled = featuredPage === 0;
+        next.disabled = featuredPage === pageCount - 1;
+        previous.style.opacity = previous.disabled ? '0.4' : '1';
+        next.style.opacity = next.disabled ? '0.4' : '1';
+        previous.onclick = function() {
+          if (featuredPage > 0) {
+            featuredPage -= 1;
+            renderProducts();
+            grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        };
+        next.onclick = function() {
+          if (featuredPage + 1 < pageCount) {
+            featuredPage += 1;
+            renderProducts();
+            grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        };
+      }
+
+      function productMatchesSearch(product, query) {
+        if (!query) return true;
+        return [
+          product.name,
+          product.sku,
+          product.itemNumber,
+          product.websiteProductType,
+          product.description,
+          ...listValue(product.keywords)
+        ].filter(Boolean).join(' ').toLowerCase().includes(query);
+      }
+
+      function renderProducts() {
+        let filteredProducts = selectedProductType
           ? products.filter(function(product) {
-              return productMatchesType(product, selectedType);
+              return productMatchesType(product, selectedProductType);
             })
           : products;
+        filteredProducts = filteredProducts.filter(function(product) {
+          return productMatchesSearch(product, featuredSearchQuery);
+        });
 
         // Product Type filters show matching backend products only. The unfiltered
         // view continues to use samples to keep the existing 12-card layout.
-        if (selectedType && !filteredProducts.length) {
-          const safeType = escapeHtml(selectedType);
+        if ((selectedProductType || featuredSearchQuery) && !filteredProducts.length) {
+          const safeType = escapeHtml(selectedProductType || featuredSearchQuery);
           const safeCategory = escapeHtml(category);
           grid.innerHTML = '<div style="grid-column:1/-1;padding:34px;border:1px solid #e4e7ec;border-radius:16px;background:#fffaf7;">' +
             '<h3 style="margin:0 0 10px;color:#082a4a;font-size:24px;">Looking for custom ' + safeType + '?</h3>' +
@@ -440,18 +499,27 @@
           if (viewAvailable) {
             viewAvailable.addEventListener('click', function() {
               typeItems.forEach(function(item) { item.classList.remove('active'); });
-              renderProducts('');
+              selectedProductType = '';
+              featuredSearchQuery = '';
+              const searchInput = document.getElementById('searchInput');
+              if (searchInput) searchInput.value = '';
+              featuredPage = 0;
+              renderProducts();
             });
           }
+          drawFeaturedPagination(1, 0);
         } else {
           let html = '';
-          const realToShow = filteredProducts.slice(0, 12);
+          const pageCount = Math.max(1, Math.ceil(filteredProducts.length / featuredPageSize));
+          featuredPage = Math.min(featuredPage, pageCount - 1);
+          const pageStart = featuredPage * featuredPageSize;
+          const realToShow = filteredProducts.slice(pageStart, pageStart + featuredPageSize);
           realToShow.forEach(function(p) {
             html += renderProductCard(p, cardClassPrefix);
           });
 
-          if (!selectedType) {
-            const remaining = 12 - realToShow.length;
+          if (!selectedProductType && !featuredSearchQuery && featuredPage === 0) {
+            const remaining = featuredPageSize - realToShow.length;
             if (remaining > 0) {
               samples.slice(0, remaining).forEach(function(s) {
                 html += renderSampleCard(s, cardClassPrefix);
@@ -460,6 +528,7 @@
           }
 
           grid.innerHTML = html;
+          drawFeaturedPagination(pageCount, filteredProducts.length);
         }
 
         if (recommendationTrack) {
@@ -481,7 +550,16 @@
         }
       }
 
-      renderProducts('');
+      renderProducts();
+
+      const featuredSearchInput = document.getElementById('searchInput');
+      if (featuredSearchInput) {
+        featuredSearchInput.addEventListener('input', function() {
+          featuredSearchQuery = String(featuredSearchInput.value || '').trim().toLowerCase();
+          featuredPage = 0;
+          renderProducts();
+        });
+      }
 
       typeItems.forEach(function(item) {
         item.addEventListener('click', function() {
@@ -489,7 +567,9 @@
             other.classList.remove('active');
           });
           item.classList.add('active');
-          renderProducts(item.textContent.trim());
+          selectedProductType = /^all products$/i.test(item.textContent.trim()) ? '' : item.textContent.trim();
+          featuredPage = 0;
+          renderProducts();
         });
       });
 
