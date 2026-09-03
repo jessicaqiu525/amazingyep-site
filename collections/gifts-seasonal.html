@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gifts &amp; Seasonal - Amazing Yep Inc.</title>
+  <meta name="description" content="Custom gifts and seasonal merchandise for your brand.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <script src="../api-config.js?v=20260716b"></script>
+  <style>
+    /* Bags page specific styles */
+    .seasonal-breadcrumb { padding: 16px 0 4px; background: #fff; }
+    .seasonal-breadcrumb-inner { max-width: 1440px; margin: 0 auto; padding: 0 32px; display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-light); }
+    .seasonal-breadcrumb-inner a { color: var(--text-light); text-decoration: none; display: flex; align-items: center; gap: 4px; transition: all 0.3s ease; transform-origin: left center; }
+    .seasonal-breadcrumb-inner a:hover { color: var(--orange); transform: scale(1.08) translateZ(0); filter: drop-shadow(0 2px 4px rgba(242,101,34,0.3)); }
+    .seasonal-breadcrumb-inner .sep { color: #ccc; }
+    .seasonal-breadcrumb-arrow { width: 16px; height: 16px; stroke: var(--text-light); }
+
+    .seasonal-header { max-width: 1440px; margin: 0 auto; padding: 16px 32px 20px; text-align: left; }
+    .seasonal-title { font-size: 48px; font-weight: 900; color: var(--navy); letter-spacing: 1px; margin: 0 0 4px; }
+    .seasonal-subtitle { font-size: 20px; font-weight: 500; color: var(--text-light); margin-left: 8px; letter-spacing: 0; }
+    .seasonal-filter-wrap { display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
+    .seasonal-filter-text { font-size: 18px; font-weight: 700; letter-spacing: 1px; color: var(--navy); text-transform: uppercase; }
+    .seasonal-filter-arrow { width: 20px; height: 20px; transition: transform 0.3s; flex-shrink: 0; }
+    .seasonal-filter-arrow.collapsed { transform: rotate(180deg); }
+    .seasonal-type-content { overflow: hidden; max-height: 600px; transition: max-height 0.3s ease; }
+    .seasonal-type-content.collapsed { max-height: 0; margin-bottom: 0; }
+
+    .seasonal-product-type { max-width: 1440px; margin: 0 auto; padding: 0 32px 40px; text-align: left; border-bottom: 1px solid var(--gray-200); }
+    .seasonal-type-label { font-size: 24px; font-weight: 700; letter-spacing: 1.5px; color: var(--navy); text-transform: uppercase; margin-bottom: 16px; text-decoration: underline; }
+    .seasonal-type-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .seasonal-type-item { padding: 12px 24px; border: 1px solid var(--gray-200); border-radius: 50px; font-size: 15px; color: var(--navy); cursor: pointer; transition: all 0.2s; background: #fff; white-space: nowrap; }
+    .seasonal-type-item:hover, .seasonal-type-item.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+    .seasonal-featured { background: #fff; padding: 32px 0 40px; }
+    .seasonal-featured-header { max-width: 1440px; margin: 0 auto 16px; padding: 0 32px; }
+    .seasonal-featured-header .section-label { display: block; margin-bottom: 4px; }
+    .seasonal-featured-grid { max-width: 1440px; margin: 0 auto; padding: 0 32px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .seasonal-featured-card { border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s; background: var(--gray-50); }
+    .seasonal-featured-card:hover { transform: translateY(-2px); }
+    .seasonal-featured-card-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; background: var(--gray-100); }
+    .seasonal-featured-card-body { padding: 12px; }
+    .seasonal-featured-card-body h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin: 0 0 4px; }
+    .seasonal-featured-card-body p { font-size: 12px; color: var(--text-light); margin: 0; }
+
+    .seasonal-you-may-like { background: #fff; padding: 0 0 40px; }
+    .seasonal-carousel-header { max-width: 1440px; margin: 0 auto 16px; padding: 0 32px; }
+    .seasonal-carousel-header .section-label { display: block; margin-bottom: 4px; }
+    .seasonal-carousel-wrap { max-width: 1440px; margin: 0 auto; padding: 0 32px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .seasonal-carousel-wrap::-webkit-scrollbar { display: none; }
+    .seasonal-carousel-track { display: flex; gap: 16px; padding-bottom: 8px; }
+    .seasonal-carousel-card { flex: 0 0 220px; border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s; background: var(--gray-50); }
+    .seasonal-carousel-card:hover { transform: translateY(-2px); }
+    .seasonal-carousel-card-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; background: var(--gray-100); }
+    .seasonal-carousel-card-body { padding: 12px; }
+    .seasonal-carousel-card-body h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin: 0 0 4px; }
+    .seasonal-carousel-card-body p { font-size: 12px; color: var(--text-light); margin: 0; }
+
+    .seasonal-carousel-pagination { max-width: 1440px; margin: 20px auto 0; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; }
+    .seasonal-pagination-bar { flex: 1; max-width: 400px; height: 2px; background: var(--gray-200); border-radius: 2px; position: relative; overflow: hidden; }
+    .seasonal-pagination-bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--navy); border-radius: 2px; transition: width 0.3s; }
+    .seasonal-pagination-arrows { display: flex; align-items: center; gap: 12px; }
+    .seasonal-pagination-arrow { width: 28px; height: 28px; border: 1px solid var(--gray-200); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; background: #fff; transition: all 0.2s; }
+    .seasonal-pagination-arrow:hover { border-color: var(--navy); background: var(--navy); }
+    .seasonal-pagination-arrow:hover svg { stroke: #fff; }
+    .seasonal-pagination-arrow svg { width: 12px; height: 12px; stroke: var(--text-light); transition: stroke 0.2s; }
+    .seasonal-pagination-num { font-size: 13px; color: var(--text-light); min-width: 28px; text-align: center; }
+
+    @media (max-width: 768px) {
+      .seasonal-title { font-size: 30px; letter-spacing: 0; }
+      .seasonal-subtitle { font-size: 14px; display: block; margin-left: 0; margin-top: 4px; }
+      .seasonal-featured-grid { grid-template-columns: repeat(2, 1fr); }
+      .seasonal-carousel-card { flex: 0 0 160px; }
+      .seasonal-type-grid { gap: 6px; }
+      .seasonal-type-item { padding: 8px 16px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo"><img src="../assets/logo-2026.png" alt="Amazing Yep Inc."></a>
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="plush-mascots.html">Plush &amp; Mascots</a></li>
+        <li><a href="keychains.html">Keychains</a></li>
+        <li><a href="drinkware.html">Drinkware</a></li>
+        <li><a href="bags.html">Bags</a></li>
+        <li><a href="../case-studies/index.html">Ideas &amp; Use Cases</a></li>
+        <li><a href="../solutions/index.html">Brand Programs</a></li>
+        <li class="has-dropdown">
+          <a href="index.html" class="dropdown-toggle">Collections <svg class="dropdown-arrow" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <ul class="nav-dropdown">
+            <li><a href="bags.html">Bags</a></li>
+            <li><a href="drinkware.html">Drinkware</a></li>
+            <li><a href="keychains.html">Keychains &amp; Accessories</a></li>
+            <li><a href="office.html">Office &amp; Stationery</a></li>
+            <li><a href="outdoor-leisure.html">Outdoor &amp; Leisure</a></li>
+            <li><a href="plush-mascots.html">Plush &amp; Mascots</a></li>
+            <li><a href="technology.html">Technology</a></li>
+            <li><a href="trade-show.html">Trade Show</a></li>
+            <li><a href="gifts-seasonal.html" class="active">Gifts &amp; Seasonal</a></li>
+            <li><a href="apparel.html">Wearables</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <div class="nav-cta">
+        <form class="nav-search" role="search" action="/collections/index.html" method="get">
+          <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input type="search" name="search" placeholder="Search" aria-label="Search products">
+        </form>
+        <a href="../contact/index.html" class="btn btn-primary btn-sm">Start a Project</a>
+        <button class="nav-mobile-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Image -->
+  <header style="background:none; padding:0; margin:0;">
+    <img src="../assets/rainier/rainier-holiday-merch-scene.png" alt="Custom holiday decorations and seasonal gifts" style="width:100%; height:auto; display:block; max-height:600px; object-fit:cover; object-position:center center;">
+  </header>
+
+  <!-- Breadcrumb -->
+  <div class="seasonal-breadcrumb">
+    <div class="seasonal-breadcrumb-inner">
+      <a href="../index.html"><svg class="seasonal-breadcrumb-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Home</a><span class="sep">/</span><span>Gifts &amp; Seasonal</span>
+    </div>
+  </div>
+
+  <!-- ALL BAGS Title + Filter Icon -->
+  <div class="seasonal-header">
+    <h1 class="seasonal-title">ALL GIFTS &amp; SEASONAL <span class="seasonal-subtitle">Holiday décor, gift wrap, ornaments, and seasonal merchandise</span></h1>
+    <div class="seasonal-filter-wrap" onclick="toggleFilter()">
+      <span class="seasonal-filter-text">FILTER</span>
+      <svg class="seasonal-filter-arrow" id="filterArrow" viewBox="0 0 24 24" fill="none" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </div>
+
+  <!-- Search Bar -->
+  <div style="max-width:1440px; margin:0 auto; padding:0 32px 24px;">
+    <div style="display:flex; align-items:center; gap:12px; max-width:600px;">
+      <div style="flex:1; display:flex; align-items:center; gap:8px; padding:14px 20px; border:2px solid #d0d5dd; border-radius:50px; background:#fff;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" id="searchInput" placeholder="Search gifts &amp; seasonal products..." oninput="filterSeasonal()" style="border:none; outline:none; flex:1; font-size:15px; font-family:Inter,sans-serif; color:var(--navy); background:transparent;">
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT TYPE -->
+  <div class="seasonal-product-type">
+    <div class="seasonal-type-content" id="typeContent">
+      <div class="seasonal-type-label">PRODUCT TYPE</div>
+      <div class="seasonal-type-grid">
+        <span class="seasonal-type-item active">All Products</span>
+        <span class="seasonal-type-item">Holiday Decorations</span>
+        <span class="seasonal-type-item">Ornaments</span>
+        <span class="seasonal-type-item">Gift Wrap &amp; Packaging</span>
+        <span class="seasonal-type-item">Gift Bags &amp; Boxes</span>
+        <span class="seasonal-type-item">Seasonal Gifts</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURED -->
+  <section class="seasonal-featured">
+    <div class="seasonal-featured-header">
+      <span class="section-label">FEATURED</span>
+    </div>
+    <div class="seasonal-featured-grid" id="featuredGrid">
+      <!-- Default sample products (always visible) -->
+      <a href="../collections/product.html?id=ts-1" style="display:block;text-decoration:none;color:inherit;border-radius:12px;overflow:hidden;">
+        <div class="seasonal-featured-card" style="height:100%;">
+          <img class="seasonal-featured-card-img" src="../assets/rainier/rainier-holiday-merch-scene.png" alt="Table Cover">
+          <div class="seasonal-featured-card-body">
+            <h4>Custom Holiday Decoration</h4>
+            <p>Branded seasonal décor for retail displays and holiday programs.</p>
+          </div>
+        </div>
+      </a>
+      <a href="../collections/product.html?id=ts-2" style="display:block;text-decoration:none;color:inherit;border-radius:12px;overflow:hidden;">
+        <div class="seasonal-featured-card" style="height:100%;">
+          <img class="seasonal-featured-card-img" src="../assets/rainier/rainier-holiday-merch-scene.png" alt="Pop-Up Banner">
+          <div class="seasonal-featured-card-body">
+            <h4>Custom Ornament</h4>
+            <p>Collectible ornaments designed for gifting and seasonal campaigns.</p>
+          </div>
+        </div>
+      </a>
+      <a href="../collections/product.html?id=ts-3" style="display:block;text-decoration:none;color:inherit;border-radius:12px;overflow:hidden;">
+        <div class="seasonal-featured-card" style="height:100%;">
+          <img class="seasonal-featured-card-img" src="../assets/rainier/rainier-holiday-merch-scene.png" alt="Lanyard">
+          <div class="seasonal-featured-card-body">
+            <h4>Custom Gift Wrapping Paper</h4>
+            <p>Custom-printed wrapping paper for branded holiday gifting.</p>
+          </div>
+        </div>
+      </a>
+      <a href="../collections/product.html?id=ts-4" style="display:block;text-decoration:none;color:inherit;border-radius:12px;overflow:hidden;">
+        <div class="seasonal-featured-card" style="height:100%;">
+          <img class="seasonal-featured-card-img" src="../assets/rainier/rainier-holiday-merch-scene.png" alt="Promo Giveaway Pack">
+          <div class="seasonal-featured-card-body">
+            <h4>Custom Gift Box</h4>
+            <p>Retail-ready seasonal packaging for memorable gift presentations.</p>
+          </div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- YOU MAY LIKE -->
+  <section class="seasonal-you-may-like">
+    <div class="seasonal-carousel-header">
+      <span class="section-label">YOU MIGHT ALSO LIKE</span>
+    </div>
+    <div class="seasonal-carousel-wrap">
+      <div class="seasonal-carousel-track">
+        <div class="seasonal-carousel-card"><img class="seasonal-carousel-card-img" src="../assets/rainier/rainier-holiday-merch-scene.png" alt="Gifts & Seasonal"><div class="seasonal-carousel-card-body"><h4>A-Frame Sign</h4><p>MOQ: 50 pcs</p></div></div>
+        <div class="seasonal-carousel-card"><img class="seasonal-carousel-card-img" src="../assets/rainier/rainier-holiday-merch-scene.png" alt="Gifts & Seasonal"><div class="seasonal-carousel-card-body"><h4>Custom Keychain</h4><p>MOQ: 500 pcs</p></div></div>
+        <div class="seasonal-carousel-card"><img class="seasonal-carousel-card-img" src="../assets/rainier/rainier-holiday-merch-scene.png" alt="Gifts & Seasonal"><div class="seasonal-carousel-card-body"><h4>Stress Ball</h4><p>MOQ: 1000 pcs</p></div></div>
+        <div class="seasonal-carousel-card"><img class="seasonal-carousel-card-img" src="../assets/rainier/rainier-holiday-merch-scene.png" alt="Gifts & Seasonal"><div class="seasonal-carousel-card-body"><h4>USB Drive</h4><p>MOQ: 250 pcs</p></div></div>
+        <div class="seasonal-carousel-card"><img class="seasonal-carousel-card-img" src="../assets/rainier/rainier-holiday-merch-scene.png" alt="Gifts & Seasonal"><div class="seasonal-carousel-card-body"><h4>Power Bank</h4><p>MOQ: 200 pcs</p></div></div>
+        <div class="seasonal-carousel-card"><img class="seasonal-carousel-card-img" src="../assets/rainier/rainier-holiday-merch-scene.png" alt="Gifts & Seasonal"><div class="seasonal-carousel-card-body"><h4>Fidget Spinner</h4><p>MOQ: 500 pcs</p></div></div>
+        <div class="seasonal-carousel-card"><img class="seasonal-carousel-card-img" src="../assets/rainier/rainier-holiday-merch-scene.png" alt="Gifts & Seasonal"><div class="seasonal-carousel-card-body"><h4>Silicone Wristband</h4><p>MOQ: 2000 pcs</p></div></div>
+        <div class="seasonal-carousel-card"><img class="seasonal-carousel-card-img" src="../assets/rainier/rainier-holiday-merch-scene.png" alt="Gifts & Seasonal"><div class="seasonal-carousel-card-body"><h4>Tent Canopy</h4><p>MOQ: 10 pcs</p></div></div>
+    </div>
+    </div>
+    <div class="seasonal-carousel-pagination">
+      <div class="seasonal-pagination-bar"><div class="seasonal-pagination-bar-fill" id="paginationFill" style="width:50%;"></div></div>
+      <div class="seasonal-pagination-arrows">
+        <div class="seasonal-pagination-arrow" onclick="prevPage()">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+        </div>
+        <span class="seasonal-pagination-num" id="pageNum">1/2</span>
+        <div class="seasonal-pagination-arrow" onclick="nextPage()">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW WE WORK -->
+  <section class="hww-section">
+    <div class="container">
+      <div class="hww-header">
+        <span class="section-label">HOW WE WORK</span>
+        <h2 class="section-title">Simple, Fast, Reliable</h2>
+        <p class="section-subtitle">A straightforward process designed to get you from idea to delivery with minimal friction.</p>
+      </div>
+      <div class="hww-steps">
+        <div class="hww-step">
+          <div class="hww-num">1</div>
+          <h3>Share Your Idea</h3>
+          <p>Send us your design, sketch, or concept. Tell us about your brand, audience, and goals.</p>
+        </div>
+        <div class="hww-arrow">
+          <svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg>
+        </div>
+        <div class="hww-step">
+          <div class="hww-num">2</div>
+          <h3>Receive Mockup &amp; Pricing</h3>
+          <p>Within 24 hours, receive a free digital mockup and detailed pricing options.</p>
+        </div>
+        <div class="hww-arrow">
+          <svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg>
+        </div>
+        <div class="hww-step">
+          <div class="hww-num">3</div>
+          <h3>Sampling &amp; Approval</h3>
+          <p>Review physical samples, request adjustments, and approve before full production.</p>
+        </div>
+        <div class="hww-arrow">
+          <svg viewBox="0 0 24 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h16M16 16l8 8-8 8"/></svg>
+        </div>
+        <div class="hww-step">
+          <div class="hww-num">4</div>
+          <h3>Production &amp; Delivery</h3>
+          <p>We handle manufacturing and worldwide shipping. Track your order every step.</p>
+        </div>
+      </div>
+      <div style="text-align:center; margin-top:24px;">
+        <a href="../contact/index.html" class="btn btn-primary">Start a Project</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="../assets/logo-2026.png" alt="Amazing Yep Inc.">
+          <p>Custom merchandise and sourcing support for brands,<br>events, retail programs, and promotional campaigns.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="LinkedIn">in</a>
+            <a href="#" aria-label="Instagram">ig</a>
+            <a href="#" aria-label="Facebook">fb</a>
+          </div>
+          <div class="footer-newsletter">
+            <h4>Start a Project</h4>
+            <form action="mailto:info@amazingyep.com" method="post" enctype="text/plain" class="footer-email-form">
+              <div class="footer-email-wrap">
+                <input type="email" name="email" placeholder="Enter your email address" required>
+                <button type="submit" class="footer-email-btn">SEND</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Ideas &amp; Use Cases</h4>
+          <ul>
+            <li><a href="../case-studies/index.html">Conference &amp; Event Swag</a></li>
+            <li><a href="../case-studies/index.html">Employee Engagement Kits</a></li>
+            <li><a href="../case-studies/index.html">Character &amp; Mascot Programs</a></li>
+            <li><a href="../case-studies/index.html">Schools, Teams &amp; Communities</a></li>
+            <li><a href="../case-studies/index.html">Golf &amp; Sports Events</a></li>
+            <li><a href="../case-studies/index.html">Travel &amp; Adventure Collection</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Collections</h4>
+          <ul>
+            <li><a href="../collections/plush-mascots.html">Plush &amp; Mascots</a></li>
+            <li><a href="../collections/keychains.html">Keychains</a></li>
+            <li><a href="../collections/drinkware.html">Drinkware</a></li>
+            <li><a href="../collections/bags.html">Bags</a></li>
+            <li><a href="../collections/apparel.html">Wearables</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="../about/index.html">About Us</a></li>
+            <li><a href="../contact/index.html">Contact</a></li>
+            <li><a href="mailto:info@amazingyep.com">info@amazingyep.com</a></li>
+            <li><a href="tel:7326928285">732-692-8285</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Amazing Yep Inc.</p>
+        <p>Bringing Custom Merchandise Ideas to Life. Built for Brands, Events &amp; Promotional Programs.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Filter toggle
+    function toggleFilter() {
+      const arrow = document.getElementById('filterArrow');
+      const content = document.getElementById('typeContent');
+      arrow.classList.toggle('collapsed');
+      content.classList.toggle('collapsed');
+    }
+
+    // Category type click handler
+    document.querySelectorAll('.seasonal-type-item').forEach(item => {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.seasonal-type-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+        // Filter logic can be added here
+      });
+    });
+    // Carousel page navigation
+    let currentPage = 1;
+    const totalPages = 2;
+    function updatePagination() {
+      document.getElementById('paginationFill').style.width = (currentPage / totalPages * 100) + '%';
+      document.getElementById('pageNum').textContent = currentPage + '/' + totalPages;
+    }
+    function prevPage() {
+      if (currentPage > 1) { currentPage--; updatePagination(); }
+    }
+    function nextPage() {
+      if (currentPage < totalPages) { currentPage++; updatePagination(); }
+    }
+
+    // Search filter
+    function filterSeasonal() {
+      const query = (document.getElementById('searchInput').value || '').toLowerCase();
+      document.querySelectorAll('.seasonal-featured-card').forEach(card => {
+        const name = (card.querySelector('h4')?.textContent || '').toLowerCase();
+        card.style.display = (!query || name.includes(query)) ? '' : 'none';
+      });
+      document.querySelectorAll('.seasonal-carousel-card').forEach(card => {
+        const name = (card.querySelector('h4')?.textContent || '').toLowerCase();
+        card.style.display = (!query || name.includes(query)) ? '' : 'none';
+      });
+    }
+  </script>
+  <script>
+    // Load products from backend API
+    window.API_CONFIG.initPage('Gifts & Seasonal', 'featuredGrid', 'seasonal');
+  </script>
+
+  <script src="../script.js"></script>
+</body>
+</html>
