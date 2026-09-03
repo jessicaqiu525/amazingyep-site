@@ -11,6 +11,10 @@ test('category product grids paginate after twelve products', () => {
   assert.match(apiConfig, /data-featured-prev/);
   assert.match(apiConfig, /data-featured-next/);
   assert.match(apiConfig, /filteredProducts\.slice\(pageStart, pageStart \+ featuredPageSize\)/);
+  assert.match(apiConfig, /function scrollFeaturedIntoView\(\)/);
+  assert.match(apiConfig, /featuredSection = grid\.closest\('section'\) \|\| grid/);
+  assert.match(apiConfig, /window\.scrollTo\(\{ top: Math\.max\(0, top\), behavior: 'smooth' \}\)/);
+  assert.doesNotMatch(apiConfig, /grid\.scrollIntoView/);
 });
 
 test('featured search and product type filters reset pagination', () => {

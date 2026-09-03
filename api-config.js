@@ -457,14 +457,14 @@
           if (featuredPage > 0) {
             featuredPage -= 1;
             renderProducts();
-            grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            scrollFeaturedIntoView();
           }
         };
         next.onclick = function() {
           if (featuredPage + 1 < pageCount) {
             featuredPage += 1;
             renderProducts();
-            grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            scrollFeaturedIntoView();
           }
         };
       }
@@ -479,6 +479,14 @@
           product.description,
           ...listValue(product.keywords)
         ].filter(Boolean).join(' ').toLowerCase().includes(query);
+      }
+
+      function scrollFeaturedIntoView() {
+        const featuredSection = grid.closest('section') || grid;
+        const nav = document.querySelector('.nav');
+        const navHeight = nav ? nav.getBoundingClientRect().height : 0;
+        const top = window.scrollY + featuredSection.getBoundingClientRect().top - navHeight - 20;
+        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
       }
 
       function renderProducts() {
