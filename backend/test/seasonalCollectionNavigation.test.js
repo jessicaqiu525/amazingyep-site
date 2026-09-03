@@ -83,3 +83,18 @@ test('office page title reflects the full category scope', () => {
   assert.match(page, /ALL OFFICE &amp; STATIONERY/);
   assert.match(page, /<span>Office &amp; Stationery<\/span>/);
 });
+
+test('major landing pages use their revised category-specific hero images', () => {
+  const heroPages = [
+    ['collections/plush-mascots.html', 'plush-mascots-hero-2026-v2.png'],
+    ['collections/bags.html', 'bags-hero-complete-2026-v3.png'],
+    ['collections/index.html', 'collections-hero-complete-2026-v2.png'],
+    ['case-studies/index.html', 'ideas-use-cases-hero-complete-2026-v2.png']
+  ];
+
+  for (const [pagePath, hero] of heroPages) {
+    const page = fs.readFileSync(path.join(root, pagePath), 'utf8');
+    assert.match(page, new RegExp(`assets/${hero.replaceAll('.', '\\.')}`), pagePath);
+    assert.ok(fs.existsSync(path.join(root, 'assets', hero)), hero);
+  }
+});
