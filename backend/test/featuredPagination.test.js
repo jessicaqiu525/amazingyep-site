@@ -30,7 +30,8 @@ test('every product collection page uses the shared grid initializer', () => {
     'technology.html',
     'trade-show.html',
     'apparel.html',
-    'gifts-seasonal.html'
+    'gifts-seasonal.html',
+    'games-activities.html'
   ];
 
   for (const pageName of pages) {

@@ -139,6 +139,13 @@
       { name: 'Gift Bag', img: '../assets/hero-banner.jpg', moq: '250 pcs' },
       { name: 'Gift Box', img: '../assets/hero-banner.jpg', moq: '250 pcs' }
     ],
+    'Games & Activities': [
+      { name: 'Custom Jigsaw Puzzle', img: '../assets/collections-hero-complete-2026.png', moq: '100 pcs' },
+      { name: 'Custom Board Game', img: '../assets/collections-hero-complete-2026.png', moq: '100 pcs' },
+      { name: 'Branded Playing Cards', img: '../assets/collections-hero-complete-2026.png', moq: '250 pcs' },
+      { name: 'Educational Game', img: '../assets/collections-hero-complete-2026.png', moq: '100 pcs' },
+      { name: 'Custom Activity Kit', img: '../assets/collections-hero-complete-2026.png', moq: '100 pcs' }
+    ],
     'Wearables': [
       { name: 'Custom T-Shirt', img: '../assets/hero-image.jpg', moq: '100 pcs' },
       { name: 'Embroidered Hat', img: '../assets/hero-image.jpg', moq: '150 pcs' },

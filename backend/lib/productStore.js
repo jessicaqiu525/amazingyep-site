@@ -49,6 +49,10 @@ const WEBSITE_CATEGORY_GROUPS = [
     terms: ['holiday decoration', 'christmas decoration', 'ornament', 'gift wrap', 'wrapping paper', 'gift bag', 'gift box']
   },
   {
+    name: 'Games & Activities',
+    terms: ['puzzle', 'jigsaw', 'board game', 'card game', 'playing card', 'activity kit', 'educational game']
+  },
+  {
     name: 'Wearables',
     terms: ['wearable', 'apparel', 'sweater', 'shirt', 'jacket', 'hoodie', 'cap', 'hat', 'footwear', 'slipper', 'shoe', 'sock', 'snowsuit', 'jumpsuit', 'outerwear', 'snow gear', 'alpine wear']
   }
@@ -77,6 +81,9 @@ function strongIdentityWebsiteCategory(product) {
     return 'Keychains & Accessories';
   }
   if (/\b(keychain|key chain|key ring)\b/i.test(identity)) return 'Keychains & Accessories';
+  if (/\b(puzzle|jigsaw|board game|card game|playing cards?|activity kit|educational game)\b/i.test(identity)) {
+    return 'Games & Activities';
+  }
   if (/\b(holiday decoration|christmas decoration|christmas ornament|tree ornament|gift wrap|wrapping paper)\b/i.test(identity)) {
     return 'Gifts & Seasonal';
   }
@@ -236,6 +243,13 @@ const WEBSITE_PRODUCT_TYPE_RULES = {
     ['Gift Wrap & Packaging', /\b(gift wrap|wrapping paper|packaging paper)\b/i],
     ['Gift Bags & Boxes', /\b(gift bag|gift box)\b/i],
     ['Seasonal Gifts', /\b(holiday|christmas|halloween|easter|seasonal)\b/i]
+  ],
+  'Games & Activities': [
+    ['Puzzles', /\b(puzzle|jigsaw)\b/i],
+    ['Board Games', /\b(board game|tabletop game)\b/i],
+    ['Card Games & Playing Cards', /\b(card game|playing cards?|card deck)\b/i],
+    ['Educational & Brain Games', /\b(educational game|brain game|brain teaser|learning game)\b/i],
+    ['Activity Kits', /\b(activity kit|craft kit|game kit)\b/i]
   ]
 };
 

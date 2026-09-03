@@ -42,6 +42,7 @@ test('every collections dropdown includes gifts and seasonal', () => {
       '>Bags</a>',
       '>Drinkware</a>',
       '>Gifts &amp; Seasonal</a>',
+      '>Games &amp; Activities</a>',
       '>Keychains &amp; Accessories</a>',
       '>Office &amp; Stationery</a>',
       '>Outdoor &amp; Leisure</a>',
@@ -58,7 +59,7 @@ test('every collections dropdown includes gifts and seasonal', () => {
 
 test('collections filters and cards use the same alphabetical order', () => {
   const page = fs.readFileSync(path.join(root, 'collections', 'index.html'), 'utf8');
-  const categories = ['bags', 'drinkware', 'seasonal', 'keychains', 'office', 'outdoor', 'plush', 'technology', 'trade-show', 'wearables'];
+  const categories = ['bags', 'drinkware', 'seasonal', 'games', 'keychains', 'office', 'outdoor', 'plush', 'technology', 'trade-show', 'wearables'];
   const filter = page.match(/<div class="collections-type-grid">([\s\S]*?)<\/div>/)[1];
   const grid = page.match(/<div class="collections-grid"[^>]*>([\s\S]*?)\n\s*<\/div>\n\s*<nav class="collection-products-pagination"/)[1];
 

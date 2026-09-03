@@ -97,6 +97,18 @@ test('keeps a reusable tote out of gifts and seasonal', () => {
   assert.equal(placement.category, 'Bags');
 });
 
+test('classifies puzzles as games and activities', () => {
+  const placement = recommendWebsitePlacement({
+    sku: 'PUZZLE-1',
+    name: 'Custom 500-Piece Jigsaw Puzzle',
+    category: 'Gifts & Seasonal',
+    sageCategory1: 'Puzzles'
+  });
+
+  assert.equal(placement.category, 'Games & Activities');
+  assert.equal(placement.websiteProductType, 'Puzzles');
+});
+
 test('uses the reviewed use cases for current catalog products', () => {
   assert.deepEqual(derivedUseCases({
     sku: 'AK769',
