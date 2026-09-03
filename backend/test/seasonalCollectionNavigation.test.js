@@ -17,7 +17,7 @@ function htmlFiles(directory) {
 
 test('gifts and seasonal has a collection page and catalog card', () => {
   const seasonalPage = fs.readFileSync(path.join(root, 'collections', 'gifts-seasonal.html'), 'utf8');
-  assert.match(seasonalPage, /assets\/gifts-seasonal-hero-v6\.png/);
+  assert.match(seasonalPage, /assets\/gifts-seasonal-hero-v7\.png/);
   assert.match(seasonalPage, /<header class="page-hero">/);
   const catalogPage = fs.readFileSync(path.join(root, 'collections', 'index.html'), 'utf8');
 
