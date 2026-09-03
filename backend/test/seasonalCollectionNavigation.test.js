@@ -86,7 +86,7 @@ test('office page title reflects the full category scope', () => {
 
 test('major landing pages use their revised category-specific hero images', () => {
   const heroPages = [
-    ['collections/plush-mascots.html', 'plush-mascots-hero-2026-v2.png'],
+    ['collections/plush-mascots.html', 'plush-mascots-hero-2026-v4.png'],
     ['collections/bags.html', 'bags-hero-complete-2026-v3.png'],
     ['collections/index.html', 'collections-hero-complete-2026-v2.png'],
     ['case-studies/index.html', 'ideas-use-cases-hero-complete-2026-v2.png']
