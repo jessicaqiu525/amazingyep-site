@@ -366,6 +366,7 @@
     let collectionRequestId = 0;
     const productPageSize = 12;
     const collectionGrid = document.getElementById('collectionsGrid');
+    const collectionsCatalog = document.getElementById('collectionsCatalog');
     const collectionCardsMarkup = collectionGrid.innerHTML;
     const featuredLabel = document.getElementById('collectionsFeaturedLabel');
     const productPagination = document.getElementById('collectionProductsPagination');
@@ -416,9 +417,10 @@
       productPage = Math.min(productPage, pageCount - 1);
       const pageProducts = filtered.slice(productPage * productPageSize, (productPage + 1) * productPageSize);
 
+      collectionsCatalog.hidden = pageProducts.length === 0;
       collectionGrid.innerHTML = pageProducts.length
         ? pageProducts.map(function(product) { return window.API_CONFIG.renderProductCard(product, 'search'); }).join('')
-        : '<div class="collections-search-empty" style="grid-column:1/-1;"><h3>No products found</h3><p>Try another keyword or contact us for custom sourcing.</p></div>';
+        : '';
 
       if (pageCount <= 1) {
         productPagination.style.display = 'none';
@@ -446,6 +448,7 @@
       const pageTitle = document.getElementById('collectionsPageTitle');
 
       if (!categoryName) {
+        collectionsCatalog.hidden = false;
         activeProducts = [];
         collectionGrid.innerHTML = collectionCardsMarkup;
         featuredLabel.textContent = 'FEATURED';
@@ -458,6 +461,7 @@
       }
 
       featuredLabel.textContent = 'FEATURED';
+      collectionsCatalog.hidden = false;
       pageTitle.innerHTML = 'ALL ' + categoryName.toUpperCase().replace('&', '&amp;') + ' <span class="collections-subtitle">Browse products in this collection</span>';
       recommendations.hidden = true;
       collectionGrid.innerHTML = '<p class="collections-search-state" style="grid-column:1/-1;">Loading products...</p>';
@@ -502,7 +506,8 @@
 
         summary.textContent = products.length + (products.length === 1 ? ' product' : ' products') + ' found for “' + query + '”';
         if (!products.length) {
-          resultsGrid.innerHTML = '<div class="collections-search-empty"><h3>No products found</h3><p>Try a broader product word, category, or item number—for example “cooler”, “tumbler”, or “AK”.</p></div>';
+          summary.textContent = '';
+          resultsGrid.innerHTML = '<div class="collections-search-empty"><p>Try a broader product word, category, or item number—for example “cooler”, “tumbler”, or “AK”.</p></div>';
           return;
         }
 

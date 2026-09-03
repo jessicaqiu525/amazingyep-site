@@ -73,6 +73,8 @@ test('collections filters and cards use the same alphabetical order', () => {
 
   assert.doesNotMatch(page, /FEATURED ['"]?\s*\+\s*categoryName/);
   assert.doesNotMatch(page, /categoryName\.toUpperCase\(\)\s*\+\s*['"] PRODUCTS/);
+  assert.doesNotMatch(page, /No products found/);
+  assert.match(page, /collectionsCatalog\.hidden = pageProducts\.length === 0/);
 });
 
 test('keychains page title reflects the full category scope', () => {
