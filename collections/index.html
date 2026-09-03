@@ -67,6 +67,10 @@
       line-height: 1.5;
       color: var(--text-light);
     }
+    .collection-products-pagination { display: none; align-items: center; justify-content: center; gap: 14px; margin: 28px auto 0; }
+    .collection-products-pagination button { padding: 10px 18px; border: 1px solid #d0d5dd; border-radius: 24px; background: #fff; color: var(--navy); font-weight: 700; cursor: pointer; }
+    .collection-products-pagination button:disabled { opacity: 0.4; cursor: default; }
+    .collection-products-pagination span { min-width: 110px; text-align: center; color: var(--text-light); font-weight: 600; }
     .collections-you-may-like { background: #fff; padding: 0 0 40px; }
     .collections-carousel-header { max-width: 1440px; margin: 0 auto 16px; padding: 0 32px; }
     .collections-carousel-wrap { max-width: 1440px; margin: 0 auto; padding: 0 32px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
@@ -199,10 +203,10 @@
 
   <main class="collections-main" id="collectionsCatalog">
     <div class="collections-featured-header">
-      <span class="section-label">FEATURED</span>
+      <span class="section-label" id="collectionsFeaturedLabel">FEATURED</span>
     </div>
 
-    <div class="collections-grid">
+    <div class="collections-grid" id="collectionsGrid">
       <a class="collection-card" href="bags.html" data-category="bags">
         <img class="collection-card-img" src="../assets/cat-bags.jpg" alt="Bags">
         <div class="collection-card-body">
@@ -274,6 +278,7 @@
         </div>
       </a>
     </div>
+    <nav class="collection-products-pagination" id="collectionProductsPagination" aria-label="Collection product pages"></nav>
 
   </main>
 
@@ -347,6 +352,26 @@
   <script src="../api-config.js?v=20260730-search"></script>
   <script>
     let activeCategory = 'all';
+    let activeProducts = [];
+    let productPage = 0;
+    let collectionRequestId = 0;
+    const productPageSize = 12;
+    const collectionGrid = document.getElementById('collectionsGrid');
+    const collectionCardsMarkup = collectionGrid.innerHTML;
+    const featuredLabel = document.getElementById('collectionsFeaturedLabel');
+    const productPagination = document.getElementById('collectionProductsPagination');
+    const categoryNames = {
+      bags: 'Bags',
+      drinkware: 'Drinkware',
+      seasonal: 'Gifts & Seasonal',
+      keychains: 'Keychains & Accessories',
+      office: 'Office & Stationery',
+      outdoor: 'Outdoor & Leisure',
+      plush: 'Plush & Mascots',
+      technology: 'Technology',
+      'trade-show': 'Trade Show',
+      wearables: 'Wearables'
+    };
 
     function toggleFilter() {
       document.getElementById('filterArrow').classList.toggle('collapsed');
@@ -355,17 +380,90 @@
 
     function filterCollections() {
       const query = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+      if (activeCategory !== 'all') {
+        productPage = 0;
+        renderCategoryProducts(query);
+        return;
+      }
       document.querySelectorAll('.collection-card').forEach(card => {
         const text = (card.textContent || '').toLowerCase();
-        const category = card.dataset.category || '';
-        const matchesCategory = activeCategory === 'all' || category === activeCategory;
         const matchesSearch = !query || text.includes(query);
-        card.style.display = matchesCategory && matchesSearch ? '' : 'none';
+        card.style.display = matchesSearch ? '' : 'none';
       });
       document.querySelectorAll('.collections-carousel-card').forEach(card => {
         const text = (card.textContent || '').toLowerCase();
         card.style.display = !query || text.includes(query) ? '' : 'none';
       });
+    }
+
+    function renderCategoryProducts(query) {
+      const filtered = activeProducts.filter(function(product) {
+        if (!query) return true;
+        return [product.name, product.sku, product.itemNumber, product.websiteProductType, product.description]
+          .filter(Boolean).join(' ').toLowerCase().includes(query);
+      });
+      const pageCount = Math.max(1, Math.ceil(filtered.length / productPageSize));
+      productPage = Math.min(productPage, pageCount - 1);
+      const pageProducts = filtered.slice(productPage * productPageSize, (productPage + 1) * productPageSize);
+
+      collectionGrid.innerHTML = pageProducts.length
+        ? pageProducts.map(function(product) { return window.API_CONFIG.renderProductCard(product, 'search'); }).join('')
+        : '<div class="collections-search-empty" style="grid-column:1/-1;"><h3>No products found</h3><p>Try another keyword or contact us for custom sourcing.</p></div>';
+
+      if (pageCount <= 1) {
+        productPagination.style.display = 'none';
+        productPagination.innerHTML = '';
+        return;
+      }
+      productPagination.style.display = 'flex';
+      productPagination.innerHTML = '<button type="button" data-products-prev>&larr; Previous</button>' +
+        '<span>Page ' + (productPage + 1) + ' of ' + pageCount + '</span>' +
+        '<button type="button" data-products-next>Next &rarr;</button>';
+      const previous = productPagination.querySelector('[data-products-prev]');
+      const next = productPagination.querySelector('[data-products-next]');
+      previous.disabled = productPage === 0;
+      next.disabled = productPage === pageCount - 1;
+      previous.onclick = function() { productPage -= 1; renderCategoryProducts(query); collectionGrid.scrollIntoView({ behavior: 'smooth' }); };
+      next.onclick = function() { productPage += 1; renderCategoryProducts(query); collectionGrid.scrollIntoView({ behavior: 'smooth' }); };
+    }
+
+    async function showCollection(categoryKey) {
+      activeCategory = categoryKey;
+      productPage = 0;
+      const requestId = ++collectionRequestId;
+      const categoryName = categoryNames[categoryKey];
+      const recommendations = document.querySelector('.collections-you-may-like');
+      const pageTitle = document.getElementById('collectionsPageTitle');
+
+      if (!categoryName) {
+        activeProducts = [];
+        collectionGrid.innerHTML = collectionCardsMarkup;
+        featuredLabel.textContent = 'FEATURED';
+        pageTitle.innerHTML = 'ALL COLLECTIONS <span class="collections-subtitle">Explore every way to bring your brand to life</span>';
+        productPagination.style.display = 'none';
+        productPagination.innerHTML = '';
+        recommendations.hidden = false;
+        filterCollections();
+        return;
+      }
+
+      featuredLabel.textContent = 'FEATURED ' + categoryName.toUpperCase() + ' PRODUCTS';
+      pageTitle.innerHTML = 'ALL ' + categoryName.toUpperCase().replace('&', '&amp;') + ' <span class="collections-subtitle">Browse products in this collection</span>';
+      recommendations.hidden = true;
+      collectionGrid.innerHTML = '<p class="collections-search-state" style="grid-column:1/-1;">Loading products...</p>';
+      productPagination.style.display = 'none';
+      try {
+        const response = await fetch(window.API_CONFIG.BASE_URL + '/api/products?category=' + encodeURIComponent(categoryName));
+        if (!response.ok) throw new Error('Product request failed');
+        const data = await response.json();
+        if (requestId !== collectionRequestId) return;
+        activeProducts = Array.isArray(data.products) ? data.products : [];
+        renderCategoryProducts((document.getElementById('searchInput').value || '').trim().toLowerCase());
+      } catch (error) {
+        if (requestId !== collectionRequestId) return;
+        activeProducts = [];
+        collectionGrid.innerHTML = '<div class="collections-search-empty" style="grid-column:1/-1;"><h3>Products are temporarily unavailable</h3><p>Please try again in a moment.</p></div>';
+      }
     }
 
     async function loadProductSearch() {
@@ -411,10 +509,11 @@
       item.addEventListener('click', function() {
         document.querySelectorAll('.collections-type-item').forEach(option => option.classList.remove('active'));
         this.classList.add('active');
-        activeCategory = this.dataset.category || 'all';
-        filterCollections();
+        showCollection(this.dataset.category || 'all');
       });
     });
+
+    document.getElementById('searchInput').addEventListener('input', filterCollections);
 
     let currentPage = 1;
     const totalPages = 2;

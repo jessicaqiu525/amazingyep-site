@@ -60,7 +60,7 @@ test('collections filters and cards use the same alphabetical order', () => {
   const page = fs.readFileSync(path.join(root, 'collections', 'index.html'), 'utf8');
   const categories = ['bags', 'drinkware', 'seasonal', 'keychains', 'office', 'outdoor', 'plush', 'technology', 'trade-show', 'wearables'];
   const filter = page.match(/<div class="collections-type-grid">([\s\S]*?)<\/div>/)[1];
-  const grid = page.match(/<div class="collections-grid">([\s\S]*?)\n\s*<\/div>\n\n\s*<\/main>/)[1];
+  const grid = page.match(/<div class="collections-grid"[^>]*>([\s\S]*?)\n\s*<\/div>\n\s*<nav class="collection-products-pagination"/)[1];
 
   for (const section of [filter, grid]) {
     const positions = categories.map((category) => section.indexOf(`data-category="${category}"`));

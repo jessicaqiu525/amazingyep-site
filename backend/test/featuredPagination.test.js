@@ -38,3 +38,12 @@ test('every product collection page uses the shared grid initializer', () => {
     assert.match(page, /API_CONFIG\.initPage\(/, pageName);
   }
 });
+
+test('collections category chips load products directly', () => {
+  const page = fs.readFileSync(path.join(root, 'collections', 'index.html'), 'utf8');
+  assert.match(page, /async function showCollection\(categoryKey\)/);
+  assert.match(page, /\/api\/products\?category=/);
+  assert.match(page, /renderProductCard\(product, 'search'\)/);
+  assert.match(page, /const productPageSize = 12/);
+  assert.match(page, /showCollection\(this\.dataset\.category \|\| 'all'\)/);
+});
