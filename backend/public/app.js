@@ -78,7 +78,8 @@ const WEBSITE_PRODUCT_TYPES = {
   'Office & Stationery': ['Notebooks & Journals', 'Pens & Writing', 'Desk Accessories & Organizers', 'Sticky Notes', 'Calendars & Planners', 'Mouse Pads'],
   'Outdoor & Leisure': ['Camping & Hiking Gear', 'Picnic & BBQ', 'Beach Accessories', 'Fishing Gear', 'Outdoor Games', 'Blankets & Towels', 'Travel & Leisure Kits'],
   'Technology': ['Power Banks', 'USB Drives', 'Phone Accessories', 'Wireless Chargers', 'Speakers & Audio', 'Headphones & Earbuds', 'Cables & Adapters'],
-  'Trade Show': ['Banners & Signs', 'Table Covers', 'Pop-Up Displays', 'Lanyards & Badges', 'Brochure & Literature Holders', 'Flags', 'Booth Accessories']
+  'Trade Show': ['Banners & Signs', 'Table Covers', 'Pop-Up Displays', 'Lanyards & Badges', 'Brochure & Literature Holders', 'Flags', 'Booth Accessories'],
+  'Gifts & Seasonal': ['Holiday Decorations', 'Ornaments', 'Gift Wrap & Packaging', 'Gift Bags & Boxes', 'Seasonal Gifts']
 };
 const BRAND_CATEGORIES = {
   'Tropicana': 'Food & Beverage', "King's Hawaiian": 'Food & Beverage', 'OLIPOP': 'Food & Beverage',

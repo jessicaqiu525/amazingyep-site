@@ -132,6 +132,13 @@
       { name: 'Water Bottle Promo', img: '../assets/hero-banner.jpg', moq: '100 pcs' },
       { name: 'Tradeshow Lanyard', img: '../assets/hero-banner.jpg', moq: '200 pcs' }
     ],
+    'Gifts & Seasonal': [
+      { name: 'Holiday Decoration', img: '../assets/hero-banner.jpg', moq: '100 pcs' },
+      { name: 'Custom Ornament', img: '../assets/hero-banner.jpg', moq: '100 pcs' },
+      { name: 'Gift Wrapping Paper', img: '../assets/hero-banner.jpg', moq: '500 pcs' },
+      { name: 'Gift Bag', img: '../assets/hero-banner.jpg', moq: '250 pcs' },
+      { name: 'Gift Box', img: '../assets/hero-banner.jpg', moq: '250 pcs' }
+    ],
     'Wearables': [
       { name: 'Custom T-Shirt', img: '../assets/hero-image.jpg', moq: '100 pcs' },
       { name: 'Embroidered Hat', img: '../assets/hero-image.jpg', moq: '150 pcs' },

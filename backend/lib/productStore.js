@@ -45,6 +45,10 @@ const WEBSITE_CATEGORY_GROUPS = [
     terms: ['trade show', 'tradeshow', 'display', 'banner', 'signage', 'tent']
   },
   {
+    name: 'Gifts & Seasonal',
+    terms: ['holiday decoration', 'christmas decoration', 'ornament', 'gift wrap', 'wrapping paper', 'gift bag', 'gift box']
+  },
+  {
     name: 'Wearables',
     terms: ['wearable', 'apparel', 'sweater', 'shirt', 'jacket', 'hoodie', 'cap', 'hat', 'footwear', 'slipper', 'shoe', 'sock', 'snowsuit', 'jumpsuit', 'outerwear', 'snow gear', 'alpine wear']
   }
@@ -60,6 +64,25 @@ function canonicalWebsiteCategory(value) {
   return group ? group.name : category;
 }
 
+function strongIdentityWebsiteCategory(product) {
+  const identity = [
+    product.name,
+    product.websiteProductType,
+    ...listValue(product.keywords)
+  ].filter(Boolean).join(' ');
+
+  // Product identity wins over SAGE merchandising themes. A beverage-shaped
+  // enamel pin is still an accessory, not drinkware.
+  if (/\b(enamel pin|lapel pin|pinback|button badge|button set|badge pin|pins?\s*&\s*patches)\b/i.test(identity)) {
+    return 'Keychains & Accessories';
+  }
+  if (/\b(keychain|key chain|key ring)\b/i.test(identity)) return 'Keychains & Accessories';
+  if (/\b(holiday decoration|christmas decoration|christmas ornament|tree ornament|gift wrap|wrapping paper|gift bag|gift box)\b/i.test(identity)) {
+    return 'Gifts & Seasonal';
+  }
+  return '';
+}
+
 function derivedWebsiteCategory(product) {
   const identity = [product.name, ...listValue(product.keywords)].filter(Boolean).join(' ');
   // Strong product-identity terms override stale manual placement and broad
@@ -67,6 +90,8 @@ function derivedWebsiteCategory(product) {
   if (/\b(slipper|slippers|footwear|shoe|shoes|sock|socks|snowsuit|jumpsuit|outerwear|snow gear|alpine wear)\b/i.test(identity)) {
     return 'Wearables';
   }
+  const strongIdentity = strongIdentityWebsiteCategory(product);
+  if (strongIdentity) return strongIdentity;
   // A formal SAGE primary category is stronger evidence than descriptive words
   // in the product name. For example, fleece slippers may contain "plush" in
   // their copy but still belong under Wearables rather than Plush & Mascots.
@@ -129,14 +154,14 @@ const WEBSITE_PRODUCT_TYPE_RULES = {
     ['Paper, Plastic & Retail Bags', /\b(paper bag|plastic bag|retail bag)\b/i]
   ],
   'Keychains & Accessories': [
+    ['Pins & Patches', /\b(pin|pins|patch|patches)\b/i],
     ['Plush Keychains', /\b(plush|stuffed animal).{0,30}\bkeychain\b|\bkeychain.{0,30}\b(plush|stuffed animal)\b/i],
     ['PVC & Rubber Keychains', /\b(pvc|rubber|silicone)\b/i],
     ['Metal & Enamel Keychains', /\b(metal|enamel|zinc alloy)\b/i],
     ['Acrylic Keychains', /\bacrylic\b/i],
     ['Bottle Opener Keychains', /\bbottle opener\b/i],
     ['Leather & Fabric Keychains', /\b(leather|fabric|woven|embroidered)\b/i],
-    ['Light-Up & Functional Keychains', /\b(led|light-up|flashlight|tool|functional)\b/i],
-    ['Pins & Patches', /\b(pin|pins|patch|patches)\b/i]
+    ['Light-Up & Functional Keychains', /\b(led|light-up|flashlight|tool|functional)\b/i]
   ],
   'Drinkware': [
     ['Tumblers & Travel Mugs', /\b(tumbler|travel mug|vacuum mug|insulated mug)\b/i],
@@ -199,6 +224,13 @@ const WEBSITE_PRODUCT_TYPE_RULES = {
     ['Brochure & Literature Holders', /\b(brochure|literature holder)\b/i],
     ['Flags', /\bflag\b/i],
     ['Booth Accessories', /\b(booth|tent|trade show accessory)\b/i]
+  ],
+  'Gifts & Seasonal': [
+    ['Holiday Decorations', /\b(holiday|christmas|halloween|easter).{0,30}\b(decoration|decor)\b/i],
+    ['Ornaments', /\b(ornament|tree hanging|tree decoration)\b/i],
+    ['Gift Wrap & Packaging', /\b(gift wrap|wrapping paper|packaging paper)\b/i],
+    ['Gift Bags & Boxes', /\b(gift bag|gift box)\b/i],
+    ['Seasonal Gifts', /\b(holiday|christmas|halloween|easter|seasonal)\b/i]
   ]
 };
 
@@ -251,7 +283,11 @@ function derivedWebsiteProductType(product) {
       'Brand Mascots': 'Brand & Team Mascots',
       'Mini Plush Keychains': 'Plush Keychains',
       'Holiday Plush': 'Holiday & Seasonal Plush',
-      'Seasonal Characters': 'Holiday & Seasonal Plush'
+      'Seasonal Characters': 'Holiday & Seasonal Plush',
+      'Gift Wrap': 'Gift Wrap & Packaging',
+      'Wrapping Paper': 'Gift Wrap & Packaging',
+      'Christmas Decorations': 'Holiday Decorations',
+      'Holiday Ornaments': 'Ornaments'
     };
     const canonicalType = productTypeAliases[explicitType] || explicitType;
     const websiteCategory = derivedWebsiteCategory(product);
@@ -275,6 +311,21 @@ function derivedWebsiteProductType(product) {
   return match ? match[0] : String(product.subcategory || product.sageCategory2 || product.sageCategory1 || '').trim();
 }
 
+function derivedWebsiteSubcategory(product) {
+  const subcategory = String(product.subcategory || '').trim();
+  if (!subcategory) return '';
+  const category = derivedWebsiteCategory(product);
+  const productType = derivedWebsiteProductType({ ...product, category });
+  const subcategoryGroup = canonicalWebsiteCategory(subcategory);
+
+  // Remove SAGE subcategories that describe a different website department.
+  if (WEBSITE_CATEGORY_GROUPS.some((item) => item.name === subcategoryGroup)
+    && subcategoryGroup !== category) return '';
+  // "Cooler Bags" is within Bags, but is still wrong for an ordinary tote.
+  if (/\bcooler\b/i.test(subcategory) && productType !== 'Coolers & Lunch Bags') return '';
+  return subcategory;
+}
+
 const WEBSITE_USE_CASE_RULES = [
   ['conference', /\b(conference|convention|trade show|tradeshow|expo|seminar|attendee|event giveaway|event swag|lanyard|badge)\b/i],
   ['employee', /\b(business|employee|onboarding|office|corporate|appreciation|welcome kit|company store)\b/i],
@@ -285,25 +336,64 @@ const WEBSITE_USE_CASE_RULES = [
   ['golf', /\b(golf|golfing|tournament|athletic event|sports event)\b/i]
 ];
 
+// Editorially reviewed website placements for the current catalog. SAGE
+// themes are useful suggestions, but broad labels such as Business, Outdoors,
+// or Travel are not sufficient on their own for customer-facing use cases.
+const CURATED_WEBSITE_USE_CASES = {
+  AG059: ['conference', 'employee', 'schools', 'travel'],
+  AK746: ['conference', 'employee', 'loyalty', 'travel'],
+  AK747: ['conference', 'employee', 'loyalty'],
+  AW630: ['conference', 'employee', 'mascot', 'schools', 'loyalty'],
+  AK753: ['conference', 'employee', 'schools', 'loyalty'],
+  AK757: ['conference', 'employee', 'mascot', 'schools', 'loyalty'],
+  AK759: ['employee', 'mascot', 'loyalty'],
+  AK763: ['conference', 'employee', 'mascot', 'loyalty'],
+  AK765: ['conference', 'loyalty'],
+  AK766: ['conference', 'loyalty'],
+  AK768: ['conference', 'loyalty'],
+  AK769: ['conference', 'loyalty'],
+  AK770: ['employee', 'loyalty'],
+  AK771: ['employee', 'loyalty'],
+  AK772: ['loyalty']
+};
+
 function listValue(value) {
   if (Array.isArray(value)) return value.map((item) => String(item || '').trim()).filter(Boolean);
   return String(value || '').split(/[,;|]/).map((item) => item.trim()).filter(Boolean);
 }
 
 function derivedUseCases(product, preserveExisting = true) {
+  const sku = String(product.sku || product.itemNumber || '').trim().toUpperCase();
+  if (CURATED_WEBSITE_USE_CASES[sku]) return [...CURATED_WEBSITE_USE_CASES[sku]];
   const existing = listValue(product.useCases || product.useCase);
-  if (preserveExisting && existing.length) return Array.from(new Set(existing));
-  const searchable = [
+  const coreSearchable = [
     product.name,
     product.description,
     product.category,
     product.subcategory,
     product.sageCategory1,
     product.sageCategory2,
-    ...listValue(product.keywords),
-    ...listValue(product.themes)
+    ...listValue(product.keywords)
   ].filter(Boolean).join(' ');
-  return WEBSITE_USE_CASE_RULES.filter((rule) => rule[1].test(searchable)).map((rule) => rule[0]);
+  const searchable = [coreSearchable, ...listValue(product.themes)].filter(Boolean).join(' ');
+  const category = derivedWebsiteCategory(product);
+  if (preserveExisting && existing.length) {
+    return Array.from(new Set(existing)).filter((value) => {
+      // Repair previously imported accessory records where a generic SAGE
+      // "Outdoors" theme incorrectly selected Travel & Adventure.
+      return value !== 'travel'
+        || category !== 'Keychains & Accessories'
+        || WEBSITE_USE_CASE_RULES.find(([key]) => key === 'travel')[1].test(coreSearchable);
+    });
+  }
+  return WEBSITE_USE_CASE_RULES.filter(([value, pattern]) => {
+    if (value === 'travel' && category === 'Keychains & Accessories') {
+      // Generic SAGE themes such as "Outdoors" must not place pins and
+      // keychains in Travel & Adventure without product-specific evidence.
+      return pattern.test(coreSearchable);
+    }
+    return pattern.test(searchable);
+  }).map((rule) => rule[0]);
 }
 
 function recommendWebsitePlacement(product) {
@@ -323,6 +413,7 @@ function productForDisplay(product) {
   if (!product) return product;
   const category = derivedWebsiteCategory(product);
   const normalized = { ...product, category, pricing: normalizedPricing(product.pricing) };
+  normalized.subcategory = derivedWebsiteSubcategory(normalized);
   return {
     ...normalized,
     priceRange: derivedPriceRange(normalized),
@@ -500,6 +591,7 @@ function normalizeProduct(product, existing) {
     updatedAt: now,
     createdAt: (existing && existing.createdAt) || product.createdAt || now
   };
+  normalized.subcategory = derivedWebsiteSubcategory(normalized);
   normalized.pricing = normalizedPricing(normalized.pricing);
   normalized.priceRange = derivedPriceRange(normalized);
   normalized.websiteProductType = derivedWebsiteProductType(normalized);
@@ -725,6 +817,7 @@ module.exports = {
   restoreBackup,
   canonicalWebsiteCategory,
   derivedWebsiteCategory,
+  derivedWebsiteSubcategory,
   derivedWebsiteProductType,
   derivedUseCases,
   recommendWebsitePlacement,
