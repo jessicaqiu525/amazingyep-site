@@ -73,3 +73,9 @@ test('keychains page title reflects the full category scope', () => {
   assert.match(page, /ALL KEYCHAINS &amp; ACCESSORIES/);
   assert.match(page, /<span>Keychains &amp; Accessories<\/span>/);
 });
+
+test('office page title reflects the full category scope', () => {
+  const page = fs.readFileSync(path.join(root, 'collections', 'office.html'), 'utf8');
+  assert.match(page, /ALL OFFICE &amp; STATIONERY/);
+  assert.match(page, /<span>Office &amp; Stationery<\/span>/);
+});
