@@ -85,6 +85,18 @@ test('classifies wrapping paper as gift packaging', () => {
   assert.equal(placement.websiteProductType, 'Gift Wrap & Packaging');
 });
 
+test('keeps a reusable tote out of gifts and seasonal', () => {
+  const placement = recommendWebsitePlacement({
+    sku: 'AW572',
+    name: 'Heavyweight Pocket Tote',
+    category: 'Bags',
+    websiteProductType: 'Tote & Shopping Bags',
+    keywords: ['Gift Bag', 'Reusable Bag']
+  });
+
+  assert.equal(placement.category, 'Bags');
+});
+
 test('uses the reviewed use cases for current catalog products', () => {
   assert.deepEqual(derivedUseCases({
     sku: 'AK769',

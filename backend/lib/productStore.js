@@ -77,7 +77,12 @@ function strongIdentityWebsiteCategory(product) {
     return 'Keychains & Accessories';
   }
   if (/\b(keychain|key chain|key ring)\b/i.test(identity)) return 'Keychains & Accessories';
-  if (/\b(holiday decoration|christmas decoration|christmas ornament|tree ornament|gift wrap|wrapping paper|gift bag|gift box)\b/i.test(identity)) {
+  if (/\b(holiday decoration|christmas decoration|christmas ornament|tree ornament|gift wrap|wrapping paper)\b/i.test(identity)) {
+    return 'Gifts & Seasonal';
+  }
+  // A reusable tote may be marketed as a gift bag, but its physical product
+  // identity is still Bags. Reserve this placement for actual gift packaging.
+  if (/\b(gift bag|gift box)\b/i.test(identity) && !/\b(tote|shopping bag|reusable bag)\b/i.test(identity)) {
     return 'Gifts & Seasonal';
   }
   return '';
