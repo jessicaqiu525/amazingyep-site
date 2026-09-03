@@ -19,7 +19,7 @@ test('classifies a beverage-shaped enamel pin as an accessory', () => {
 
   assert.equal(placement.category, 'Keychains & Accessories');
   assert.equal(placement.websiteProductType, 'Pins & Patches');
-  assert.deepEqual(placement.useCases, ['loyalty']);
+  assert.deepEqual(placement.useCases, []);
 });
 
 test('removes a stale travel use case from an imported enamel pin', () => {
@@ -32,7 +32,7 @@ test('removes a stale travel use case from an imported enamel pin', () => {
     useCases: ['loyalty', 'travel']
   });
 
-  assert.deepEqual(useCases, ['loyalty']);
+  assert.deepEqual(useCases, []);
 });
 
 test('keeps explicit travel evidence for an accessory', () => {
@@ -88,17 +88,17 @@ test('uses the reviewed use cases for current catalog products', () => {
   assert.deepEqual(derivedUseCases({
     sku: 'AK769',
     useCases: ['employee', 'loyalty']
-  }), ['conference', 'loyalty']);
+  }), ['conference']);
 
   assert.deepEqual(derivedUseCases({
     itemNumber: 'AK753',
     useCases: ['conference', 'employee', 'schools', 'golf']
-  }), ['conference', 'employee', 'schools', 'loyalty']);
+  }), ['conference', 'employee', 'schools']);
 
   assert.deepEqual(derivedUseCases({
     sku: 'AK771',
     useCases: []
-  }), ['employee', 'loyalty']);
+  }), ['employee']);
 });
 
 test('repairs the old keychain type and cooler subcategory on AK764', () => {
@@ -115,6 +115,6 @@ test('repairs the old keychain type and cooler subcategory on AK764', () => {
   const placement = recommendWebsitePlacement(product);
   assert.equal(placement.category, 'Keychains & Accessories');
   assert.equal(placement.websiteProductType, 'Pins & Patches');
-  assert.deepEqual(placement.useCases, ['conference', 'loyalty']);
+  assert.deepEqual(placement.useCases, ['conference']);
   assert.equal(derivedWebsiteSubcategory(product), '');
 });

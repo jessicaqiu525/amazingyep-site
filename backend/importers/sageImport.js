@@ -149,7 +149,6 @@ function suggestedUseCases(themes, keywords, name) {
     ['employee', /business|employee|onboarding|office|corporate|appreciation/],
     ['mascot', /mascot|character|plush|stuffed animal/],
     ['schools', /college|school|university|education|fundraising|team|community/],
-    ['loyalty', /loyalty|reward|retail|customer|consumer|collectible/],
     ['travel', /travel|camping|outdoor|adventure|vacation/],
     ['golf', /golf|sport|tournament|athletic/]
   ];

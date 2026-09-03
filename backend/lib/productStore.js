@@ -341,7 +341,6 @@ const WEBSITE_USE_CASE_RULES = [
   ['employee', /\b(business|employee|onboarding|office|corporate|appreciation|welcome kit|company store)\b/i],
   ['mascot', /\b(mascot|character|plush|stuffed animal|doll)\b/i],
   ['schools', /\b(college|school|university|education|fundraising|team|community|campus)\b/i],
-  ['loyalty', /\b(loyalty|reward|retail|customer|consumer|collectible|brand merchandise)\b/i],
   ['travel', /\b(travel|camping|outdoor|adventure|vacation|portable|commuter)\b/i],
   ['golf', /\b(golf|golfing|tournament|athletic event|sports event)\b/i]
 ];
@@ -351,21 +350,21 @@ const WEBSITE_USE_CASE_RULES = [
 // or Travel are not sufficient on their own for customer-facing use cases.
 const CURATED_WEBSITE_USE_CASES = {
   AG059: ['conference', 'employee', 'schools', 'travel'],
-  AK746: ['conference', 'employee', 'loyalty', 'travel'],
-  AK747: ['conference', 'employee', 'loyalty'],
-  AW630: ['conference', 'employee', 'mascot', 'schools', 'loyalty'],
-  AK753: ['conference', 'employee', 'schools', 'loyalty'],
-  AK757: ['conference', 'employee', 'mascot', 'schools', 'loyalty'],
-  AK759: ['employee', 'mascot', 'loyalty'],
-  AK763: ['conference', 'employee', 'mascot', 'loyalty'],
-  AK764: ['conference', 'loyalty'],
-  AK765: ['conference', 'loyalty'],
-  AK766: ['conference', 'loyalty'],
-  AK768: ['conference', 'loyalty'],
-  AK769: ['conference', 'loyalty'],
-  AK770: ['employee', 'loyalty'],
-  AK771: ['employee', 'loyalty'],
-  AK772: ['loyalty']
+  AK746: ['conference', 'employee', 'travel'],
+  AK747: ['conference', 'employee'],
+  AW630: ['conference', 'employee', 'mascot', 'schools'],
+  AK753: ['conference', 'employee', 'schools'],
+  AK757: ['conference', 'employee', 'mascot', 'schools'],
+  AK759: ['employee', 'mascot'],
+  AK763: ['conference', 'employee', 'mascot'],
+  AK764: ['conference'],
+  AK765: ['conference'],
+  AK766: ['conference'],
+  AK768: ['conference'],
+  AK769: ['conference'],
+  AK770: ['employee'],
+  AK771: ['employee'],
+  AK772: []
 };
 
 function listValue(value) {
@@ -390,6 +389,7 @@ function derivedUseCases(product, preserveExisting = true) {
   const category = derivedWebsiteCategory(product);
   if (preserveExisting && existing.length) {
     return Array.from(new Set(existing)).filter((value) => {
+      if (value === 'loyalty') return false;
       // Repair previously imported accessory records where a generic SAGE
       // "Outdoors" theme incorrectly selected Travel & Adventure.
       return value !== 'travel'

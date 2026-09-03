@@ -14,7 +14,6 @@ test('each use-case chip keeps its own destination', () => {
     'Employee Engagement Kits': '../use-case-products.html?case=employee',
     'Character &amp; Mascot Programs': '../use-case-products.html?case=mascot',
     'Schools, Teams &amp; Communities': '../use-case-products.html?case=schools',
-    'Brand Loyalty Programs': '../use-case-products.html?case=loyalty',
     'Travel &amp; Adventure Collection': '../use-case-products.html?case=travel',
     'Golf &amp; Sports Events': '../use-case-products.html?case=golf'
   };
@@ -29,4 +28,10 @@ test('each use-case chip keeps its own destination', () => {
 test('the page has no broad conference-only navigation override', () => {
   assert.doesNotMatch(page, /label\.includes\('conference & event swag'\)/);
   assert.doesNotMatch(page, /window\.location\.assign\('\/conference-swag\.html'\)/);
+});
+
+test('brand loyalty is removed and golf is featured once', () => {
+  assert.doesNotMatch(page, /Brand Loyalty Programs|case=loyalty/);
+  const featuredGolfCards = page.match(/class="iu-featured-card"[^>]+case=golf/g) || [];
+  assert.equal(featuredGolfCards.length, 1);
 });
