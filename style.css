@@ -551,8 +551,8 @@ img { max-width: 100%; height: auto; display: block; }
 
 .featured-section {
   padding: 32px 0 20px;
-  background: var(--navy);
-  color: var(--white);
+  background: var(--gray-50);
+  color: var(--navy);
   margin-bottom: 12px;
 }
 
@@ -2483,12 +2483,12 @@ img { max-width: 100%; height: auto; display: block; }
 
 .featured-header { text-align: center; margin-bottom: 14px; }
 .featured-header .section-label { color: var(--orange); }
-.featured-header .section-title { color: var(--white); }
-.featured-header .section-subtitle { color: rgba(255,255,255,0.7); margin: 0 auto; }
+.featured-header .section-title { color: var(--navy); }
+.featured-header .section-subtitle { color: var(--gray-600); margin: 0 auto; }
 .featured-big-subtitle {
   font-size: 16px;
   font-weight: 400;
-  color: rgba(255,255,255,0.8);
+  color: var(--gray-600);
   max-width: 640px;
   margin: 8px auto 0;
   line-height: 1.6;
@@ -2501,11 +2501,11 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 .featured-card {
-  background: rgba(255,255,255,0.05);
+  background: var(--white);
   border-radius: var(--radius);
   overflow: hidden;
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid var(--gray-200);
 }
 
 /* Featured card as clickable link */
@@ -2517,9 +2517,9 @@ img { max-width: 100%; height: auto; display: block; }
 
 .featured-card:hover {
   transform: translateY(-12px);
-  background: rgba(255,255,255,0.1);
+  background: var(--white);
   border-color: rgba(242,101,34,0.5);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(242,101,34,0.1);
+  box-shadow: 0 20px 50px rgba(15,39,65,0.14), 0 0 30px rgba(242,101,34,0.08);
 }
 
 .featured-img {
@@ -2563,7 +2563,7 @@ img { max-width: 100%; height: auto; display: block; }
 
 .featured-body p {
   font-size: 14px;
-  color: rgba(255,255,255,0.7);
+  color: var(--gray-600);
   line-height: 1.6;
   margin: 0;
 }
