@@ -73,6 +73,17 @@ test('classifies Christmas decorations as gifts and seasonal products', () => {
   }
 });
 
+test('merges ornaments into holiday decorations', () => {
+  for (const websiteProductType of ['Ornaments', 'Holiday Ornaments']) {
+    const placement = recommendWebsitePlacement({
+      name: 'Custom Blown Glass Christmas Ornament',
+      category: 'Gifts & Seasonal',
+      websiteProductType
+    });
+    assert.equal(placement.websiteProductType, 'Holiday Decorations');
+  }
+});
+
 test('classifies wrapping paper as gift packaging', () => {
   const placement = recommendWebsitePlacement({
     sku: 'AK772',

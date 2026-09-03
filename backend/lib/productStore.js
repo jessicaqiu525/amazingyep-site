@@ -238,10 +238,8 @@ const WEBSITE_PRODUCT_TYPE_RULES = {
     ['Booth Accessories', /\b(booth|tent|trade show accessory)\b/i]
   ],
   'Gifts & Seasonal': [
-    ['Holiday Decorations', /\b(holiday|christmas|halloween|easter).{0,30}\b(decoration|decor)\b/i],
-    ['Ornaments', /\b(ornament|tree hanging|tree decoration)\b/i],
-    ['Gift Wrap & Packaging', /\b(gift wrap|wrapping paper|packaging paper|gift bag|gift box|tissue paper|ribbon|gift tag)\b/i],
-    ['Seasonal Gifts', /\b(holiday|christmas|halloween|easter|seasonal)\b/i]
+    ['Holiday Decorations', /\b(?:ornament|tree hanging|tree decoration|(?:holiday|christmas|halloween|easter).{0,30}(?:decoration|decor))\b/i],
+    ['Gift Wrap & Packaging', /\b(gift wrap|wrapping paper|packaging paper|gift bag|gift box|tissue paper|ribbon|gift tag)\b/i]
   ],
   'Games & Activities': [
     ['Puzzles', /\b(puzzle|jigsaw)\b/i],
@@ -315,7 +313,8 @@ function derivedWebsiteProductType(product) {
       'Gift Wrap': 'Gift Wrap & Packaging',
       'Wrapping Paper': 'Gift Wrap & Packaging',
       'Christmas Decorations': 'Holiday Decorations',
-      'Holiday Ornaments': 'Ornaments'
+      'Holiday Ornaments': 'Holiday Decorations',
+      'Ornaments': 'Holiday Decorations'
     };
     const canonicalType = productTypeAliases[explicitType] || explicitType;
     const websiteCategory = derivedWebsiteCategory(product);

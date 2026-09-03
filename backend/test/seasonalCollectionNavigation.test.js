@@ -24,7 +24,9 @@ test('gifts and seasonal has a collection page and catalog card', () => {
   assert.match(seasonalPage, /initPage\('Gifts & Seasonal', 'featuredGrid', 'seasonal'\)/);
   assert.match(seasonalPage, />Holiday Decorations</);
   assert.match(seasonalPage, />Gift Wrap &amp; Packaging</);
+  assert.doesNotMatch(seasonalPage, />Ornaments</);
   assert.doesNotMatch(seasonalPage, />Gift Bags &amp; Boxes</);
+  assert.doesNotMatch(seasonalPage, />Seasonal Gifts</);
   assert.match(seasonalPage, /Make every season worth celebrating/);
   assert.match(catalogPage, /href="gifts-seasonal\.html" data-category="seasonal"/);
   assert.match(catalogPage, /data-category="seasonal">Gifts &amp; Seasonal</);
