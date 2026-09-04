@@ -29,6 +29,11 @@ test('home use-case cards link directly to their corresponding detail pages', ()
   }
 });
 
+test('home use-case section ends with a project inquiry call to action', () => {
+  assert.match(homePage, /href="contact\/index\.html"[^>]*>Start a Project &rarr;<\/a>/);
+  assert.doesNotMatch(homePage, /Explore More Projects/);
+});
+
 test('each use-case chip keeps its own destination', () => {
   const expected = {
     'Conference &amp; Event Swag': '../conference-swag.html',
