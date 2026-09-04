@@ -386,32 +386,11 @@
           : '<p style="color:#667085;">More custom product ideas are available on request.</p>';
 
         if (recommendationPagination) {
-          recommendationPagination.style.display = pageCount > 1 ? 'flex' : 'none';
-          const fill = recommendationPagination.querySelector('.' + cardClassPrefix + '-pagination-bar-fill');
-          const pageNum = recommendationPagination.querySelector('.' + cardClassPrefix + '-pagination-num');
-          const arrows = recommendationPagination.querySelectorAll('.' + cardClassPrefix + '-pagination-arrow');
-          if (fill) fill.style.width = ((recommendationPage + 1) / pageCount * 100) + '%';
-          if (pageNum) pageNum.textContent = (recommendationPage + 1) + '/' + pageCount;
-          if (arrows[0]) arrows[0].style.opacity = recommendationPage === 0 ? '0.35' : '1';
-          if (arrows[1]) arrows[1].style.opacity = recommendationPage === pageCount - 1 ? '0.35' : '1';
+          drawJumpPagination(recommendationPagination, recommendationPage, pageCount, function(page) {
+            recommendationPage = page;
+            drawRecommendationPage();
+          }, 'recommendation');
         }
-      }
-
-      if (recommendationPagination) {
-        const arrows = recommendationPagination.querySelectorAll('.' + cardClassPrefix + '-pagination-arrow');
-        if (arrows[0]) arrows[0].onclick = function() {
-          if (recommendationPage > 0) {
-            recommendationPage -= 1;
-            drawRecommendationPage();
-          }
-        };
-        if (arrows[1]) arrows[1].onclick = function() {
-          const pageCount = Math.ceil(recommendationProducts.length / recommendationPageSize);
-          if (recommendationPage + 1 < pageCount) {
-            recommendationPage += 1;
-            drawRecommendationPage();
-          }
-        };
       }
 
       // Add backend-derived product types that are not yet represented by a
@@ -440,33 +419,52 @@
           featuredPagination.innerHTML = '';
           return;
         }
-        featuredPagination.style.display = 'flex';
-        featuredPagination.innerHTML =
-          '<button type="button" data-featured-prev aria-label="Previous product page" style="padding:10px 18px;border:1px solid #d0d5dd;border-radius:24px;background:#fff;color:#082a4a;font-weight:700;cursor:pointer;">&larr; Previous</button>' +
-          '<span style="min-width:110px;text-align:center;color:#667085;font-weight:600;">Page ' + (featuredPage + 1) + ' of ' + pageCount + '</span>' +
-          '<button type="button" data-featured-next aria-label="Next product page" style="padding:10px 18px;border:1px solid #d0d5dd;border-radius:24px;background:#fff;color:#082a4a;font-weight:700;cursor:pointer;">Next &rarr;</button>' +
-          '<span class="sr-only" aria-live="polite">' + resultCount + ' products</span>';
+        drawJumpPagination(featuredPagination, featuredPage, pageCount, function(page) {
+          featuredPage = page;
+          renderProducts();
+          scrollFeaturedIntoView();
+        }, 'featured', resultCount);
+      }
 
-        const previous = featuredPagination.querySelector('[data-featured-prev]');
-        const next = featuredPagination.querySelector('[data-featured-next]');
-        previous.disabled = featuredPage === 0;
-        next.disabled = featuredPage === pageCount - 1;
-        previous.style.opacity = previous.disabled ? '0.4' : '1';
-        next.style.opacity = next.disabled ? '0.4' : '1';
-        previous.onclick = function() {
-          if (featuredPage > 0) {
-            featuredPage -= 1;
-            renderProducts();
-            scrollFeaturedIntoView();
-          }
-        };
-        next.onclick = function() {
-          if (featuredPage + 1 < pageCount) {
-            featuredPage += 1;
-            renderProducts();
-            scrollFeaturedIntoView();
-          }
-        };
+      function visiblePageNumbers(current, pageCount) {
+        const pages = new Set([0, pageCount - 1, current - 2, current - 1, current, current + 1, current + 2]);
+        return Array.from(pages).filter(function(page) { return page >= 0 && page < pageCount; }).sort(function(a, b) { return a - b; });
+      }
+
+      function drawJumpPagination(container, current, pageCount, onGo, key, resultCount) {
+        if (!container) return;
+        if (pageCount <= 1) {
+          container.style.display = 'none';
+          return;
+        }
+        container.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:28px auto 4px;padding:0 24px;';
+        const pages = visiblePageNumbers(current, pageCount);
+        let last = -1;
+        let buttons = '';
+        pages.forEach(function(page) {
+          if (last >= 0 && page - last > 1) buttons += '<span aria-hidden="true" style="padding:0 4px;">…</span>';
+          buttons += '<button type="button" data-' + key + '-page="' + page + '" aria-label="Page ' + (page + 1) + '"' +
+            (page === current ? ' aria-current="page"' : '') + ' style="min-width:42px;height:42px;padding:0 12px;border:1px solid ' +
+            (page === current ? '#ff5a1f' : '#d0d5dd') + ';border-radius:8px;background:' + (page === current ? '#ff5a1f' : '#fff') +
+            ';color:' + (page === current ? '#fff' : '#082a4a') + ';font-weight:700;cursor:pointer;">' + (page + 1) + '</button>';
+          last = page;
+        });
+        container.innerHTML = buttons + '<span style="margin-left:10px;color:#667085;">Go to</span>' +
+          '<input type="number" min="1" max="' + pageCount + '" value="' + (current + 1) + '" data-' + key + '-jump aria-label="Go to page" style="width:72px;height:42px;border:1px solid #d0d5dd;border-radius:8px;padding:0 10px;text-align:center;font:inherit;">' +
+          '<button type="button" data-' + key + '-go style="height:42px;padding:0 18px;border:0;border-radius:8px;background:#082a4a;color:#fff;font-weight:700;cursor:pointer;">Go</button>' +
+          (typeof resultCount === 'number' ? '<span style="margin-left:8px;color:#667085;">' + resultCount + ' products</span>' : '');
+        container.querySelectorAll('[data-' + key + '-page]').forEach(function(button) {
+          button.onclick = function() { onGo(Number(button.getAttribute('data-' + key + '-page'))); };
+        });
+        const input = container.querySelector('[data-' + key + '-jump]');
+        const go = container.querySelector('[data-' + key + '-go]');
+        function jump() {
+          const page = Math.max(1, Math.min(pageCount, Number(input.value) || 1));
+          input.value = page;
+          onGo(page - 1);
+        }
+        go.onclick = jump;
+        input.onkeydown = function(event) { if (event.key === 'Enter') jump(); };
       }
 
       function productMatchesSearch(product, query) {

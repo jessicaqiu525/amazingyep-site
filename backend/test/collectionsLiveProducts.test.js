@@ -10,9 +10,11 @@ const collectionsPage = fs.readFileSync(
 
 test('all collections loads featured and recommended cards from published products', () => {
   assert.match(collectionsPage, /fetch\(window\.API_CONFIG\.BASE_URL \+ '\/api\/products'\)/);
-  assert.match(collectionsPage, /chooseFeaturedProducts\(products, 12\)/);
-  assert.match(collectionsPage, /featured\.map\(renderCollectionProduct\)/);
-  assert.match(collectionsPage, /recommendations\.map\(renderRecommendedProduct\)/);
+  assert.match(collectionsPage, /chooseFeaturedProducts\(products, products\.length\)/);
+  assert.match(collectionsPage, /allFeaturedProducts\.slice\(allFeaturedPage \* 12/);
+  assert.match(collectionsPage, /allRecommendedProducts\.slice\(allRecommendedPage \* 6/);
+  assert.match(collectionsPage, /function drawDirectPagination/);
+  assert.match(collectionsPage, /data-' \+ key \+ '-jump/);
   assert.match(collectionsPage, /filter\(function\(product\) \{\s*return Boolean\(productImage\(product\)\)/);
 });
 

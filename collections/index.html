@@ -371,6 +371,11 @@
     const featuredLabel = document.getElementById('collectionsFeaturedLabel');
     const productPagination = document.getElementById('collectionProductsPagination');
     const recommendationsSection = document.querySelector('.collections-you-may-like');
+    const recommendationsPagination = document.querySelector('.collections-carousel-pagination');
+    let allFeaturedProducts = [];
+    let allFeaturedPage = 0;
+    let allRecommendedProducts = [];
+    let allRecommendedPage = 0;
     const categoryNames = {
       bags: 'Bags',
       drinkware: 'Drinkware',
@@ -448,6 +453,65 @@
       return selected;
     }
 
+    function pageNumbers(current, pageCount) {
+      const pages = new Set([0, pageCount - 1, current - 2, current - 1, current, current + 1, current + 2]);
+      return Array.from(pages).filter(function(page) { return page >= 0 && page < pageCount; }).sort(function(a, b) { return a - b; });
+    }
+
+    function drawDirectPagination(container, current, pageCount, onGo, key) {
+      if (!container || pageCount <= 1) {
+        if (container) container.style.display = 'none';
+        return;
+      }
+      container.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:28px auto 4px;padding:0 32px;';
+      let last = -1;
+      let buttons = '';
+      pageNumbers(current, pageCount).forEach(function(page) {
+        if (last >= 0 && page - last > 1) buttons += '<span aria-hidden="true" style="padding:0 4px;">…</span>';
+        buttons += '<button type="button" data-' + key + '-page="' + page + '" aria-label="Page ' + (page + 1) + '"' +
+          (page === current ? ' aria-current="page"' : '') + ' style="min-width:42px;height:42px;border:1px solid ' +
+          (page === current ? '#ff5a1f' : '#d0d5dd') + ';border-radius:8px;background:' + (page === current ? '#ff5a1f' : '#fff') +
+          ';color:' + (page === current ? '#fff' : '#082a4a') + ';font-weight:700;cursor:pointer;">' + (page + 1) + '</button>';
+        last = page;
+      });
+      container.innerHTML = buttons + '<span style="margin-left:10px;color:#667085;">Go to</span>' +
+        '<input type="number" min="1" max="' + pageCount + '" value="' + (current + 1) + '" data-' + key + '-jump aria-label="Go to page" style="width:72px;height:42px;border:1px solid #d0d5dd;border-radius:8px;padding:0 10px;text-align:center;font:inherit;">' +
+        '<button type="button" data-' + key + '-go style="height:42px;padding:0 18px;border:0;border-radius:8px;background:#082a4a;color:#fff;font-weight:700;cursor:pointer;">Go</button>';
+      container.querySelectorAll('[data-' + key + '-page]').forEach(function(button) {
+        button.onclick = function() { onGo(Number(button.getAttribute('data-' + key + '-page'))); };
+      });
+      const input = container.querySelector('[data-' + key + '-jump]');
+      function jump() {
+        const page = Math.max(1, Math.min(pageCount, Number(input.value) || 1));
+        input.value = page;
+        onGo(page - 1);
+      }
+      container.querySelector('[data-' + key + '-go]').onclick = jump;
+      input.onkeydown = function(event) { if (event.key === 'Enter') jump(); };
+    }
+
+    function renderAllFeaturedPage() {
+      const pageCount = Math.max(1, Math.ceil(allFeaturedProducts.length / 12));
+      allFeaturedPage = Math.max(0, Math.min(allFeaturedPage, pageCount - 1));
+      collectionGrid.innerHTML = allFeaturedProducts.slice(allFeaturedPage * 12, (allFeaturedPage + 1) * 12).map(renderCollectionProduct).join('');
+      drawDirectPagination(productPagination, allFeaturedPage, pageCount, function(page) {
+        allFeaturedPage = page;
+        renderAllFeaturedPage();
+        collectionGrid.scrollIntoView({ behavior: 'smooth' });
+      }, 'all-featured');
+    }
+
+    function renderAllRecommendedPage() {
+      const pageCount = Math.max(1, Math.ceil(allRecommendedProducts.length / 6));
+      allRecommendedPage = Math.max(0, Math.min(allRecommendedPage, pageCount - 1));
+      carousel.innerHTML = allRecommendedProducts.slice(allRecommendedPage * 6, (allRecommendedPage + 1) * 6).map(renderRecommendedProduct).join('');
+      drawDirectPagination(recommendationsPagination, allRecommendedPage, pageCount, function(page) {
+        allRecommendedPage = page;
+        renderAllRecommendedPage();
+        recommendationsSection.scrollIntoView({ behavior: 'smooth' });
+      }, 'all-recommended');
+    }
+
     async function loadAllCollectionProducts() {
       collectionGrid.innerHTML = '<p class="collections-search-state" style="grid-column:1/-1;">Loading products...</p>';
       carousel.innerHTML = '<p class="collections-search-state">Loading products...</p>';
@@ -458,24 +522,20 @@
         const products = (Array.isArray(data.products) ? data.products : []).filter(function(product) {
           return Boolean(productImage(product));
         });
-        const featured = chooseFeaturedProducts(products, 12);
-        const featuredIds = new Set(featured.map(function(product) {
-          return String(product.id || product.sku || product.itemNumber || '');
-        }));
-        const recommendations = products.filter(function(product) {
-          return !featuredIds.has(String(product.id || product.sku || product.itemNumber || ''));
-        }).slice(0, 18);
+        allFeaturedProducts = chooseFeaturedProducts(products, products.length);
+        allRecommendedProducts = products.slice().reverse();
+        allFeaturedPage = 0;
+        allRecommendedPage = 0;
 
-        collectionGrid.innerHTML = featured.length
-          ? featured.map(renderCollectionProduct).join('')
+        collectionGrid.innerHTML = allFeaturedProducts.length
+          ? allFeaturedProducts.slice(0, 12).map(renderCollectionProduct).join('')
           : '<p class="collections-search-state" style="grid-column:1/-1;">No published products with images are available yet.</p>';
-        carousel.innerHTML = recommendations.length
-          ? recommendations.map(renderRecommendedProduct).join('')
+        carousel.innerHTML = allRecommendedProducts.length
+          ? allRecommendedProducts.slice(0, 6).map(renderRecommendedProduct).join('')
           : '<p class="collections-search-state">More products are coming soon.</p>';
-        recommendationsSection.hidden = !recommendations.length;
-        totalPages = Math.max(1, Math.ceil(recommendations.length / 6));
-        currentPage = 1;
-        updatePagination();
+        recommendationsSection.hidden = !allRecommendedProducts.length;
+        renderAllFeaturedPage();
+        renderAllRecommendedPage();
       } catch (error) {
         collectionGrid.innerHTML = '<div class="collections-search-empty" style="grid-column:1/-1;"><h3>Products are temporarily unavailable</h3><p>Please try again in a moment.</p></div>';
         recommendationsSection.hidden = true;

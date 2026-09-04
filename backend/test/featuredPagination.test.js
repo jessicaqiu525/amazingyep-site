@@ -8,13 +8,21 @@ const apiConfig = fs.readFileSync(path.join(root, 'api-config.js'), 'utf8');
 
 test('category product grids paginate after twelve products', () => {
   assert.match(apiConfig, /const featuredPageSize = 12/);
-  assert.match(apiConfig, /data-featured-prev/);
-  assert.match(apiConfig, /data-featured-next/);
+  assert.match(apiConfig, /function drawJumpPagination/);
+  assert.match(apiConfig, /data-' \+ key \+ '-jump/);
+  assert.match(apiConfig, /data-' \+ key \+ '-page/);
+  assert.match(apiConfig, /input\.onkeydown = function\(event\) \{ if \(event\.key === 'Enter'\) jump\(\); \}/);
   assert.match(apiConfig, /filteredProducts\.slice\(pageStart, pageStart \+ featuredPageSize\)/);
   assert.match(apiConfig, /function scrollFeaturedIntoView\(\)/);
   assert.match(apiConfig, /featuredSection = grid\.closest\('section'\) \|\| grid/);
   assert.match(apiConfig, /window\.scrollTo\(\{ top: Math\.max\(0, top\), behavior: 'smooth' \}\)/);
   assert.doesNotMatch(apiConfig, /grid\.scrollIntoView/);
+});
+
+test('recommended products support numbered pages and direct page entry', () => {
+  assert.match(apiConfig, /drawJumpPagination\(recommendationPagination, recommendationPage, pageCount/);
+  assert.match(apiConfig, /drawJumpPagination\(featuredPagination, featuredPage, pageCount/);
+  assert.doesNotMatch(apiConfig, /recommendationPage \+= 1/);
 });
 
 test('featured search and product type filters reset pagination', () => {
