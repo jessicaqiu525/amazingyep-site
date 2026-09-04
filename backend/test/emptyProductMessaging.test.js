@@ -16,3 +16,11 @@ test('use case pages use sourcing-oriented empty states', () => {
     assert.match(page, /data-view-available/);
   }
 });
+
+test('use case pages use the concise featured heading', () => {
+  ['conference-swag.html', 'use-case-products.html'].forEach((file) => {
+    const page = fs.readFileSync(path.join(root, file), 'utf8');
+    assert.match(page, /<span class="section-label">FEATURED<\/span>/);
+    assert.doesNotMatch(page, /FEATURED PRODUCTS/);
+  });
+});
