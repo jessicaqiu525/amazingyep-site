@@ -31,6 +31,16 @@ test('featured search and product type filters reset pagination', () => {
   assert.match(apiConfig, /selectedProductType = \/\^all products\$\/i/);
 });
 
+test('collection product types include a universal reset and support clearer display labels', () => {
+  const apiConfig = fs.readFileSync(path.join(root, 'api-config.js'), 'utf8');
+  const plushPage = fs.readFileSync(path.join(root, 'collections', 'plush-mascots.html'), 'utf8');
+
+  assert.match(apiConfig, /allProductsItem\.textContent = 'All Products'/);
+  assert.match(apiConfig, /item\.dataset\.productType \|\| item\.textContent\.trim\(\)/);
+  assert.match(plushPage, /data-product-type="Brand &amp; Team Mascots">Mascot Plush Toys/);
+  assert.match(plushPage, />Wearable Mascot Costumes</);
+});
+
 test('every product collection page uses the shared grid initializer', () => {
   const pages = [
     'bags.html',

@@ -326,6 +326,19 @@
     const samples = (SAMPLE_PRODUCTS[category] || []).slice(0, 12);
     let typeItems = Array.from(document.querySelectorAll('.' + cardClassPrefix + '-type-item'));
 
+    // Every collection starts with a consistent way to clear the type filter.
+    // Older pages omitted this chip, which made returning to the full catalog
+    // unnecessarily difficult after selecting a type.
+    if (typeItems.length && !typeItems.some(function(item) {
+      return /^all products$/i.test(item.textContent.trim());
+    })) {
+      const allProductsItem = document.createElement('span');
+      allProductsItem.className = cardClassPrefix + '-type-item';
+      allProductsItem.textContent = 'All Products';
+      typeItems[0].parentElement.insertBefore(allProductsItem, typeItems[0]);
+      typeItems = Array.from(document.querySelectorAll('.' + cardClassPrefix + '-type-item'));
+    }
+
     // No Product Type filter is selected until the visitor clicks one.
     typeItems.forEach(function(item) {
       item.classList.remove('active');
@@ -398,9 +411,13 @@
       // editing every category page by hand.
       if (typeItems.length) {
         const typeContainer = typeItems[0].parentElement;
-        const existingTypes = new Set(typeItems.map(function(item) {
-          return item.textContent.trim().toLowerCase();
-        }));
+        const existingTypes = new Set();
+        typeItems.forEach(function(item) {
+          existingTypes.add(item.textContent.trim().toLowerCase());
+          if (item.dataset.productType) {
+            existingTypes.add(item.dataset.productType.trim().toLowerCase());
+          }
+        });
         products.forEach(function(product) {
           const productType = String(product.websiteProductType || '').trim();
           if (!productType || existingTypes.has(productType.toLowerCase())) return;
@@ -588,7 +605,9 @@
             other.classList.remove('active');
           });
           item.classList.add('active');
-          selectedProductType = /^all products$/i.test(item.textContent.trim()) ? '' : item.textContent.trim();
+          selectedProductType = /^all products$/i.test(item.textContent.trim())
+            ? ''
+            : (item.dataset.productType || item.textContent.trim());
           featuredPage = 0;
           renderProducts();
         });
