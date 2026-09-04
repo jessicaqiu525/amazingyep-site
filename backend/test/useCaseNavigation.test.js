@@ -119,11 +119,11 @@ test('employee product types use concise program-ready groups', () => {
     'Bags',
     'Drinkware',
     'Apparel & Wearables',
-    'Notebooks & Writing',
+    'Office & Writing',
+    'Mascots & Plush',
     'Tech Accessories',
-    'Desk & Office',
     'Wellness & Lifestyle',
     'Awards & Recognition'
   ].forEach((label) => assert.match(employeeConfig, new RegExp(`\\['${label.replace('&', '\\&')}'`)));
-  assert.doesNotMatch(employeeConfig, /'Tote & Shopping Bags'|'Backpacks & Drawstring Bags'|'Mugs & Cups'|'T-Shirts'|'Power Banks'/);
+  assert.doesNotMatch(employeeConfig, /'Tote & Shopping Bags'|'Backpacks & Drawstring Bags'|'Mugs & Cups'|'T-Shirts'|'Power Banks'|'Notebooks & Writing'|'Desk & Office'/);
 });
