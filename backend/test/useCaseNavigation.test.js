@@ -7,6 +7,27 @@ const page = fs.readFileSync(
   path.join(__dirname, '..', '..', 'case-studies', 'index.html'),
   'utf8'
 );
+const homePage = fs.readFileSync(
+  path.join(__dirname, '..', '..', 'index.html'),
+  'utf8'
+);
+
+test('home use-case cards link directly to their corresponding detail pages', () => {
+  const expected = {
+    'Conference &amp; Event Swag': 'conference-swag.html',
+    'Employee Engagement Kits': 'use-case-products.html?case=employee',
+    'Character &amp; Mascot Programs': 'use-case-products.html?case=mascot',
+    'Schools, Teams &amp; Communities': 'use-case-products.html?case=schools',
+    'Golf &amp; Sports Events': 'use-case-products.html?case=golf',
+    'Travel &amp; Adventure Collection': 'use-case-products.html?case=travel'
+  };
+
+  for (const [label, href] of Object.entries(expected)) {
+    assert.match(homePage, new RegExp(
+      `<a href="${href.replace(/[?&]/g, '\\$&')}">[\\s\\S]{0,300}<h3>${label}</h3>`
+    ));
+  }
+});
 
 test('each use-case chip keeps its own destination', () => {
   const expected = {
