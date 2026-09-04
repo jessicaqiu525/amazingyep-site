@@ -60,6 +60,64 @@ test('removes a cooler subcategory from a tote bag', () => {
   assert.equal(subcategory, '');
 });
 
+test('classifies AW637 plush golf headcover as a golf accessory', () => {
+  const product = {
+    sku: 'AW637',
+    name: 'Custom Fox Plush Golf Club Headcover with Outfit',
+    category: 'Bags',
+    subcategory: 'Cooler Bags',
+    sageCategory1: 'Golf Tools',
+    websiteProductType: 'Golf Tools',
+    keywords: ['Plush Fox', 'Golf Headcover']
+  };
+
+  const placement = recommendWebsitePlacement(product);
+  assert.equal(placement.category, 'Outdoor & Leisure');
+  assert.equal(placement.websiteProductType, 'Golf Accessories');
+  assert.deepEqual(placement.useCases, ['mascot', 'golf']);
+  assert.equal(derivedWebsiteSubcategory(product), '');
+});
+
+test('classifies AW615-AW617 scarves as wearables', () => {
+  for (const sku of ['AW615', 'AW616', 'AW617']) {
+    const placement = recommendWebsitePlacement({
+      sku,
+      name: 'Custom Knit Winter Scarf with Jacquard Design',
+      category: 'Outdoor & Leisure',
+      sageCategory1: 'Scarves',
+      websiteProductType: 'Scarves'
+    });
+    assert.equal(placement.category, 'Wearables');
+    assert.equal(placement.websiteProductType, 'Scarves');
+  }
+});
+
+test('classifies AW628 boxer shorts as shorts and bottoms', () => {
+  const placement = recommendWebsitePlacement({
+    sku: 'AW628',
+    name: 'Custom 100% POPLIN Boxer Shorts with Embroidery',
+    category: 'Outdoor & Leisure',
+    sageCategory1: 'Shorts',
+    websiteProductType: 'Shorts'
+  });
+
+  assert.equal(placement.category, 'Wearables');
+  assert.equal(placement.websiteProductType, 'Shorts & Bottoms');
+});
+
+test('keeps AW632 beach towel in outdoor and leisure', () => {
+  const placement = recommendWebsitePlacement({
+    sku: 'AW632',
+    name: 'Custom Turkish Style Cotton Striped Beach Towel with Tassels',
+    category: 'Outdoor & Leisure',
+    sageCategory1: 'Blankets',
+    keywords: ['Beach Towel']
+  });
+
+  assert.equal(placement.category, 'Outdoor & Leisure');
+  assert.equal(placement.websiteProductType, 'Blankets & Towels');
+});
+
 test('classifies Christmas decorations as gifts and seasonal products', () => {
   for (const sku of ['AK770', 'AK771']) {
     const placement = recommendWebsitePlacement({

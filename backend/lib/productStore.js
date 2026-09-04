@@ -81,6 +81,12 @@ function strongIdentityWebsiteCategory(product) {
     return 'Keychains & Accessories';
   }
   if (/\b(keychain|key chain|key ring)\b/i.test(identity)) return 'Keychains & Accessories';
+  // Golf headcovers are functional sports accessories even when their design
+  // is a plush animal or mascot. Keep their primary catalog placement out of
+  // Bags and Plush & Mascots; those concepts can still be represented by use cases.
+  if (/\b(golf\s*(?:club\s*)?(?:head\s*cover|headcover)|club\s*(?:head\s*cover|headcover))s?\b/i.test(identity)) {
+    return 'Outdoor & Leisure';
+  }
   if (/\b(puzzle|jigsaw|board game|card game|playing cards?|activity kit|educational game)\b/i.test(identity)) {
     return 'Games & Activities';
   }
@@ -99,7 +105,7 @@ function derivedWebsiteCategory(product) {
   const identity = [product.name, ...listValue(product.keywords)].filter(Boolean).join(' ');
   // Strong product-identity terms override stale manual placement and broad
   // SAGE departments. A snowsuit filed under SAGE "Skis" is still apparel.
-  if (/\b(slipper|slippers|footwear|shoe|shoes|sock|socks|snowsuit|jumpsuit|outerwear|snow gear|alpine wear)\b/i.test(identity)) {
+  if (/\b(slipper|slippers|footwear|shoe|shoes|sock|socks|scarf|scarves|shorts|boxer shorts|snowsuit|jumpsuit|outerwear|snow gear|alpine wear)\b/i.test(identity)) {
     return 'Wearables';
   }
   const strongIdentity = strongIdentityWebsiteCategory(product);
@@ -193,6 +199,8 @@ const WEBSITE_PRODUCT_TYPE_RULES = {
   'Wearables': [
     ['Slippers & Footwear', /\b(slipper|slippers|footwear|shoe|shoes)\b/i],
     ['Socks', /\b(sock|socks)\b/i],
+    ['Scarves', /\b(scarf|scarves)\b/i],
+    ['Shorts & Bottoms', /\b(boxer shorts|shorts|bottoms)\b/i],
     ['T-Shirts', /\bt[ -]?shirt\b/i],
     ['Polo Shirts', /\bpolo\b/i],
     ['Hoodies & Sweatshirts', /\b(hoodie|sweatshirt)\b/i],
@@ -211,12 +219,13 @@ const WEBSITE_PRODUCT_TYPE_RULES = {
     ['Mouse Pads', /\bmouse pad\b/i]
   ],
   'Outdoor & Leisure': [
+    ['Golf Accessories', /\b(golf\s*(?:club\s*)?(?:head\s*cover|headcover)|club\s*(?:head\s*cover|headcover)|golf tool|golf accessory)\b/i],
     ['Camping & Hiking Gear', /\b(camping|hiking|camp)\b/i],
     ['Picnic & BBQ', /\b(picnic|bbq|barbecue|grill)\b/i],
+    ['Blankets & Towels', /\b(blanket|towel)\b/i],
     ['Beach Accessories', /\b(beach|sunshade)\b/i],
     ['Fishing Gear', /\bfishing\b/i],
     ['Outdoor Games', /\b(outdoor game|cornhole|frisbee|flying disc)\b/i],
-    ['Blankets & Towels', /\b(blanket|towel)\b/i],
     ['Travel & Leisure Kits', /\b(travel kit|leisure kit|amenity kit)\b/i]
   ],
   'Technology': [
@@ -294,6 +303,8 @@ function derivedWebsiteProductType(product) {
       'BBQ Tools': 'Picnic & BBQ',
       'Blankets': 'Blankets & Towels',
       'Travel Kits': 'Travel & Leisure Kits',
+      'Golf Tools': 'Golf Accessories',
+      'Golf Kits': 'Golf Accessories',
       'Phone Cases': 'Phone Accessories',
       'Webcam Covers': 'Phone Accessories',
       'Bluetooth Speakers': 'Speakers & Audio',
@@ -370,6 +381,7 @@ const CURATED_WEBSITE_USE_CASES = {
   AK746: ['conference', 'employee', 'travel'],
   AK747: ['conference', 'employee'],
   AW630: ['conference', 'employee', 'mascot', 'schools'],
+  AW637: ['mascot', 'golf'],
   AK753: ['conference', 'employee', 'schools'],
   AK757: ['conference', 'employee', 'mascot', 'schools'],
   AK759: ['employee', 'mascot'],
