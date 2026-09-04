@@ -35,3 +35,11 @@ test('brand loyalty is removed and golf is featured once', () => {
   const featuredGolfCards = page.match(/class="iu-featured-card"[^>]+case=golf/g) || [];
   assert.equal(featuredGolfCards.length, 1);
 });
+
+test('golf use case includes a dedicated golf accessories filter', () => {
+  const useCasePage = fs.readFileSync(
+    path.join(__dirname, '..', '..', 'use-case-products.html'),
+    'utf8'
+  );
+  assert.match(useCasePage, /\['Golf Accessories',\['golf headcover','golf head cover','golf ball','golf bag','golf club','golf tool','golf kit','golf plush','golf mascot'\]\]/);
+});
