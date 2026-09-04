@@ -370,6 +370,7 @@
     const collectionCardsMarkup = collectionGrid.innerHTML;
     const featuredLabel = document.getElementById('collectionsFeaturedLabel');
     const productPagination = document.getElementById('collectionProductsPagination');
+    const recommendationsSection = document.querySelector('.collections-you-may-like');
     const categoryNames = {
       bags: 'Bags',
       drinkware: 'Drinkware',
@@ -387,6 +388,98 @@
     function toggleFilter() {
       document.getElementById('filterArrow').classList.toggle('collapsed');
       document.getElementById('typeContent').classList.toggle('collapsed');
+    }
+
+    function escapeProductText(value) {
+      return String(value || '').replace(/[&<>"']/g, function(char) {
+        return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char];
+      });
+    }
+
+    function productImage(product) {
+      let image = (product.images && product.images[0])
+        || (product.gallery && product.gallery[0])
+        || (product.colorOptions && product.colorOptions[0] && product.colorOptions[0].image)
+        || '';
+      if (image && !/^(?:https?:|data:|\.\.?\/)/i.test(image)) {
+        image = window.API_CONFIG.BASE_URL + image;
+      }
+      return image;
+    }
+
+    function renderCollectionProduct(product) {
+      const image = escapeProductText(productImage(product));
+      const name = escapeProductText(product.name || 'Custom Product');
+      const category = escapeProductText(product.category || 'Amazing Yep Collection');
+      const sku = escapeProductText(product.sku || product.itemNumber || '');
+      return '<a class="collection-card" href="product.html?id=' + encodeURIComponent(product.id) + '">' +
+        '<img class="collection-card-img" src="' + image + '" alt="' + name + '">' +
+        '<div class="collection-card-body"><h3>' + name + '</h3><p>' + category +
+        (sku ? ' · Item #: ' + sku : '') + '</p></div></a>';
+    }
+
+    function renderRecommendedProduct(product) {
+      const image = escapeProductText(productImage(product));
+      const name = escapeProductText(product.name || 'Custom Product');
+      const category = escapeProductText(product.category || 'Amazing Yep Collection');
+      return '<a class="collections-carousel-card" href="product.html?id=' + encodeURIComponent(product.id) + '">' +
+        '<img class="collections-carousel-card-img" src="' + image + '" alt="' + name + '">' +
+        '<div class="collections-carousel-card-body"><h4>' + name + '</h4><p>' + category + '</p></div></a>';
+    }
+
+    function chooseFeaturedProducts(products, limit) {
+      const selected = [];
+      const selectedIds = new Set();
+      const categories = new Set();
+      products.forEach(function(product) {
+        const id = String(product.id || product.sku || product.itemNumber || '');
+        const category = String(product.category || '');
+        if (selected.length >= limit || !id || categories.has(category)) return;
+        selected.push(product);
+        selectedIds.add(id);
+        categories.add(category);
+      });
+      products.forEach(function(product) {
+        const id = String(product.id || product.sku || product.itemNumber || '');
+        if (selected.length >= limit || !id || selectedIds.has(id)) return;
+        selected.push(product);
+        selectedIds.add(id);
+      });
+      return selected;
+    }
+
+    async function loadAllCollectionProducts() {
+      collectionGrid.innerHTML = '<p class="collections-search-state" style="grid-column:1/-1;">Loading products...</p>';
+      carousel.innerHTML = '<p class="collections-search-state">Loading products...</p>';
+      try {
+        const response = await fetch(window.API_CONFIG.BASE_URL + '/api/products');
+        if (!response.ok) throw new Error('Product request failed');
+        const data = await response.json();
+        const products = (Array.isArray(data.products) ? data.products : []).filter(function(product) {
+          return Boolean(productImage(product));
+        });
+        const featured = chooseFeaturedProducts(products, 12);
+        const featuredIds = new Set(featured.map(function(product) {
+          return String(product.id || product.sku || product.itemNumber || '');
+        }));
+        const recommendations = products.filter(function(product) {
+          return !featuredIds.has(String(product.id || product.sku || product.itemNumber || ''));
+        }).slice(0, 18);
+
+        collectionGrid.innerHTML = featured.length
+          ? featured.map(renderCollectionProduct).join('')
+          : '<p class="collections-search-state" style="grid-column:1/-1;">No published products with images are available yet.</p>';
+        carousel.innerHTML = recommendations.length
+          ? recommendations.map(renderRecommendedProduct).join('')
+          : '<p class="collections-search-state">More products are coming soon.</p>';
+        recommendationsSection.hidden = !recommendations.length;
+        totalPages = Math.max(1, Math.ceil(recommendations.length / 6));
+        currentPage = 1;
+        updatePagination();
+      } catch (error) {
+        collectionGrid.innerHTML = '<div class="collections-search-empty" style="grid-column:1/-1;"><h3>Products are temporarily unavailable</h3><p>Please try again in a moment.</p></div>';
+        recommendationsSection.hidden = true;
+      }
     }
 
     function filterCollections() {
@@ -523,7 +616,7 @@
     document.getElementById('searchInput').addEventListener('input', filterCollections);
 
     let currentPage = 1;
-    const totalPages = 2;
+    let totalPages = 1;
     const carousel = document.getElementById('collectionsCarousel');
 
     function updatePagination() {
@@ -546,7 +639,9 @@
         updatePagination();
       }
     }
-    loadProductSearch();
+    const hasProductSearch = new URLSearchParams(window.location.search).has('search') || new URLSearchParams(window.location.search).has('q');
+    if (hasProductSearch) loadProductSearch();
+    else loadAllCollectionProducts();
   </script>
   <script src="../script.js"></script>
 </body>
