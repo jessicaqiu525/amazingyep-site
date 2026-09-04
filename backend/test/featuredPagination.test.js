@@ -36,8 +36,9 @@ test('collection product types include a universal reset and support clearer dis
   const plushPage = fs.readFileSync(path.join(root, 'collections', 'plush-mascots.html'), 'utf8');
 
   assert.match(apiConfig, /allProductsItem\.textContent = 'All Products'/);
-  assert.match(apiConfig, /item\.dataset\.productType \|\| item\.textContent\.trim\(\)/);
-  assert.match(plushPage, /data-product-type="Brand &amp; Team Mascots">Mascot Plush Toys/);
+  assert.match(apiConfig, /item\.dataset\.productTypes \|\| item\.dataset\.productType/);
+  assert.match(plushPage, /data-product-types="Custom Plush Toys\|Brand &amp; Team Mascots">Custom Plush &amp; Mascots/);
+  assert.match(plushPage, /data-product-type="Holiday &amp; Seasonal Plush">Seasonal Plush/);
   assert.match(plushPage, />Wearable Mascot Costumes</);
 });
 

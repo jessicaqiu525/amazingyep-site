@@ -283,11 +283,18 @@
         });
     }
 
-    const selectedTokens = tokens(selectedType);
+    const selectedTypes = String(selectedType).split('|').map(function(type) {
+      return type.trim();
+    }).filter(Boolean);
+    const selectedTokenGroups = selectedTypes.map(tokens);
+    const selectedTokens = selectedTokenGroups.flat();
     if (!selectedTokens.length) return false;
 
     if (product.websiteProductType) {
-      return tokens(product.websiteProductType).join(' ') === selectedTokens.join(' ');
+      const productTypeTokens = tokens(product.websiteProductType).join(' ');
+      return selectedTokenGroups.some(function(group) {
+        return group.join(' ') === productTypeTokens;
+      });
     }
 
     function fieldMatches(value) {
@@ -416,6 +423,11 @@
           existingTypes.add(item.textContent.trim().toLowerCase());
           if (item.dataset.productType) {
             existingTypes.add(item.dataset.productType.trim().toLowerCase());
+          }
+          if (item.dataset.productTypes) {
+            item.dataset.productTypes.split('|').forEach(function(type) {
+              existingTypes.add(type.trim().toLowerCase());
+            });
           }
         });
         products.forEach(function(product) {
@@ -607,7 +619,7 @@
           item.classList.add('active');
           selectedProductType = /^all products$/i.test(item.textContent.trim())
             ? ''
-            : (item.dataset.productType || item.textContent.trim());
+            : (item.dataset.productTypes || item.dataset.productType || item.textContent.trim());
           featuredPage = 0;
           renderProducts();
         });
