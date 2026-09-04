@@ -160,7 +160,7 @@ test('school and community product types use broad non-duplicate groups', () => 
 test('travel product types use clear journey-oriented groups', () => {
   const useCasePage = fs.readFileSync(path.join(__dirname, '..', '..', 'use-case-products.html'), 'utf8');
   const travelConfig = useCasePage.match(/travel:\{[\s\S]*?\},\n\s*golf:/)?.[0] || '';
-  for (const label of ['Luggage, Travel Bags & Backpacks', 'Coolers & Lunch Bags', 'Travel Drinkware', 'Blankets, Towels & Travel Pillows', 'Packing & Travel Accessories', 'Camping, Picnic & Outdoor Gear', 'Tech & Charging']) {
+  for (const label of ['Luggage, Travel Bags & Backpacks', 'Coolers & Lunch Bags', 'Travel Drinkware', 'Blankets, Towels & Travel Pillows', 'Packing & Travel Accessories', 'Camping, Picnic & Outdoor Gear', 'Mascots & Plush', 'Tech & Charging']) {
     assert.match(travelConfig, new RegExp(label.replace(/[&]/g, '\\&')));
   }
   for (const redundantLabel of ['Luggage & Travel Bags', 'Backpacks & Daypacks', 'Water Bottles', 'Tumblers & Travel Mugs', 'Travel & Leisure Kits', 'Travel Comfort', 'Outdoor Essentials', 'Power Banks', 'Cables & Adapters']) {
