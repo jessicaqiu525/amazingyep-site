@@ -142,3 +142,18 @@ test('character and mascot product types prioritize products over keychain mater
   ].forEach((label) => assert.match(mascotConfig, new RegExp(`\\['${label.replace('&', '\\&')}'`)));
   assert.doesNotMatch(mascotConfig, /'PVC & Rubber Keychains'|'Metal & Enamel Keychains'|'Brand & Team Mascots'/);
 });
+
+test('all use case detail templates paginate featured and recommended products consistently', () => {
+  ['conference-swag.html', 'use-case-products.html'].forEach((file) => {
+    const source = fs.readFileSync(path.join(__dirname, '..', '..', file), 'utf8');
+    assert.match(source, /id="featuredPagination"/);
+    assert.match(source, /id="recommendedPagination"/);
+    assert.match(source, /const featuredPageSize=12/);
+    assert.match(source, /const recommendedPageSize=6/);
+    assert.match(source, /function drawDirectPagination/);
+    assert.match(source, /data-'\+key\+'-jump/);
+    assert.match(source, /filtered\.slice\(featuredPage\*featuredPageSize/);
+    assert.match(source, /recommendedProducts\.slice\(recommendedPage\*recommendedPageSize/);
+    assert.doesNotMatch(source, /\.slice\(0,5\)/);
+  });
+});
