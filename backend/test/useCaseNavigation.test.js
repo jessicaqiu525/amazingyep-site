@@ -141,6 +141,22 @@ test('character and mascot product types use clear non-overlapping groups', () =
   assert.doesNotMatch(mascotConfig, /'PVC & Rubber Keychains'|'Metal & Enamel Keychains'|'Brand & Team Mascots'|'Plush Keychains'|'Character Keychains'|'Pins, Patches & Collectibles'|'Character Apparel & Accessories'/);
 });
 
+test('school and community product types use broad non-duplicate groups', () => {
+  const useCasePage = fs.readFileSync(path.join(__dirname, '..', '..', 'use-case-products.html'), 'utf8');
+  const schoolsConfig = useCasePage.match(/schools:\{[\s\S]*?\},\n\s*travel:/)?.[0] || '';
+  [
+    'Apparel & Wearables',
+    'Bags',
+    'Drinkware',
+    'Mascots & Plush',
+    'Team & Fan Gear',
+    'School & Office Supplies',
+    'Tech Accessories',
+    'Awards & Recognition'
+  ].forEach((label) => assert.match(schoolsConfig, new RegExp(`\\['${label.replace('&', '\\&')}'`)));
+  assert.doesNotMatch(schoolsConfig, /'T-Shirts'|'Hoodies & Sweatshirts'|'Hats & Caps'|'Backpacks & Drawstring Bags'|'Water Bottles'|'Brand & Team Mascots'|'Custom Plush Toys'|'Pins & Patches'|'Flags'/);
+});
+
 test('all use case detail templates paginate featured and recommended products consistently', () => {
   ['conference-swag.html', 'use-case-products.html'].forEach((file) => {
     const source = fs.readFileSync(path.join(__dirname, '..', '..', file), 'utf8');
