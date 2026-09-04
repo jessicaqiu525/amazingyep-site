@@ -93,3 +93,21 @@ test('every use case detail page has a functional collapsible filter', () => {
     scripts.forEach((code) => assert.doesNotThrow(() => new Function(code)));
   });
 });
+
+test('conference product types cover event merchandise without redundant booth categories', () => {
+  const conferencePage = fs.readFileSync(path.join(__dirname, '..', '..', 'conference-swag.html'), 'utf8');
+  const expected = [
+    'Lanyards &amp; Badges',
+    'Bags',
+    'Drinkware',
+    'Hats &amp; Apparel',
+    'Notebooks &amp; Writing',
+    'Mascots &amp; Plush',
+    'Tech Accessories',
+    'Event Displays'
+  ];
+  expected.forEach((label) => assert.match(conferencePage, new RegExp(`>${label}</button>`)));
+  assert.match(conferencePage, /data-type="Event Displays"[^>]+booth accessory/);
+  assert.doesNotMatch(conferencePage, /data-type="Booth Accessories"/);
+  assert.doesNotMatch(conferencePage, /data-type="Power Banks"/);
+});
