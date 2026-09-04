@@ -164,6 +164,7 @@ test('all use case detail templates paginate featured and recommended products c
     assert.match(source, /id="recommendedPagination"/);
     assert.match(source, /const featuredPageSize=12/);
     assert.match(source, /const recommendedPageSize=6/);
+    assert.match(source, /\.swag-recs-grid\{display:grid;grid-template-columns:repeat\(6,minmax\(0,1fr\)\)/);
     assert.match(source, /function drawDirectPagination/);
     assert.match(source, /data-'\+key\+'-jump/);
     assert.match(source, /filtered\.slice\(featuredPage\*featuredPageSize/);
