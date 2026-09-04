@@ -127,3 +127,18 @@ test('employee product types use concise program-ready groups', () => {
   ].forEach((label) => assert.match(employeeConfig, new RegExp(`\\['${label.replace('&', '\\&')}'`)));
   assert.doesNotMatch(employeeConfig, /'Tote & Shopping Bags'|'Backpacks & Drawstring Bags'|'Mugs & Cups'|'T-Shirts'|'Power Banks'|'Notebooks & Writing'|'Desk & Office'/);
 });
+
+test('character and mascot product types prioritize products over keychain materials', () => {
+  const useCasePage = fs.readFileSync(path.join(__dirname, '..', '..', 'use-case-products.html'), 'utf8');
+  const mascotConfig = useCasePage.match(/mascot:\{[\s\S]*?\},\n\s*schools:/)?.[0] || '';
+  [
+    'Custom Plush Toys',
+    'Mascot Costumes',
+    'Plush Keychains',
+    'Plush Pillows',
+    'Character Keychains',
+    'Pins, Patches & Collectibles',
+    'Character Apparel & Accessories'
+  ].forEach((label) => assert.match(mascotConfig, new RegExp(`\\['${label.replace('&', '\\&')}'`)));
+  assert.doesNotMatch(mascotConfig, /'PVC & Rubber Keychains'|'Metal & Enamel Keychains'|'Brand & Team Mascots'/);
+});
