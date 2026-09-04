@@ -525,8 +525,14 @@
       }
 
       function renderProducts() {
+        // A product type may legitimately belong to more than one top-level
+        // collection (for example Plush Keychains appears under both Plush &
+        // Mascots and Keychains & Accessories). Use the full published catalog
+        // for an explicit type selection, while the unfiltered view remains
+        // scoped to this page's Website Category.
+        const typeSourceProducts = selectedProductType ? allProducts : products;
         let filteredProducts = selectedProductType
-          ? products.filter(function(product) {
+          ? typeSourceProducts.filter(function(product) {
               return productMatchesType(product, selectedProductType);
             })
           : products;

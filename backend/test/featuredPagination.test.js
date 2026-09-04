@@ -42,6 +42,11 @@ test('collection product types include a universal reset and support clearer dis
   assert.match(plushPage, />Wearable Mascot Costumes</);
 });
 
+test('shared product types can surface products across top-level collection categories', () => {
+  assert.match(apiConfig, /const typeSourceProducts = selectedProductType \? allProducts : products/);
+  assert.match(apiConfig, /typeSourceProducts\.filter\(function\(product\)/);
+});
+
 test('every product collection page uses the shared grid initializer', () => {
   const pages = [
     'bags.html',
