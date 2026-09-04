@@ -79,3 +79,17 @@ test('use case subtitles are normal style and use approved copy', () => {
   assert.match(useCasePage, /Products made for tournaments, teams, and fan experiences/);
   assert.match(useCasePage, /Explore golf accessories, sports merchandise, tournament kits, team and fan gear/);
 });
+
+test('every use case detail page has a functional collapsible filter', () => {
+  ['conference-swag.html', 'use-case-products.html'].forEach((file) => {
+    const source = fs.readFileSync(path.join(__dirname, '..', '..', file), 'utf8');
+    assert.match(source, /id="filterToggle"[^>]+aria-expanded="true"/);
+    assert.match(source, /id="filterSearch"/);
+    assert.match(source, /filterSearch\.hidden=expanded;filterTypes\.hidden=expanded/);
+
+    const scripts = [...source.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)]
+      .map((match) => match[1].trim())
+      .filter(Boolean);
+    scripts.forEach((code) => assert.doesNotThrow(() => new Function(code)));
+  });
+});
