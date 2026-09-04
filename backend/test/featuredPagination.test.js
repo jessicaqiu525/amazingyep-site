@@ -53,6 +53,12 @@ test('keychain product types merge overlapping functional keychain groups', () =
   assert.doesNotMatch(keychainPage, />Bottle Opener Keychains<|>Light-Up &amp; Functional Keychains</);
 });
 
+test('bags use a clear cosmetic and toiletry label for legacy product types', () => {
+  const bagsPage = fs.readFileSync(path.join(root, 'collections', 'bags.html'), 'utf8');
+  assert.match(bagsPage, /data-product-types="Makeup Kits\|Cosmetic Bags\|Toiletry Bags">Cosmetic &amp; Toiletry Bags/);
+  assert.doesNotMatch(bagsPage, />Makeup Kits</);
+});
+
 test('every product collection page uses the shared grid initializer', () => {
   const pages = [
     'bags.html',
