@@ -166,6 +166,7 @@ test('travel product types use clear journey-oriented groups', () => {
   for (const redundantLabel of ['Luggage & Travel Bags', 'Backpacks & Daypacks', 'Water Bottles', 'Tumblers & Travel Mugs', 'Travel & Leisure Kits', 'Travel Comfort', 'Outdoor Essentials', 'Power Banks', 'Cables & Adapters']) {
     assert.doesNotMatch(travelConfig, new RegExp(redundantLabel.replace(/[&]/g, '\\&')));
   }
+  assert.doesNotMatch(travelConfig, /\['Camping, Picnic & Outdoor Gear',\['outdoor'/);
 });
 
 test('all use case detail templates paginate featured and recommended products consistently', () => {
