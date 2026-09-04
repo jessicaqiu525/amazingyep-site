@@ -111,3 +111,19 @@ test('conference product types cover event merchandise without redundant booth c
   assert.doesNotMatch(conferencePage, /data-type="Booth Accessories"/);
   assert.doesNotMatch(conferencePage, /data-type="Power Banks"/);
 });
+
+test('employee product types use concise program-ready groups', () => {
+  const useCasePage = fs.readFileSync(path.join(__dirname, '..', '..', 'use-case-products.html'), 'utf8');
+  const employeeConfig = useCasePage.match(/employee:\{[\s\S]*?\},\n\s*mascot:/)?.[0] || '';
+  [
+    'Bags',
+    'Drinkware',
+    'Apparel & Wearables',
+    'Notebooks & Writing',
+    'Tech Accessories',
+    'Desk & Office',
+    'Wellness & Lifestyle',
+    'Awards & Recognition'
+  ].forEach((label) => assert.match(employeeConfig, new RegExp(`\\['${label.replace('&', '\\&')}'`)));
+  assert.doesNotMatch(employeeConfig, /'Tote & Shopping Bags'|'Backpacks & Drawstring Bags'|'Mugs & Cups'|'T-Shirts'|'Power Banks'/);
+});
