@@ -413,7 +413,7 @@
         typeItems = Array.from(document.querySelectorAll('.' + cardClassPrefix + '-type-item'));
       }
 
-      function drawFeaturedPagination(pageCount, resultCount) {
+      function drawFeaturedPagination(pageCount) {
         if (pageCount <= 1) {
           featuredPagination.style.display = 'none';
           featuredPagination.innerHTML = '';
@@ -423,7 +423,7 @@
           featuredPage = page;
           renderProducts();
           scrollFeaturedIntoView();
-        }, 'featured', resultCount);
+        }, 'featured');
       }
 
       function visiblePageNumbers(current, pageCount) {
@@ -431,7 +431,7 @@
         return Array.from(pages).filter(function(page) { return page >= 0 && page < pageCount; }).sort(function(a, b) { return a - b; });
       }
 
-      function drawJumpPagination(container, current, pageCount, onGo, key, resultCount) {
+      function drawJumpPagination(container, current, pageCount, onGo, key) {
         if (!container) return;
         if (pageCount <= 1) {
           container.style.display = 'none';
@@ -451,8 +451,7 @@
         });
         container.innerHTML = buttons + '<span style="margin-left:10px;color:#667085;">Go to</span>' +
           '<input type="number" min="1" max="' + pageCount + '" value="' + (current + 1) + '" data-' + key + '-jump aria-label="Go to page" style="width:72px;height:42px;border:1px solid #d0d5dd;border-radius:8px;padding:0 10px;text-align:center;font:inherit;">' +
-          '<button type="button" data-' + key + '-go style="height:42px;padding:0 18px;border:0;border-radius:8px;background:#082a4a;color:#fff;font-weight:700;cursor:pointer;">Go</button>' +
-          (typeof resultCount === 'number' ? '<span style="margin-left:8px;color:#667085;">' + resultCount + ' products</span>' : '');
+          '<button type="button" data-' + key + '-go style="height:42px;padding:0 18px;border:0;border-radius:8px;background:#082a4a;color:#fff;font-weight:700;cursor:pointer;">Go</button>';
         container.querySelectorAll('[data-' + key + '-page]').forEach(function(button) {
           button.onclick = function() { onGo(Number(button.getAttribute('data-' + key + '-page'))); };
         });
@@ -520,7 +519,7 @@
               renderProducts();
             });
           }
-          drawFeaturedPagination(1, 0);
+          drawFeaturedPagination(1);
         } else {
           let html = '';
           const pageCount = Math.max(1, Math.ceil(filteredProducts.length / featuredPageSize));
@@ -541,7 +540,7 @@
           }
 
           grid.innerHTML = html;
-          drawFeaturedPagination(pageCount, filteredProducts.length);
+          drawFeaturedPagination(pageCount);
         }
 
         if (recommendationTrack) {
