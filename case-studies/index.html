@@ -44,7 +44,7 @@
     .iu-featured-card-body p { font-size: 12px; color: var(--text-light); margin: 0; }
     .iu-pagination { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; margin: 28px auto 4px; padding: 0 32px; }
     .iu-recommended { background: #fff; padding: 24px 0 48px; }
-    .iu-recommended-grid { max-width: 1440px; margin: 0 auto; padding: 0 32px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+    .iu-recommended-grid { max-width: 1440px; margin: 0 auto; padding: 0 32px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
 
 
     @media (max-width: 768px) {
@@ -275,7 +275,7 @@
     let featuredPage = 0;
     let recommendedPage = 0;
     const featuredPageSize = 12;
-    const recommendedPageSize = 6;
+    const recommendedPageSize = 5;
 
     function pageNumbers(current, pageCount) {
       const pages = new Set([0, pageCount - 1, current - 2, current - 1, current, current + 1, current + 2]);

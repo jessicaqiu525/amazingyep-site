@@ -52,7 +52,7 @@ test('golf use case includes a dedicated golf accessories filter', () => {
 test('ideas page shows live products with direct pagination and recommendations', () => {
   assert.match(page, /fetch\(window\.API_CONFIG\.BASE_URL \+ '\/api\/products'\)/);
   assert.match(page, /const featuredPageSize = 12/);
-  assert.match(page, /const recommendedPageSize = 6/);
+  assert.match(page, /const recommendedPageSize = 5/);
   assert.match(page, /filtered\.slice\(featuredPage \* featuredPageSize/);
   assert.match(page, /recommendedProducts\.slice\(recommendedPage \* recommendedPageSize/);
   assert.match(page, /YOU MIGHT ALSO LIKE/);
@@ -174,8 +174,8 @@ test('all use case detail templates paginate featured and recommended products c
     assert.match(source, /id="featuredPagination"/);
     assert.match(source, /id="recommendedPagination"/);
     assert.match(source, /const featuredPageSize=12/);
-    assert.match(source, /const recommendedPageSize=6/);
-    assert.match(source, /\.swag-recs-grid\{display:grid;grid-template-columns:repeat\(6,minmax\(0,1fr\)\)/);
+    assert.match(source, /const recommendedPageSize=5/);
+    assert.match(source, /\.swag-recs-grid\{display:grid;grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
     assert.match(source, /function drawDirectPagination/);
     assert.match(source, /data-'\+key\+'-jump/);
     assert.match(source, /filtered\.slice\(featuredPage\*featuredPageSize/);
