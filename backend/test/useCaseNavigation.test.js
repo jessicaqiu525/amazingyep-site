@@ -184,3 +184,15 @@ test('all use case detail templates paginate featured and recommended products c
     assert.doesNotMatch(source, /\.slice\(0,5\)/);
   });
 });
+
+test('product type controls are alphabetized while keeping All Products first', () => {
+  const apiConfig = fs.readFileSync(path.join(__dirname, '..', '..', 'api-config.js'), 'utf8');
+  const useCasePage = fs.readFileSync(path.join(__dirname, '..', '..', 'use-case-products.html'), 'utf8');
+  const conferencePage = fs.readFileSync(path.join(__dirname, '..', '..', 'conference-swag.html'), 'utf8');
+  assert.match(apiConfig, /localeCompare\(bLabel, 'en'/);
+  assert.match(apiConfig, /\^all \(products\|collections\)\$/i);
+  assert.match(useCasePage, /sortedTypes=config\.types\.map/);
+  assert.match(useCasePage, /localeCompare\(b\.type\[0\],'en'/);
+  assert.match(conferencePage, /if\(!a\.dataset\.type\)return -1/);
+  assert.match(conferencePage, /localeCompare\(b\.textContent\.trim\(\),'en'/);
+});

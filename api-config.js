@@ -411,6 +411,15 @@
           existingTypes.add(productType.toLowerCase());
         });
         typeItems = Array.from(document.querySelectorAll('.' + cardClassPrefix + '-type-item'));
+        typeItems.sort(function(a, b) {
+          const aLabel = a.textContent.trim();
+          const bLabel = b.textContent.trim();
+          if (/^all (products|collections)$/i.test(aLabel)) return -1;
+          if (/^all (products|collections)$/i.test(bLabel)) return 1;
+          return aLabel.localeCompare(bLabel, 'en', { sensitivity: 'base' });
+        }).forEach(function(item) {
+          typeContainer.appendChild(item);
+        });
       }
 
       function drawFeaturedPagination(pageCount) {
