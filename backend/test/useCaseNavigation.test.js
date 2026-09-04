@@ -67,3 +67,15 @@ test('ideas page inline scripts remain valid JavaScript', () => {
     .filter(Boolean);
   scripts.forEach((source) => assert.doesNotThrow(() => new Function(source)));
 });
+
+test('use case subtitles are normal style and use approved copy', () => {
+  const useCasePage = fs.readFileSync(path.join(__dirname, '..', '..', 'use-case-products.html'), 'utf8');
+  const conferencePage = fs.readFileSync(path.join(__dirname, '..', '..', 'conference-swag.html'), 'utf8');
+  assert.match(page, /Ideas that inspire, products that make an impact/);
+  assert.match(page, /\.iu-subtitle \{[^}]*font-style: normal/);
+  assert.match(useCasePage, /\.swag-subtitle\{font-style:normal\}/);
+  assert.match(conferencePage, /\.swag-subtitle\{font-style:normal\}/);
+  assert.match(useCasePage, /Explore custom plush toys, mascot merchandise/);
+  assert.match(useCasePage, /Products made for tournaments, teams, and fan experiences/);
+  assert.match(useCasePage, /Explore golf accessories, sports merchandise, tournament kits, team and fan gear/);
+});
