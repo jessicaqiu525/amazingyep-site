@@ -42,4 +42,5 @@ test('golf use case includes a dedicated golf accessories filter', () => {
     'utf8'
   );
   assert.match(useCasePage, /\['Golf Accessories',\['golf headcover','golf head cover','golf ball','golf bag','golf club','golf tool','golf kit','golf plush','golf mascot'\]\]/);
+  assert.match(useCasePage, /if\(isGolfAccessory&&activeType!=='Golf Accessories'\)return false/);
 });
