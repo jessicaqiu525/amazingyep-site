@@ -34,6 +34,11 @@ test('home use-case section ends with a project inquiry call to action', () => {
   assert.doesNotMatch(homePage, /Explore More Projects/);
 });
 
+test('home brand-program cards link directly to their corresponding brand pages', () => {
+  assert.match(homePage, /href="solutions\/brand-program\.html\?brand=7-Eleven" class="wwc-card"/);
+  assert.match(homePage, /href="solutions\/brand-program\.html\?brand=OLIPOP" class="wwc-card"/);
+});
+
 test('each use-case chip keeps its own destination', () => {
   const expected = {
     'Conference &amp; Event Swag': '../conference-swag.html',
