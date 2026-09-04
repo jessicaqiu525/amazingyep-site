@@ -128,19 +128,17 @@ test('employee product types use concise program-ready groups', () => {
   assert.doesNotMatch(employeeConfig, /'Tote & Shopping Bags'|'Backpacks & Drawstring Bags'|'Mugs & Cups'|'T-Shirts'|'Power Banks'|'Notebooks & Writing'|'Desk & Office'/);
 });
 
-test('character and mascot product types prioritize products over keychain materials', () => {
+test('character and mascot product types use clear non-overlapping groups', () => {
   const useCasePage = fs.readFileSync(path.join(__dirname, '..', '..', 'use-case-products.html'), 'utf8');
   const mascotConfig = useCasePage.match(/mascot:\{[\s\S]*?\},\n\s*schools:/)?.[0] || '';
   [
     'Custom Plush Toys',
-    'Mascot Costumes',
-    'Plush Keychains',
+    'Wearable Mascot Costumes',
     'Plush Pillows',
-    'Character Keychains',
-    'Pins, Patches & Collectibles',
-    'Character Apparel & Accessories'
+    'Keychains & Collectibles',
+    'Character Wearables'
   ].forEach((label) => assert.match(mascotConfig, new RegExp(`\\['${label.replace('&', '\\&')}'`)));
-  assert.doesNotMatch(mascotConfig, /'PVC & Rubber Keychains'|'Metal & Enamel Keychains'|'Brand & Team Mascots'/);
+  assert.doesNotMatch(mascotConfig, /'PVC & Rubber Keychains'|'Metal & Enamel Keychains'|'Brand & Team Mascots'|'Plush Keychains'|'Character Keychains'|'Pins, Patches & Collectibles'|'Character Apparel & Accessories'/);
 });
 
 test('all use case detail templates paginate featured and recommended products consistently', () => {
