@@ -157,6 +157,17 @@ test('school and community product types use broad non-duplicate groups', () => 
   assert.doesNotMatch(schoolsConfig, /'T-Shirts'|'Hoodies & Sweatshirts'|'Hats & Caps'|'Backpacks & Drawstring Bags'|'Water Bottles'|'Brand & Team Mascots'|'Custom Plush Toys'|'Pins & Patches'|'Flags'/);
 });
 
+test('travel product types use clear journey-oriented groups', () => {
+  const useCasePage = fs.readFileSync(path.join(__dirname, '..', '..', 'use-case-products.html'), 'utf8');
+  const travelConfig = useCasePage.match(/travel:\{[\s\S]*?\},\n\s*golf:/)?.[0] || '';
+  for (const label of ['Luggage & Travel Bags', 'Backpacks & Daypacks', 'Coolers & Lunch Bags', 'Travel Drinkware', 'Travel Comfort', 'Travel Accessories', 'Outdoor Essentials', 'Tech & Charging']) {
+    assert.match(travelConfig, new RegExp(label.replace(/[&]/g, '\\&')));
+  }
+  for (const redundantLabel of ['Water Bottles', 'Tumblers & Travel Mugs', 'Travel & Leisure Kits', 'Power Banks', 'Cables & Adapters']) {
+    assert.doesNotMatch(travelConfig, new RegExp(redundantLabel.replace(/[&]/g, '\\&')));
+  }
+});
+
 test('all use case detail templates paginate featured and recommended products consistently', () => {
   ['conference-swag.html', 'use-case-products.html'].forEach((file) => {
     const source = fs.readFileSync(path.join(__dirname, '..', '..', file), 'utf8');
