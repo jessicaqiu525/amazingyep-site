@@ -32,8 +32,8 @@ test('the page has no broad conference-only navigation override', () => {
 
 test('brand loyalty is removed and golf is featured once', () => {
   assert.doesNotMatch(page, /Brand Loyalty Programs|case=loyalty/);
-  const featuredGolfCards = page.match(/class="iu-featured-card"[^>]+case=golf/g) || [];
-  assert.equal(featuredGolfCards.length, 1);
+  const golfUseCaseLinks = page.match(/class="iu-type-item"[^>]+case=golf/g) || [];
+  assert.equal(golfUseCaseLinks.length, 1);
 });
 
 test('golf use case includes a dedicated golf accessories filter', () => {
@@ -47,4 +47,23 @@ test('golf use case includes a dedicated golf accessories filter', () => {
   assert.match(useCasePage, /if\(isGolfAccessory\)return activeType==='Golf Accessories'/);
   assert.match(useCasePage, /if\(websiteType\)return websiteType\.toLowerCase\(\)===activeType\.toLowerCase\(\)/);
   assert.match(useCasePage, /if\(activeType==='Team & Fan Gear'\)return activeTerms\.some/);
+});
+
+test('ideas page shows live products with direct pagination and recommendations', () => {
+  assert.match(page, /fetch\(window\.API_CONFIG\.BASE_URL \+ '\/api\/products'\)/);
+  assert.match(page, /const featuredPageSize = 12/);
+  assert.match(page, /const recommendedPageSize = 6/);
+  assert.match(page, /filtered\.slice\(featuredPage \* featuredPageSize/);
+  assert.match(page, /recommendedProducts\.slice\(recommendedPage \* recommendedPageSize/);
+  assert.match(page, /YOU MIGHT ALSO LIKE/);
+  assert.match(page, /function drawDirectPagination/);
+  assert.match(page, /data-' \+ key \+ '-jump/);
+  assert.doesNotMatch(page, /conference-swag-hero\.jpg/);
+});
+
+test('ideas page inline scripts remain valid JavaScript', () => {
+  const scripts = Array.from(page.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g))
+    .map((match) => match[1])
+    .filter(Boolean);
+  scripts.forEach((source) => assert.doesNotThrow(() => new Function(source)));
 });

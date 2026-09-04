@@ -35,19 +35,23 @@
     .iu-featured { background: #fff; padding: 32px 0 40px; }
     .iu-featured-header { max-width: 1440px; margin: 0 auto 16px; padding: 0 32px; }
     .iu-featured-header .section-label { display: block; margin-bottom: 4px; }
-    .iu-featured-grid { max-width: 1440px; margin: 0 auto; padding: 0 32px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .iu-featured-grid { max-width: 1440px; margin: 0 auto; padding: 0 32px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
     .iu-featured-card { border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s; background: var(--gray-50); }
     .iu-featured-card:hover { transform: translateY(-2px); }
     .iu-featured-card-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; background: var(--gray-100); }
     .iu-featured-card-body { padding: 12px; }
     .iu-featured-card-body h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin: 0 0 4px; }
     .iu-featured-card-body p { font-size: 12px; color: var(--text-light); margin: 0; }
+    .iu-pagination { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; margin: 28px auto 4px; padding: 0 32px; }
+    .iu-recommended { background: #fff; padding: 24px 0 48px; }
+    .iu-recommended-grid { max-width: 1440px; margin: 0 auto; padding: 0 32px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
 
 
     @media (max-width: 768px) {
       .iu-title { font-size: 30px; letter-spacing: 0; }
       .iu-subtitle { font-size: 14px; display: block; margin-left: 0; margin-top: 4px; }
       .iu-featured-grid { grid-template-columns: repeat(2, 1fr); }
+      .iu-recommended-grid { grid-template-columns: repeat(2, 1fr); }
       .iu-type-grid { gap: 6px; }
       .iu-type-item { padding: 8px 16px; font-size: 13px; }
     }
@@ -145,15 +149,15 @@
       <span class="section-label">FEATURED</span>
     </div>
     <div class="iu-featured-grid" id="featuredGrid">
-      <!-- Row 1 -->
-      <div class="iu-featured-card" data-cat="Conference" data-href="../conference-swag.html"><img class="iu-featured-card-img" src="../assets/conference-swag-hero.jpg" alt="Conference &amp; Event Swag"><div class="iu-featured-card-body"><h4>Conference &amp; Event Swag</h4><p>Custom merchandise programs designed to engage attendees, amplify sponsor visibility, and create memorable event experiences.</p></div></div>
-      <div class="iu-featured-card" data-cat="Employee" data-href="../use-case-products.html?case=employee"><img class="iu-featured-card-img" src="../assets/employee-engagement-hero.jpg" alt="Employee Engagement Kits"><div class="iu-featured-card-body"><h4>Employee Engagement Kits</h4><p>Branded kits and merchandise for onboarding, employee appreciation, team events, and company culture programs.</p></div></div>
-      <div class="iu-featured-card" data-cat="Mascot" data-href="../use-case-products.html?case=mascot"><img class="iu-featured-card-img" src="../assets/character-mascot-hero.jpg" alt="Character &amp; Mascot Programs"><div class="iu-featured-card-body"><h4>Character &amp; Mascot Programs</h4><p>Custom character merchandise including plush toys, mascot costumes, keychains, collectibles, and retail-ready merchandise.</p></div></div>
-      <!-- Row 2 -->
-      <div class="iu-featured-card" data-cat="School" data-href="../use-case-products.html?case=schools"><img class="iu-featured-card-img" src="../assets/school-mascot-hero.jpg" alt="Schools, Teams &amp; Communities"><div class="iu-featured-card-body"><h4>Schools, Teams &amp; Communities</h4><p>Custom merchandise programs that bring schools, teams, and communities together through shared pride and meaningful engagement.</p></div></div>
-      <div class="iu-featured-card" data-cat="Golf Sports" data-href="../use-case-products.html?case=golf"><img class="iu-featured-card-img" src="../assets/golf-sports-use-case-card.png" alt="Golf &amp; Sports Events"><div class="iu-featured-card-body"><h4>Golf &amp; Sports Events</h4><p>Custom merchandise for tournaments, team events, fan experiences, awards, and memorable sports programs.</p></div></div>
-      <div class="iu-featured-card" data-cat="Travel" data-href="../use-case-products.html?case=travel"><img class="iu-featured-card-img" src="../assets/travel-adventure-hero.jpg" alt="Travel &amp; Adventure Collection"><div class="iu-featured-card-body"><h4>Travel &amp; Adventure Collection</h4><p>From luggage and travel accessories to outdoor essentials for branded products that inspire exploration.</p></div></div>
+      <p style="grid-column:1/-1;color:var(--text-light);">Loading products…</p>
     </div>
+    <nav class="iu-pagination" id="featuredPagination" aria-label="Featured product pages"></nav>
+  </section>
+
+  <section class="iu-recommended" id="recommendedSection">
+    <div class="iu-featured-header"><span class="section-label">YOU MIGHT ALSO LIKE</span></div>
+    <div class="iu-recommended-grid" id="recommendedGrid"><p style="grid-column:1/-1;color:var(--text-light);">Loading products…</p></div>
+    <nav class="iu-pagination" id="recommendedPagination" aria-label="Recommended product pages"></nav>
   </section>
 
   <!-- HOW WE WORK -->
@@ -260,7 +264,88 @@
     </div>
   </footer>
 
+  <script src="../api-config.js?v=20260904-ideas-products"></script>
   <script>
+    const featuredGrid = document.getElementById('featuredGrid');
+    const recommendedGrid = document.getElementById('recommendedGrid');
+    const featuredPagination = document.getElementById('featuredPagination');
+    const recommendedPagination = document.getElementById('recommendedPagination');
+    let featuredProducts = [];
+    let recommendedProducts = [];
+    let featuredPage = 0;
+    let recommendedPage = 0;
+    const featuredPageSize = 12;
+    const recommendedPageSize = 6;
+
+    function pageNumbers(current, pageCount) {
+      const pages = new Set([0, pageCount - 1, current - 2, current - 1, current, current + 1, current + 2]);
+      return Array.from(pages).filter(function(page) { return page >= 0 && page < pageCount; }).sort(function(a, b) { return a - b; });
+    }
+
+    function drawDirectPagination(container, current, pageCount, onGo, key) {
+      if (pageCount <= 1) { container.style.display = 'none'; return; }
+      container.style.display = 'flex';
+      let last = -1;
+      let buttons = '';
+      pageNumbers(current, pageCount).forEach(function(page) {
+        if (last >= 0 && page - last > 1) buttons += '<span aria-hidden="true" style="padding:0 4px;">…</span>';
+        buttons += '<button type="button" data-' + key + '-page="' + page + '" aria-label="Page ' + (page + 1) + '"' +
+          (page === current ? ' aria-current="page"' : '') + ' style="min-width:42px;height:42px;border:1px solid ' +
+          (page === current ? '#ff5a1f' : '#d0d5dd') + ';border-radius:8px;background:' + (page === current ? '#ff5a1f' : '#fff') +
+          ';color:' + (page === current ? '#fff' : '#082a4a') + ';font-weight:700;cursor:pointer;">' + (page + 1) + '</button>';
+        last = page;
+      });
+      container.innerHTML = buttons + '<span style="margin-left:10px;color:#667085;">Go to</span>' +
+        '<input type="number" min="1" max="' + pageCount + '" value="' + (current + 1) + '" data-' + key + '-jump aria-label="Go to page" style="width:72px;height:42px;border:1px solid #d0d5dd;border-radius:8px;padding:0 10px;text-align:center;font:inherit;">' +
+        '<button type="button" data-' + key + '-go style="height:42px;padding:0 18px;border:0;border-radius:8px;background:#082a4a;color:#fff;font-weight:700;cursor:pointer;">Go</button>';
+      container.querySelectorAll('[data-' + key + '-page]').forEach(function(button) {
+        button.onclick = function() { onGo(Number(button.getAttribute('data-' + key + '-page'))); };
+      });
+      const input = container.querySelector('[data-' + key + '-jump]');
+      function jump() {
+        const page = Math.max(1, Math.min(pageCount, Number(input.value) || 1));
+        input.value = page;
+        onGo(page - 1);
+      }
+      container.querySelector('[data-' + key + '-go]').onclick = jump;
+      input.onkeydown = function(event) { if (event.key === 'Enter') jump(); };
+    }
+
+    function renderFeatured() {
+      const query = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+      const filtered = featuredProducts.filter(function(product) {
+        return !query || [product.name, product.sku, product.category, product.websiteProductType].join(' ').toLowerCase().includes(query);
+      });
+      const pageCount = Math.max(1, Math.ceil(filtered.length / featuredPageSize));
+      featuredPage = Math.min(featuredPage, pageCount - 1);
+      const visible = filtered.slice(featuredPage * featuredPageSize, (featuredPage + 1) * featuredPageSize);
+      featuredGrid.innerHTML = visible.length ? visible.map(function(product) { return window.API_CONFIG.renderProductCard(product, 'iu'); }).join('') : '<p style="grid-column:1/-1;color:var(--text-light);">Products are available on request.</p>';
+      drawDirectPagination(featuredPagination, featuredPage, pageCount, function(page) { featuredPage = page; renderFeatured(); featuredGrid.scrollIntoView({ behavior: 'smooth' }); }, 'featured');
+    }
+
+    function renderRecommended() {
+      const pageCount = Math.max(1, Math.ceil(recommendedProducts.length / recommendedPageSize));
+      recommendedPage = Math.min(recommendedPage, pageCount - 1);
+      const visible = recommendedProducts.slice(recommendedPage * recommendedPageSize, (recommendedPage + 1) * recommendedPageSize);
+      recommendedGrid.innerHTML = visible.length ? visible.map(function(product) { return window.API_CONFIG.renderProductCard(product, 'iu'); }).join('') : '<p style="grid-column:1/-1;color:var(--text-light);">More product ideas are available on request.</p>';
+      drawDirectPagination(recommendedPagination, recommendedPage, pageCount, function(page) { recommendedPage = page; renderRecommended(); document.getElementById('recommendedSection').scrollIntoView({ behavior: 'smooth' }); }, 'recommended');
+    }
+
+    fetch(window.API_CONFIG.BASE_URL + '/api/products').then(function(response) {
+      if (!response.ok) throw new Error('Unable to load products');
+      return response.json();
+    }).then(function(data) {
+      const products = (data.products || []).filter(function(product) { return product.published !== false; });
+      featuredProducts = products.filter(function(product) { return [].concat(product.useCases || product.useCase || []).length > 0; });
+      if (!featuredProducts.length) featuredProducts = products.slice();
+      recommendedProducts = products.slice().reverse();
+      renderFeatured();
+      renderRecommended();
+    }).catch(function() {
+      featuredGrid.innerHTML = '<p style="grid-column:1/-1;color:var(--text-light);">Products are temporarily unavailable.</p>';
+      recommendedGrid.innerHTML = '<p style="grid-column:1/-1;color:var(--text-light);">More product ideas are available on request.</p>';
+    });
+
     function toggleFilter() {
       const arrow = document.getElementById('filterArrow');
       const content = document.getElementById('typeContent');
@@ -274,12 +359,8 @@
       });
     });
     function filterIdeas() {
-      const query = (document.getElementById('searchInput').value || '').toLowerCase();
-      document.querySelectorAll('.iu-featured-card').forEach(card => {
-        const name = (card.querySelector('h4')?.textContent || '').toLowerCase();
-        const cat = (card.dataset.cat || '').toLowerCase();
-        card.style.display = (!query || name.includes(query) || cat.includes(query)) ? '' : 'none';
-      });
+      featuredPage = 0;
+      renderFeatured();
     }
   </script>
 
