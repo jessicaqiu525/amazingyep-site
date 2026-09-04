@@ -377,6 +377,7 @@ const WEBSITE_USE_CASE_RULES = [
 // themes are useful suggestions, but broad labels such as Business, Outdoors,
 // or Travel are not sufficient on their own for customer-facing use cases.
 const CURATED_WEBSITE_USE_CASES = {
+  AK013: ['schools', 'travel'],
   AG059: ['conference', 'employee', 'schools', 'travel'],
   AK746: ['conference', 'employee', 'travel'],
   AK747: ['conference', 'employee'],

@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const {
   derivedUseCases,
   derivedWebsiteSubcategory,
+  derivedWebsiteProductType,
   productMatches,
   recommendWebsitePlacement
 } = require('../lib/productStore');
@@ -58,6 +59,20 @@ test('removes a cooler subcategory from a tote bag', () => {
   });
 
   assert.equal(subcategory, '');
+});
+
+test('keeps AK013 belt bag out of cooler filters and golf events', () => {
+  const product = {
+    sku: 'AK013',
+    name: 'Clearly Cool Belt Bag',
+    category: 'Bags',
+    websiteProductType: 'Crossbody & Fanny Packs',
+    keywords: ['Cooler Beach Bag', 'Clear Fanny Pack'],
+    useCases: ['schools', 'travel', 'golf']
+  };
+
+  assert.equal(derivedWebsiteProductType(product), 'Crossbody & Fanny Packs');
+  assert.deepEqual(derivedUseCases(product), ['schools', 'travel']);
 });
 
 test('classifies AW637 plush golf headcover as a golf accessory', () => {
