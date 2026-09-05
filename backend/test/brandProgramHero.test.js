@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const page = fs.readFileSync(path.join(__dirname, '..', '..', 'solutions', 'brand-program.html'), 'utf8');
+const brandIndex = fs.readFileSync(path.join(__dirname, '..', '..', 'solutions', 'index.html'), 'utf8');
 
 test('brand program hero is built from live product and gallery images', () => {
   assert.match(page, /id="brandProductHero"/);
@@ -38,8 +39,23 @@ test('brand projects label leads the section heading hierarchy', () => {
   assert.match(page, /\.brand-products \.section-title \{[^}]*font-size: clamp\(17px, 1\.6vw, 22px\)/);
 });
 
+test('brand product cards fill a balanced four-column content grid', () => {
+  assert.match(page, /\.brand-product-grid \{[^}]*grid-template-columns: repeat\(4, minmax\(0, 1fr\)\)[^}]*gap: 24px[^}]*width: 100%/);
+  assert.match(page, /@media \(max-width: 1100px\)[\s\S]*repeat\(3, minmax\(0, 1fr\)\)/);
+  assert.match(page, /@media \(max-width: 820px\)[\s\S]*repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.doesNotMatch(page, /repeat\(auto-fit, minmax\(240px, 300px\)\)/);
+});
+
 test('brand program inline scripts remain valid JavaScript', () => {
   const scripts = Array.from(page.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g))
     .map(match => match[1]).filter(Boolean);
   scripts.forEach(source => assert.doesNotThrow(() => new Function(source)));
+});
+
+test('brand category buttons are sorted alphabetically, including dynamic categories', () => {
+  const labels = Array.from(brandIndex.matchAll(/class="bp-type-item(?: active)?"[^>]*>([^<]+)<\/button>/g))
+    .map(match => match[1].replace(/&amp;/g, '&'));
+  assert.deepEqual(labels, [...labels].sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' })));
+  assert.match(brandIndex, /function sortBrandCategoryButtons\(\)/);
+  assert.match(brandIndex, /sortBrandCategoryButtons\(\);\s*renderBrandPage\(\)/);
 });

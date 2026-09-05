@@ -159,13 +159,13 @@
     <div class="bp-type-content" id="typeContent">
       <div class="bp-type-label">BRAND CATEGORY</div>
       <div class="bp-type-grid">
+        <button class="bp-type-item" type="button" data-filter="all">All Brands</button>
         <button class="bp-type-item active" type="button" data-filter="featured">Featured Brands</button>
         <button class="bp-type-item" type="button" data-filter="food-beverage">Food &amp; Beverage</button>
-        <button class="bp-type-item" type="button" data-filter="lifestyle-entertainment">Lifestyle &amp; Entertainment</button>
-        <button class="bp-type-item" type="button" data-filter="sports">Sports</button>
-        <button class="bp-type-item" type="button" data-filter="retail-automotive">Retail &amp; Automotive</button>
         <button class="bp-type-item" type="button" data-filter="health-wellness">Health, Wellness &amp; Pet</button>
-        <button class="bp-type-item" type="button" data-filter="all">All Brands</button>
+        <button class="bp-type-item" type="button" data-filter="lifestyle-entertainment">Lifestyle &amp; Entertainment</button>
+        <button class="bp-type-item" type="button" data-filter="retail-automotive">Retail &amp; Automotive</button>
+        <button class="bp-type-item" type="button" data-filter="sports">Sports</button>
       </div>
     </div>
   </div>
@@ -424,6 +424,12 @@
     const brandApiBase = (window.API_CONFIG && window.API_CONFIG.BASE_URL) || (localBrandHosts.includes(location.hostname) ? location.origin : 'https://amazingyep-sitebackend.onrender.com');
     const brandCategorySlugs = {'Food & Beverage':'food-beverage','Lifestyle & Entertainment':'lifestyle-entertainment','Sports':'sports','Retail & Automotive':'retail-automotive','Health, Wellness & Pet':'health-wellness'};
     function categorySlug(category) { return brandCategorySlugs[category] || String(category || 'other').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+    function sortBrandCategoryButtons() {
+      const container = document.querySelector('.bp-type-grid');
+      Array.from(container.querySelectorAll('.bp-type-item')).sort((a, b) =>
+        a.textContent.trim().localeCompare(b.textContent.trim(), 'en', { sensitivity: 'base' })
+      ).forEach(button => container.appendChild(button));
+    }
     function bindCategoryButton(button) {
       button.addEventListener('click', function() {
         document.querySelectorAll('.bp-type-item').forEach(item => item.classList.remove('active'));
@@ -459,8 +465,10 @@
         const title = document.createElement('h4'); title.textContent = brand.name; const label = document.createElement('p'); label.textContent = brand.category;
         body.append(title, label); card.append(img, body); document.getElementById('featuredGrid').appendChild(card); bindBrandCard(card);
       });
+      sortBrandCategoryButtons();
       renderBrandPage();
     }).catch(() => {});
+    sortBrandCategoryButtons();
     const requestedBrandCategory = new URLSearchParams(window.location.search).get('category');
     const requestedCategoryButton = requestedBrandCategory ? document.querySelector('.bp-type-item[data-filter="' + requestedBrandCategory + '"]') : null;
     if (requestedCategoryButton) {
