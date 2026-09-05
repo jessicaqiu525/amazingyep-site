@@ -13,6 +13,12 @@ test('brand program hero is built from live product and gallery images', () => {
   assert.match(page, /collections\/product\.html\?id=/);
 });
 
+test('brand breadcrumb follows the product hero', () => {
+  const heroPosition = page.indexOf('id="brandProductHero"');
+  const breadcrumbPosition = page.indexOf('aria-label="Breadcrumb"');
+  assert.ok(heroPosition >= 0 && breadcrumbPosition > heroPosition);
+});
+
 test('multi-image brand hero has accessible automatic and manual controls', () => {
   assert.match(page, /aria-label="Previous product image"/);
   assert.match(page, /aria-label="Next product image"/);

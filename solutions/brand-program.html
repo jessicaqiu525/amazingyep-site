@@ -8,7 +8,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style.css?v=20260903-search-cleanup">
   <style>
-    .brand-back-bar { margin-top: 72px; background: #fff; border-bottom: 1px solid var(--gray-200); }
+    main { padding-top: 72px; }
+    .brand-back-bar { background: #fff; border-bottom: 1px solid var(--gray-200); }
     .brand-back-bar .container { min-height: 54px; display: flex; align-items: center; gap: 9px; color: var(--text-light); font-size: 14px; }
     .brand-back-bar a { display: inline-flex; align-items: center; gap: 8px; color: var(--navy); font-weight: 700; text-decoration: none; transition: var(--transition); }
     .brand-back-bar a:hover { color: var(--orange); }
@@ -87,16 +88,6 @@
     </div>
   </nav>
 
-  <div class="brand-back-bar" aria-label="Breadcrumb">
-    <div class="container">
-      <a class="brand-back-root" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Brand Programs</a>
-      <span class="brand-back-separator">/</span>
-      <a class="brand-back-category" id="breadcrumbCategory" href="index.html">Brand Category</a>
-      <span class="brand-back-separator">/</span>
-      <span class="brand-back-current" id="breadcrumbBrand">Brand Program</span>
-    </div>
-  </div>
-
   <main>
     <section class="brand-product-hero" id="brandProductHero" aria-label="Brand product gallery">
       <div class="brand-hero-track" id="brandHeroTrack"></div>
@@ -104,6 +95,15 @@
       <button class="brand-hero-control brand-hero-next" id="brandHeroNext" type="button" aria-label="Next product image">›</button>
       <div class="brand-hero-dots" id="brandHeroDots" aria-label="Choose product image"></div>
     </section>
+    <div class="brand-back-bar" aria-label="Breadcrumb">
+      <div class="container">
+        <a class="brand-back-root" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Brand Programs</a>
+        <span class="brand-back-separator">/</span>
+        <a class="brand-back-category" id="breadcrumbCategory" href="index.html">Brand Category</a>
+        <span class="brand-back-separator">/</span>
+        <span class="brand-back-current" id="breadcrumbBrand">Brand Program</span>
+      </div>
+    </div>
     <section class="brand-products">
       <div class="container">
         <div class="brand-products-heading">
