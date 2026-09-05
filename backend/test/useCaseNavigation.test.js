@@ -67,6 +67,11 @@ test('brand loyalty is removed and golf is featured once', () => {
   assert.equal(golfUseCaseLinks.length, 1);
 });
 
+test('home golf use case uses the event-focused lifestyle image', () => {
+  assert.match(homePage, /assets\/golf-sports-hero-v3\.png" alt="Golf &amp; Sports Events"/);
+  assert.doesNotMatch(homePage, /assets\/golf-sports-home-card\.png" alt="Golf &amp; Sports Events"/);
+});
+
 test('golf use case includes a dedicated golf accessories filter', () => {
   const useCasePage = fs.readFileSync(
     path.join(__dirname, '..', '..', 'use-case-products.html'),
