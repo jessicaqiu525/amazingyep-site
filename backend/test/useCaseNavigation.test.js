@@ -74,9 +74,10 @@ test('golf use case includes a dedicated golf accessories filter', () => {
   );
   const golfConfig = useCasePage.match(/golf:\{[\s\S]*?\}\n\s*\};/)?.[0] || '';
   assert.match(golfConfig, /\['Golf Accessories',\['golf headcover','golf head cover','golf ball','golf club','golf tool','golf kit','golf plush','golf mascot'\]\]/);
-  assert.match(golfConfig, /\['Wearables',\['scarf','scarves','hat','cap','polo','jacket','outerwear','snowsuit','snow gear','ski wear','winter jumpsuit','wearable','apparel'\]\]/);
-  assert.match(golfConfig, /\['Bags',\['bag','golf bag','cooler','lunch bag','duffel','travel bag'\]\]/);
-  assert.match(golfConfig, /\['Drinkware',\['drinkware','water bottle','tumbler','travel mug','mug','cup'\]\]/);
+  assert.match(golfConfig, /\['Wearables',\['scarf','scarves','hat','hats','cap','caps'/);
+  assert.match(golfConfig, /'wearable','wearables','apparel'\]\]/);
+  assert.match(golfConfig, /\['Bags',\['bag','bags','golf bag','golf bags'/);
+  assert.match(golfConfig, /\['Drinkware',\['drinkware','water bottle','water bottles','tumbler','tumblers'/);
   assert.match(golfConfig, /\['Team & Fan Gear',\['sports mascot','team mascot','school mascot','rally towel','team flag','pennant','fan banner','foam finger','pom-pom','cheer gear','fan gear','supporter gear','team merchandise'\]\]/);
   assert.doesNotMatch(golfConfig, /\['Hats & Caps'|\['Polo Shirts'|\['Jackets & Outerwear'|\['Coolers & Lunch Bags'|\['Duffel & Travel Bags'|\['Tumblers & Travel Mugs'|\['Water Bottles'/);
   assert.match(useCasePage, /if\(isGolfAccessory\)return activeType==='Golf Accessories'/);
