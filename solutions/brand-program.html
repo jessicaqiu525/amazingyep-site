@@ -18,6 +18,21 @@
     .brand-back-category { color: var(--navy) !important; font-weight: 600 !important; }
     .brand-back-category:hover { color: var(--orange) !important; text-decoration: underline; text-underline-offset: 3px; }
     .brand-back-current { color: var(--text-light); }
+    .brand-product-hero { position: relative; display: none; overflow: hidden; min-height: min(560px, 58vw); background: #eef2f5; }
+    .brand-product-hero.is-ready { display: block; }
+    .brand-hero-track { position: absolute; inset: 0; }
+    .brand-hero-slide { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity .65s ease; }
+    .brand-hero-slide.active { opacity: 1; pointer-events: auto; }
+    .brand-hero-slide img { display: block; width: 100%; height: 100%; object-fit: contain; background: #fff; }
+    .brand-hero-caption { position: absolute; left: max(24px, calc((100% - 1440px) / 2 + 32px)); bottom: 34px; max-width: min(520px, calc(100% - 48px)); padding: 18px 22px; border-radius: 14px; background: rgba(8, 40, 70, .9); color: #fff; text-decoration: none; backdrop-filter: blur(8px); }
+    .brand-hero-caption strong { display: block; margin-bottom: 5px; font-size: clamp(18px, 2vw, 26px); line-height: 1.2; }
+    .brand-hero-caption span { font-size: 13px; opacity: .82; }
+    .brand-hero-control { position: absolute; z-index: 2; top: 50%; display: grid; place-items: center; width: 46px; height: 46px; border: 1px solid rgba(8, 40, 70, .14); border-radius: 50%; background: rgba(255,255,255,.92); color: var(--navy); font-size: 26px; cursor: pointer; transform: translateY(-50%); box-shadow: 0 6px 20px rgba(8,40,70,.12); }
+    .brand-hero-prev { left: 24px; }
+    .brand-hero-next { right: 24px; }
+    .brand-hero-dots { position: absolute; z-index: 2; right: max(24px, calc((100% - 1440px) / 2 + 32px)); bottom: 28px; display: flex; gap: 8px; }
+    .brand-hero-dot { width: 10px; height: 10px; padding: 0; border: 1px solid rgba(8,40,70,.35); border-radius: 50%; background: rgba(255,255,255,.8); cursor: pointer; }
+    .brand-hero-dot.active { border-color: var(--orange); background: var(--orange); }
     .brand-products { padding: 44px 0 64px; background: #f6f8fa; }
     .brand-products-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; }
     .brand-products .section-label { display: block; margin-bottom: 8px; color: var(--orange); font-size: 15px; font-weight: 800; letter-spacing: .1em; }
@@ -32,6 +47,12 @@
     .brand-product-card h3 { margin: 0 0 5px; color: var(--navy); font-size: 15px; line-height: 1.35; }
     .brand-product-card p { margin: 0; color: var(--text-light); font-size: 12px; font-weight: 600; }
     @media (max-width: 768px) {
+      .brand-product-hero { min-height: 440px; }
+      .brand-hero-control { width: 40px; height: 40px; }
+      .brand-hero-prev { left: 12px; }
+      .brand-hero-next { right: 12px; }
+      .brand-hero-caption { left: 18px; right: 18px; bottom: 52px; max-width: none; }
+      .brand-hero-dots { right: 18px; bottom: 20px; }
       .brand-products { padding: 44px 0; }
       .brand-product-grid { grid-template-columns: 1fr; }
     }
@@ -77,6 +98,12 @@
   </div>
 
   <main>
+    <section class="brand-product-hero" id="brandProductHero" aria-label="Brand product gallery">
+      <div class="brand-hero-track" id="brandHeroTrack"></div>
+      <button class="brand-hero-control brand-hero-prev" id="brandHeroPrev" type="button" aria-label="Previous product image">‹</button>
+      <button class="brand-hero-control brand-hero-next" id="brandHeroNext" type="button" aria-label="Next product image">›</button>
+      <div class="brand-hero-dots" id="brandHeroDots" aria-label="Choose product image"></div>
+    </section>
     <section class="brand-products">
       <div class="container">
         <div class="brand-products-heading">
@@ -146,11 +173,57 @@
     function safe(value) {
       const node = document.createElement('div'); node.textContent = value || ''; return node.innerHTML;
     }
+    function productImages(product) {
+      return [].concat(product.images || [], product.gallery || []).filter(Boolean).map(image => {
+        if (/^https?:\/\//i.test(image)) return image;
+        return image.startsWith('/') ? apiBase + image : '../' + image.replace(/^\.\//, '');
+      });
+    }
+    function initBrandHero(products) {
+      const hero = document.getElementById('brandProductHero');
+      const track = document.getElementById('brandHeroTrack');
+      const dots = document.getElementById('brandHeroDots');
+      const slides = [];
+      const seen = new Set();
+      products.forEach(product => productImages(product).forEach(image => {
+        if (seen.has(image)) return;
+        seen.add(image);
+        slides.push({ image, product });
+      }));
+      if (!slides.length) return;
+      track.innerHTML = slides.map((slide, index) => '<div class="brand-hero-slide' + (index === 0 ? ' active' : '') + '" data-slide="' + index + '"><img src="' + safe(slide.image) + '" alt="' + safe(slide.product.name) + '"><a class="brand-hero-caption" href="../collections/product.html?id=' + encodeURIComponent(slide.product.id || slide.product.sku) + '"><strong>' + safe(slide.product.name) + '</strong><span>View product details →</span></a></div>').join('');
+      dots.innerHTML = slides.map((slide, index) => '<button class="brand-hero-dot' + (index === 0 ? ' active' : '') + '" type="button" data-slide-dot="' + index + '" aria-label="Show image ' + (index + 1) + '"></button>').join('');
+      hero.classList.add('is-ready');
+      const controls = [document.getElementById('brandHeroPrev'), document.getElementById('brandHeroNext'), dots];
+      controls.forEach(control => { control.hidden = slides.length < 2; });
+      if (slides.length < 2) return;
+      let current = 0;
+      let timer = 0;
+      function show(index) {
+        current = (index + slides.length) % slides.length;
+        track.querySelectorAll('.brand-hero-slide').forEach((slide, slideIndex) => slide.classList.toggle('active', slideIndex === current));
+        dots.querySelectorAll('.brand-hero-dot').forEach((dot, dotIndex) => dot.classList.toggle('active', dotIndex === current));
+      }
+      function stop() { window.clearInterval(timer); }
+      function start() {
+        stop();
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) timer = window.setInterval(() => show(current + 1), 5000);
+      }
+      document.getElementById('brandHeroPrev').addEventListener('click', () => { show(current - 1); start(); });
+      document.getElementById('brandHeroNext').addEventListener('click', () => { show(current + 1); start(); });
+      dots.addEventListener('click', event => { const dot = event.target.closest('[data-slide-dot]'); if (dot) { show(Number(dot.dataset.slideDot)); start(); } });
+      hero.addEventListener('mouseenter', stop);
+      hero.addEventListener('mouseleave', start);
+      hero.addEventListener('focusin', stop);
+      hero.addEventListener('focusout', start);
+      start();
+    }
     fetch(apiBase + '/api/products').then(response => response.ok ? response.json() : Promise.reject()).then(data => {
       const products = (data.products || []).filter(product => String(product.brandName || '').toLowerCase() === brandName.toLowerCase());
       const category = (products[0] && products[0].brandCategory) || brandData[0];
       document.getElementById('breadcrumbCategory').textContent = category;
       document.getElementById('breadcrumbCategory').href = 'index.html?category=' + (categorySlugsByName[category] || 'all');
+      initBrandHero(products);
       const grid = document.getElementById('brandProductGrid');
       grid.innerHTML = products.map(product => '<a class="brand-product-card" href="../collections/product.html?id=' + encodeURIComponent(product.id || product.sku) + '"><img src="' + safe(productImage(product)) + '" alt="' + safe(product.name) + '"><div><h3>' + safe(product.name) + '</h3><p>' + safe(product.websiteProductType || product.category || '') + '</p></div></a>').join('');
       document.getElementById('brandProductsEmpty').hidden = products.length > 0;
