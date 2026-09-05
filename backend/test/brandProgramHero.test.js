@@ -33,7 +33,10 @@ test('brand breadcrumb follows the product hero', () => {
 test('multi-image brand hero has accessible automatic and manual controls', () => {
   assert.match(page, /aria-label="Previous product image"/);
   assert.match(page, /aria-label="Next product image"/);
-  assert.match(page, /setInterval\(\(\) => show\(current \+ 1\), 5000\)/);
+  assert.match(page, /transition: opacity \.25s ease/);
+  assert.match(page, /setInterval\(\(\) => show\(current \+ 1\), 1000\)/);
+  assert.match(page, /setTimeout\(start, 3000\)/);
+  assert.match(page, /pauseAfterManualChange/);
   assert.match(page, /prefers-reduced-motion: reduce/);
   assert.match(page, /hero\.addEventListener\('mouseenter', stop\)/);
 });
