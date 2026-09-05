@@ -207,6 +207,11 @@ function clearSearchAutofill() {
   }
 }
 
+function enableProductSearch() {
+  clearSearchAutofill();
+  els.search.readOnly = false;
+}
+
 function isFilled(value) {
   if (Array.isArray(value)) return value.length > 0;
   if (value && typeof value === 'object') return Object.values(value).some((item) => isFilled(item));
@@ -1563,6 +1568,8 @@ els.colorRows.addEventListener('change', (event) => {
 });
 
 let searchTimer;
+els.search.addEventListener('pointerdown', enableProductSearch, { once: true });
+els.search.addEventListener('focus', enableProductSearch, { once: true });
 els.search.addEventListener('input', () => {
   window.clearTimeout(searchTimer);
   searchTimer = window.setTimeout(() => loadProducts().catch((error) => showStatus(error.message, true)), 250);

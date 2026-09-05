@@ -47,6 +47,12 @@ test('shared product types can surface products across top-level collection cate
   assert.match(apiConfig, /typeSourceProducts\.filter\(function\(product\)/);
 });
 
+test('all products includes shared product types from the live catalog', () => {
+  assert.match(apiConfig, /const collectionProductTypes = typeItems\.filter/);
+  assert.match(apiConfig, /products = allProducts\.filter\(function\(product\)/);
+  assert.match(apiConfig, /productMatchesType\(product, collectionProductTypes\)/);
+});
+
 test('keychain product types merge overlapping functional keychain groups', () => {
   const keychainPage = fs.readFileSync(path.join(root, 'collections', 'keychains.html'), 'utf8');
   assert.match(keychainPage, /data-product-types="Bottle Opener Keychains\|Light-Up &amp; Functional Keychains">Functional Keychains/);

@@ -364,7 +364,7 @@
       // Defensively enforce the page category on the client too. The API
       // normally filters this response, but older stored category values or a
       // cached backend response must never leak products into the wrong page.
-      const products = (data.products || []).filter(function(product) {
+      let products = (data.products || []).filter(function(product) {
         return !apiCategory
           || String(product.category || '').trim().toLowerCase() === apiCategory.toLowerCase();
       });
@@ -448,6 +448,24 @@
           return aLabel.localeCompare(bLabel, 'en', { sensitivity: 'base' });
         }).forEach(function(item) {
           typeContainer.appendChild(item);
+        });
+
+        // "All Products" represents the whole collection, not only records
+        // whose single primary Website Category matches the page. A product
+        // type can intentionally be shared by collections (Plush Keychains,
+        // for example, belongs in both Plush & Mascots and Keychains). Include
+        // those records automatically from the same live catalog used by the
+        // individual type filters.
+        const collectionProductTypes = typeItems.filter(function(item) {
+          return !/^all products$/i.test(item.textContent.trim());
+        }).map(function(item) {
+          return item.dataset.productTypes || item.dataset.productType || item.textContent.trim();
+        }).filter(Boolean).join('|');
+        const primaryCategoryProducts = products;
+        products = allProducts.filter(function(product) {
+          return primaryCategoryProducts.some(function(categoryProduct) {
+            return String(categoryProduct.id || categoryProduct.sku || '') === String(product.id || product.sku || '');
+          }) || productMatchesType(product, collectionProductTypes);
         });
       }
 
