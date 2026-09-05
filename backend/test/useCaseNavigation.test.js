@@ -76,7 +76,7 @@ test('golf use case includes a dedicated golf accessories filter', () => {
   assert.match(useCasePage, /\['Team & Fan Gear',\['scarf','scarves','sports mascot','team mascot','school mascot','rally towel','team flag','pennant','fan banner','foam finger','pom-pom','cheer gear','fan gear','supporter gear','team merchandise'\]\]/);
   assert.match(useCasePage, /\['Jackets & Outerwear',\['jacket','outerwear','snowsuit','snow gear','ski wear','winter jumpsuit'\]\]/);
   assert.match(useCasePage, /if\(isGolfAccessory\)return activeType==='Golf Accessories'/);
-  assert.match(useCasePage, /classification\.includes\(term\)/);
+  assert.match(useCasePage, /includesTerm\(classification,term\)/);
   assert.match(useCasePage, /if\(String\(product\.websiteProductType\|\|''\)\.trim\(\)\)return false/);
 });
 
@@ -186,6 +186,14 @@ test('school and community product types use broad non-duplicate groups', () => 
     'Awards & Recognition'
   ].forEach((label) => assert.match(schoolsConfig, new RegExp(`\\['${label.replace('&', '\\&')}'`)));
   assert.doesNotMatch(schoolsConfig, /'T-Shirts'|'Hoodies & Sweatshirts'|'Hats & Caps'|'Backpacks & Drawstring Bags'|'Water Bottles'|'Brand & Team Mascots'|'Custom Plush Toys'|'Pins & Patches'|'Flags'/);
+});
+
+test('use case product types match complete terms instead of substrings', () => {
+  const useCasePage = fs.readFileSync(path.join(__dirname, '..', '..', 'use-case-products.html'), 'utf8');
+  assert.match(useCasePage, /function includesTerm\(text,term\)/);
+  assert.match(useCasePage, /includesTerm\(classification,term\)/);
+  assert.match(useCasePage, /includesTerm\(descriptive,term\)/);
+  assert.doesNotMatch(useCasePage, /classification\.includes\(term\)|descriptive\.includes\(term\)|allText\.includes\(term\)/);
 });
 
 test('travel product types use clear journey-oriented groups', () => {
