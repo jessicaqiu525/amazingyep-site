@@ -6,12 +6,22 @@ const path = require('node:path');
 const page = fs.readFileSync(path.join(__dirname, '..', '..', 'solutions', 'brand-program.html'), 'utf8');
 const brandIndex = fs.readFileSync(path.join(__dirname, '..', '..', 'solutions', 'index.html'), 'utf8');
 
-test('brand program hero is built from live product and gallery images', () => {
+test('brand program hero chooses one live product and shows all of its images', () => {
   assert.match(page, /id="brandProductHero"/);
   assert.match(page, /function productImages\(product\)/);
   assert.match(page, /product\.images \|\| \[\], product\.gallery \|\| \[\]/);
+  assert.match(page, /const heroProducts = products\.filter/);
+  assert.match(page, /const product = choices\[Math\.floor\(Math\.random\(\) \* choices\.length\)\]/);
+  assert.match(page, /new Set\(productImages\(product\)\)/);
   assert.match(page, /initBrandHero\(products\)/);
   assert.match(page, /collections\/product\.html\?id=/);
+});
+
+test('brand hero avoids repeating the previously selected product', () => {
+  assert.match(page, /amazingyepBrandHero:/);
+  assert.match(page, /window\.sessionStorage\.getItem\(storageKey\)/);
+  assert.match(page, /heroProducts\.filter\(product => String\(product\.id \|\| product\.sku\) !== previousId\)/);
+  assert.match(page, /window\.sessionStorage\.setItem\(storageKey/);
 });
 
 test('brand breadcrumb follows the product hero', () => {

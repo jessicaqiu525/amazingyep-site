@@ -195,13 +195,15 @@
       const hero = document.getElementById('brandProductHero');
       const track = document.getElementById('brandHeroTrack');
       const dots = document.getElementById('brandHeroDots');
-      const slides = [];
-      const seen = new Set();
-      products.forEach(product => productImages(product).forEach(image => {
-        if (seen.has(image)) return;
-        seen.add(image);
-        slides.push({ image, product });
-      }));
+      const heroProducts = products.filter(product => productImages(product).length > 0);
+      if (!heroProducts.length) return;
+      const storageKey = 'amazingyepBrandHero:' + brandName.toLowerCase();
+      const previousId = window.sessionStorage.getItem(storageKey) || '';
+      const alternatives = heroProducts.filter(product => String(product.id || product.sku) !== previousId);
+      const choices = alternatives.length ? alternatives : heroProducts;
+      const product = choices[Math.floor(Math.random() * choices.length)];
+      window.sessionStorage.setItem(storageKey, String(product.id || product.sku));
+      const slides = Array.from(new Set(productImages(product))).map(image => ({ image, product }));
       if (!slides.length) return;
       track.innerHTML = slides.map((slide, index) => '<div class="brand-hero-slide' + (index === 0 ? ' active' : '') + '" data-slide="' + index + '"><img src="' + safe(slide.image) + '" alt="' + safe(slide.product.name) + '"><a class="brand-hero-caption" href="../collections/product.html?id=' + encodeURIComponent(slide.product.id || slide.product.sku) + '"><strong>' + safe(slide.product.name) + '</strong><span>View product details →</span></a></div>').join('');
       dots.innerHTML = slides.map((slide, index) => '<button class="brand-hero-dot' + (index === 0 ? ' active' : '') + '" type="button" data-slide-dot="' + index + '" aria-label="Show image ' + (index + 1) + '"></button>').join('');
