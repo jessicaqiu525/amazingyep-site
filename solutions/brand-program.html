@@ -47,6 +47,11 @@
     .brand-product-card div { padding: 14px 16px 16px; border-top: 1px solid #edf0f3; }
     .brand-product-card h3 { margin: 0 0 5px; color: var(--navy); font-size: 15px; line-height: 1.35; }
     .brand-product-card p { margin: 0; color: var(--text-light); font-size: 12px; font-weight: 600; }
+    .brand-product-pagination { display: none; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; margin: 30px auto 0; }
+    .brand-product-pagination.is-visible { display: flex; }
+    .brand-page-button { min-width: 42px; height: 42px; padding: 0 13px; border: 1px solid #d0d5dd; border-radius: 8px; background: #fff; color: var(--navy); font: inherit; font-weight: 700; cursor: pointer; }
+    .brand-page-button.active { border-color: var(--orange); background: var(--orange); color: #fff; }
+    .brand-page-button:disabled { cursor: default; opacity: .42; }
     @media (max-width: 1100px) {
       .brand-product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
@@ -116,6 +121,7 @@
           <div><span class="section-label">BRAND PROJECTS</span><h1 class="section-title" id="productsTitle">Products Created for This Brand</h1></div>
         </div>
         <div class="brand-product-grid" id="brandProductGrid"></div>
+        <nav class="brand-product-pagination" id="brandProductPagination" aria-label="Brand product pages"></nav>
         <div class="brand-products-empty" id="brandProductsEmpty">
           <strong>More project details are coming soon.</strong>
           Product photography and program details will be added here as they are prepared.
@@ -224,14 +230,39 @@
       hero.addEventListener('focusout', start);
       start();
     }
+    function initBrandProductGrid(products) {
+      const grid = document.getElementById('brandProductGrid');
+      const pagination = document.getElementById('brandProductPagination');
+      const pageSize = 8;
+      let currentPage = 0;
+      const pageCount = Math.max(1, Math.ceil(products.length / pageSize));
+      function renderPage() {
+        const visible = products.slice(currentPage * pageSize, (currentPage + 1) * pageSize);
+        grid.innerHTML = visible.map(product => '<a class="brand-product-card" href="../collections/product.html?id=' + encodeURIComponent(product.id || product.sku) + '"><img src="' + safe(productImage(product)) + '" alt="' + safe(product.name) + '"><div><h3>' + safe(product.name) + '</h3><p>' + safe(product.websiteProductType || product.category || '') + '</p></div></a>').join('');
+        if (pageCount <= 1) return;
+        pagination.classList.add('is-visible');
+        pagination.innerHTML = '<button class="brand-page-button" type="button" data-page-prev' + (currentPage === 0 ? ' disabled' : '') + '>Previous</button>' +
+          Array.from({ length: pageCount }, (_, index) => '<button class="brand-page-button' + (index === currentPage ? ' active' : '') + '" type="button" data-page="' + index + '" aria-label="Page ' + (index + 1) + '"' + (index === currentPage ? ' aria-current="page"' : '') + '>' + (index + 1) + '</button>').join('') +
+          '<button class="brand-page-button" type="button" data-page-next' + (currentPage === pageCount - 1 ? ' disabled' : '') + '>Next</button>';
+      }
+      pagination.addEventListener('click', event => {
+        const pageButton = event.target.closest('[data-page]');
+        if (pageButton) currentPage = Number(pageButton.dataset.page);
+        else if (event.target.closest('[data-page-prev]')) currentPage = Math.max(0, currentPage - 1);
+        else if (event.target.closest('[data-page-next]')) currentPage = Math.min(pageCount - 1, currentPage + 1);
+        else return;
+        renderPage();
+        document.querySelector('.brand-products-heading').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      renderPage();
+    }
     fetch(apiBase + '/api/products').then(response => response.ok ? response.json() : Promise.reject()).then(data => {
       const products = (data.products || []).filter(product => String(product.brandName || '').toLowerCase() === brandName.toLowerCase());
       const category = (products[0] && products[0].brandCategory) || brandData[0];
       document.getElementById('breadcrumbCategory').textContent = category;
       document.getElementById('breadcrumbCategory').href = 'index.html?category=' + (categorySlugsByName[category] || 'all');
       initBrandHero(products);
-      const grid = document.getElementById('brandProductGrid');
-      grid.innerHTML = products.map(product => '<a class="brand-product-card" href="../collections/product.html?id=' + encodeURIComponent(product.id || product.sku) + '"><img src="' + safe(productImage(product)) + '" alt="' + safe(product.name) + '"><div><h3>' + safe(product.name) + '</h3><p>' + safe(product.websiteProductType || product.category || '') + '</p></div></a>').join('');
+      initBrandProductGrid(products);
       document.getElementById('brandProductsEmpty').hidden = products.length > 0;
     }).catch(() => {});
   </script>

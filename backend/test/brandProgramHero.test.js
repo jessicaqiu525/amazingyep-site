@@ -46,6 +46,16 @@ test('brand product cards fill a balanced four-column content grid', () => {
   assert.doesNotMatch(page, /repeat\(auto-fit, minmax\(240px, 300px\)\)/);
 });
 
+test('brand products paginate in two four-card rows', () => {
+  assert.match(page, /id="brandProductPagination"/);
+  assert.match(page, /function initBrandProductGrid\(products\)/);
+  assert.match(page, /const pageSize = 8/);
+  assert.match(page, /products\.slice\(currentPage \* pageSize, \(currentPage \+ 1\) \* pageSize\)/);
+  assert.match(page, /data-page-prev/);
+  assert.match(page, /data-page-next/);
+  assert.match(page, /aria-current="page"/);
+});
+
 test('brand program inline scripts remain valid JavaScript', () => {
   const scripts = Array.from(page.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g))
     .map(match => match[1]).filter(Boolean);
