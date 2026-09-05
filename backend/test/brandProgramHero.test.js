@@ -38,10 +38,11 @@ test('multi-image brand hero has accessible automatic and manual controls', () =
   assert.match(page, /hero\.addEventListener\('mouseenter', stop\)/);
 });
 
-test('brand hero caption stays compact and does not cover the product image', () => {
-  assert.match(page, /\.brand-hero-caption \{[^}]*max-width: min\(390px/);
-  assert.match(page, /\.brand-hero-caption strong \{[^}]*-webkit-line-clamp: 2/);
-  assert.doesNotMatch(page, /\.brand-hero-caption \{[^}]*max-width: min\(520px/);
+test('brand hero product information sits outside and never covers the image', () => {
+  assert.match(page, /id="brandHeroInfo"/);
+  assert.match(page, /\.brand-hero-info \{[^}]*display: none[^}]*background: var\(--navy\)/);
+  assert.match(page, /info\.innerHTML = '<div class="container">/);
+  assert.doesNotMatch(page, /brand-hero-caption/);
 });
 
 test('brand projects label leads the section heading hierarchy', () => {
