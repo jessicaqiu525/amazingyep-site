@@ -149,7 +149,7 @@ img { max-width: 100%; height: auto; display: block; }
 
 .nav-inner {
   display: grid;
-  grid-template-columns: 310px minmax(0, 1fr) auto;
+  grid-template-columns: 148px minmax(0, 1fr) auto;
   grid-template-rows: 68px 52px;
   align-items: center;
   height: 120px;
@@ -158,23 +158,8 @@ img { max-width: 100%; height: auto; display: block; }
   padding: 0 24px;
 }
 
-.nav-logo { display: flex; align-items: center; gap: 14px; flex: 0 0 auto; margin-right: 0; }
+.nav-logo { display: flex; align-items: center; flex: 0 0 148px; margin-right: 0; }
 .nav-logo img { height: 62px; width: auto; }
-.nav-logo::after {
-  content: 'AMAZING YEP';
-  display: inline-block;
-  color: #174f8c;
-  background: linear-gradient(90deg, #174f8c 0%, #174f8c 66%, var(--orange) 76%, var(--orange) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-family: 'Avenir Next', 'Montserrat', 'Inter', sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 1.15px;
-  line-height: 1;
-  white-space: nowrap;
-}
 
 .nav-links {
   grid-column: 1 / -1;
@@ -406,7 +391,7 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 @media (max-width: 1350px) {
-  .nav-inner { grid-template-columns: 280px minmax(0, 1fr) auto; }
+  .nav-inner { grid-template-columns: 136px minmax(0, 1fr) auto; }
   .nav-inner { padding: 0 18px; }
   .nav-logo { flex-basis: 136px; margin-right: 0; }
   .nav-logo img { height: 58px; }
@@ -2700,7 +2685,6 @@ img { max-width: 100%; height: auto; display: block; }
     height: 72px;
   }
   .nav-logo { flex-basis: 136px; }
-  .nav-logo::after { display: none; }
   .nav-cta {
     display: flex;
     margin-left: auto;
