@@ -7,10 +7,22 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('form.nav-search').forEach(function(form) {
     const input = form.querySelector('input[type="search"]');
     if (!input) return;
+    const icon = form.querySelector('.nav-search-icon');
 
     form.setAttribute('action', '/collections/index.html');
     form.setAttribute('method', 'get');
     input.setAttribute('name', 'search');
+    input.setAttribute('placeholder', 'Products, Item No., or Keywords');
+
+    // Turn the trailing magnifier into an explicit, accessible search button.
+    if (icon && !form.querySelector('.nav-search-submit')) {
+      const submitButton = document.createElement('button');
+      submitButton.type = 'submit';
+      submitButton.className = 'nav-search-submit';
+      submitButton.setAttribute('aria-label', 'Search products');
+      submitButton.appendChild(icon);
+      form.appendChild(submitButton);
+    }
 
     // At tablet and mobile widths the field collapses to a search icon. A
     // click anywhere on the control focuses the input and expands it via CSS.
