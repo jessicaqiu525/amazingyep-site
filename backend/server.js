@@ -52,6 +52,20 @@ const upload = multer({
   }
 });
 
+const inquiryUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024, files: 1 }
+});
+
+function escapeHtml(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 function removeTempUpload(filePath) {
   if (!filePath) return;
   fs.unlink(filePath, () => {});
@@ -263,6 +277,85 @@ app.get('/', (req, res) => {
 
 app.get('/health', (req, res) => {
   res.json({ ok: true, service: 'amazingyep-backend' });
+});
+
+app.post('/api/inquiries', inquiryUpload.single('attachment'), async (req, res, next) => {
+  try {
+    const fields = {
+      name: String(req.body.name || '').trim(),
+      company: String(req.body.company || '').trim(),
+      email: String(req.body.email || '').trim(),
+      phone: String(req.body.phone || '').trim(),
+      productName: String(req.body.productName || '').trim(),
+      itemNumber: String(req.body.itemNumber || '').trim(),
+      quantity: String(req.body.quantity || '').trim(),
+      imprint: String(req.body.imprint || '').trim(),
+      delivery: String(req.body.delivery || '').trim(),
+      message: String(req.body.message || '').trim()
+    };
+    const requiredFields = ['name', 'company', 'email', 'phone', 'productName', 'quantity'];
+    if (requiredFields.some((key) => !fields[key])) {
+      res.status(400).json({ error: 'Please complete all required fields.' });
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)) {
+      res.status(400).json({ error: 'Please enter a valid email address.' });
+      return;
+    }
+
+    const resendApiKey = process.env.RESEND_API_KEY;
+    const fromEmail = process.env.INQUIRY_FROM_EMAIL;
+    const toEmail = process.env.INQUIRY_TO_EMAIL || 'info@amazingyep.com';
+    if (!resendApiKey || !fromEmail) {
+      res.status(503).json({ error: 'Email delivery is not configured yet. Please contact info@amazingyep.com.' });
+      return;
+    }
+
+    const rows = [
+      ['Full Name', fields.name],
+      ['Company', fields.company],
+      ['Email', fields.email],
+      ['Phone', fields.phone],
+      ['Product Name', fields.productName],
+      ['Item No.', fields.itemNumber || 'Not provided'],
+      ['Estimated Quantity', fields.quantity],
+      ['Imprint', fields.imprint || 'Not provided'],
+      ['Target Delivery Date', fields.delivery || 'Not provided'],
+      ['Project Details', fields.message || 'Not provided']
+    ];
+    const emailPayload = {
+      from: fromEmail,
+      to: [toEmail],
+      reply_to: fields.email,
+      subject: 'Website quote request: ' + fields.productName + ' — ' + fields.company,
+      html: '<h2>New Amazing Yep quote request</h2><table style="border-collapse:collapse">' + rows.map((row) => (
+        '<tr><th style="padding:8px 14px 8px 0;border-bottom:1px solid #ddd;text-align:left;vertical-align:top">' + escapeHtml(row[0]) + '</th>' +
+        '<td style="padding:8px 0;border-bottom:1px solid #ddd">' + escapeHtml(row[1]).replace(/\n/g, '<br>') + '</td></tr>'
+      )).join('') + '</table>'
+    };
+    if (req.file) {
+      emailPayload.attachments = [{
+        filename: req.file.originalname,
+        content: req.file.buffer.toString('base64')
+      }];
+    }
+
+    const emailResponse = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + resendApiKey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(emailPayload)
+    });
+    const emailResult = await emailResponse.json().catch(() => ({}));
+    if (!emailResponse.ok) {
+      throw new Error(emailResult.message || 'The inquiry email could not be sent.');
+    }
+    res.status(201).json({ ok: true, message: 'Thank you! Your quote request has been sent.' });
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.post('/api/auth/login', (req, res) => {

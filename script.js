@@ -70,6 +70,46 @@ document.addEventListener('DOMContentLoaded', function() {
   const requestedEmail = new URLSearchParams(window.location.search).get('email');
   if (contactEmail && requestedEmail) contactEmail.value = requestedEmail;
 
+  const inquiryForm = document.querySelector('#projectInquiryForm');
+  if (inquiryForm) {
+    const inquiryStatus = document.querySelector('#inquiryStatus');
+    const inquiryButton = inquiryForm.querySelector('button[type="submit"]');
+    const attachmentInput = inquiryForm.querySelector('#attachment');
+
+    inquiryForm.addEventListener('submit', async function(event) {
+      event.preventDefault();
+      if (!inquiryForm.reportValidity()) return;
+      const attachment = attachmentInput && attachmentInput.files[0];
+      if (attachment && attachment.size > 10 * 1024 * 1024) {
+        inquiryStatus.textContent = 'The attachment must be 10 MB or smaller.';
+        inquiryStatus.className = 'form-submit-status error';
+        return;
+      }
+
+      inquiryButton.disabled = true;
+      inquiryButton.textContent = 'Sending...';
+      inquiryStatus.textContent = '';
+      inquiryStatus.className = 'form-submit-status';
+      try {
+        const response = await fetch('/api/inquiries', {
+          method: 'POST',
+          body: new FormData(inquiryForm)
+        });
+        const result = await response.json().catch(function() { return {}; });
+        if (!response.ok) throw new Error(result.error || 'Unable to send your quote request.');
+        inquiryStatus.textContent = result.message || 'Thank you! Your quote request has been sent.';
+        inquiryStatus.className = 'form-submit-status success';
+        inquiryForm.reset();
+      } catch (error) {
+        inquiryStatus.textContent = error.message || 'Unable to send your quote request. Please try again.';
+        inquiryStatus.className = 'form-submit-status error';
+      } finally {
+        inquiryButton.disabled = false;
+        inquiryButton.textContent = 'Start a Project';
+      }
+    });
+  }
+
   // Mobile navigation toggle
   const mobileToggle = document.querySelector('.nav-mobile-toggle');
   const navLinks = document.querySelector('.nav-links');

@@ -95,7 +95,7 @@
         </div>
 
         <div class="contact-form-card">
-          <form action="https://formspree.io/f/info@amazingyep.com" method="POST">
+          <form id="projectInquiryForm" action="/api/inquiries" method="POST" enctype="multipart/form-data">
             <div class="form-row">
               <div class="form-group">
                 <label for="name">Full Name *</label>
@@ -112,33 +112,27 @@
                 <input type="email" id="email" name="email" required placeholder="john@company.com">
               </div>
               <div class="form-group">
-                <label for="phone">Phone</label>
-                <input type="tel" id="phone" name="phone" placeholder="+1 (555) 000-0000">
+                <label for="phone">Phone *</label>
+                <input type="tel" id="phone" name="phone" required placeholder="+1 (555) 000-0000">
               </div>
             </div>
             <div class="form-group">
-              <label for="product">Product Type *</label>
-              <select id="product" name="product" required>
-                <option value="">Select a product type</option>
-                <option value="custom-plush">Custom Plush Toys</option>
-                <option value="mascot-costumes">Mascot Costumes</option>
-                <option value="event-giveaways">Event Giveaways</option>
-                <option value="retail-merch">Retail Merchandise</option>
-                <option value="corporate-merch">Corporate Merchandise</option>
-                <option value="promotional">Promotional Products</option>
-                <option value="apparel">Custom Wearables</option>
-                <option value="other">Other</option>
-              </select>
+              <label for="product">Product Name *</label>
+              <input type="text" id="product" name="productName" required placeholder="Enter the product name">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="itemNumber">Item No.</label>
+                <input type="text" id="itemNumber" name="itemNumber" placeholder="Enter item number, if known">
+              </div>
+              <div class="form-group">
+                <label for="quantity">Estimated Quantity *</label>
+                <input type="text" id="quantity" name="quantity" required inputmode="numeric" placeholder="Enter estimated quantity">
+              </div>
             </div>
             <div class="form-group">
-              <label for="quantity">Estimated Quantity *</label>
-              <select id="quantity" name="quantity" required>
-                <option value="">Select quantity range</option>
-                <option value="100-500">100 – 500</option>
-                <option value="500-1000">500 – 1,000</option>
-                <option value="1000-5000">1,000 – 5,000</option>
-                <option value="5000+">5,000+</option>
-              </select>
+              <label for="imprint">Imprint</label>
+              <input type="text" id="imprint" name="imprint" placeholder="Logo, artwork, colors, or imprint details">
             </div>
             <div class="form-group">
               <label for="delivery">Target Delivery Date</label>
@@ -148,7 +142,13 @@
               <label for="message">Project Details</label>
               <textarea id="message" name="message" placeholder="Tell us about your project, product ideas, branding requirements, target delivery date, or any specific needs."></textarea>
             </div>
+            <div class="form-group">
+              <label for="attachment">Attachment</label>
+              <input type="file" id="attachment" name="attachment" accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.svg,.ai,.eps,.zip,.doc,.docx,.xls,.xlsx">
+              <small class="form-help">PDF, artwork, image, Office document, or ZIP file. Maximum 10 MB.</small>
+            </div>
             <p class="form-cta-note">&#10003; Share your project details and receive a <strong>custom quote</strong>, <strong>pricing options</strong>, and a <strong>free digital mockup</strong> within 24 hours.</p>
+            <div class="form-submit-status" id="inquiryStatus" role="status" aria-live="polite"></div>
             <button type="submit" class="btn btn-primary" style="width:100%;">Start a Project</button>
           </form>
         </div>
