@@ -161,11 +161,18 @@ img { max-width: 100%; height: auto; display: block; }
 .nav-logo { display: flex; align-items: center; gap: 14px; flex: 0 0 auto; margin-right: 0; }
 .nav-logo img { height: 62px; width: auto; }
 .nav-logo::after {
-  content: 'Amazing Yep';
-  color: var(--navy);
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: -0.35px;
+  content: 'AMAZING YEP';
+  display: inline-block;
+  color: #174f8c;
+  background: linear-gradient(90deg, #174f8c 0%, #174f8c 66%, var(--orange) 76%, var(--orange) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: 'Avenir Next', 'Montserrat', 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 1.15px;
+  line-height: 1;
   white-space: nowrap;
 }
 
