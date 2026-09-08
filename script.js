@@ -51,6 +51,25 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
+  // Carry the visitor's email from the footer CTA into the project form.
+  document.querySelectorAll('form.footer-email-form').forEach(function(form) {
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const emailInput = form.querySelector('input[type="email"]');
+      const email = emailInput ? emailInput.value.trim() : '';
+      if (!email || !emailInput.checkValidity()) {
+        if (emailInput) emailInput.reportValidity();
+        return;
+      }
+      window.location.assign('/contact/index.html?email=' + encodeURIComponent(email));
+    });
+  });
+
+  // Prefill the contact form when the visitor arrives from the footer CTA.
+  const contactEmail = document.querySelector('#email');
+  const requestedEmail = new URLSearchParams(window.location.search).get('email');
+  if (contactEmail && requestedEmail) contactEmail.value = requestedEmail;
+
   // Mobile navigation toggle
   const mobileToggle = document.querySelector('.nav-mobile-toggle');
   const navLinks = document.querySelector('.nav-links');
