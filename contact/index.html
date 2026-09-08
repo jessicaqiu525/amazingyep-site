@@ -144,7 +144,11 @@
             </div>
             <div class="form-group">
               <label for="attachment">Attachment</label>
-              <input type="file" id="attachment" name="attachment" accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.svg,.ai,.eps,.zip,.doc,.docx,.xls,.xlsx">
+              <div class="custom-file-input">
+                <input type="file" id="attachment" name="attachment" accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.svg,.ai,.eps,.zip,.doc,.docx,.xls,.xlsx">
+                <label for="attachment" class="custom-file-button">Choose File</label>
+                <span class="custom-file-name" id="attachmentName">No file selected</span>
+              </div>
               <small class="form-help">PDF, artwork, image, Office document, or ZIP file. Maximum 10 MB.</small>
             </div>
             <p class="form-cta-note">&#10003; Share your project details and receive a <strong>custom quote</strong>, <strong>pricing options</strong>, and a <strong>free digital mockup</strong> within 24 hours.</p>

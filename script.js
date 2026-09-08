@@ -75,6 +75,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const inquiryStatus = document.querySelector('#inquiryStatus');
     const inquiryButton = inquiryForm.querySelector('button[type="submit"]');
     const attachmentInput = inquiryForm.querySelector('#attachment');
+    const attachmentName = inquiryForm.querySelector('#attachmentName');
+
+    if (attachmentInput && attachmentName) {
+      attachmentInput.addEventListener('change', function() {
+        attachmentName.textContent = attachmentInput.files[0] ? attachmentInput.files[0].name : 'No file selected';
+      });
+    }
 
     inquiryForm.addEventListener('submit', async function(event) {
       event.preventDefault();
@@ -100,6 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
         inquiryStatus.textContent = result.message || 'Thank you! Your quote request has been sent.';
         inquiryStatus.className = 'form-submit-status success';
         inquiryForm.reset();
+        if (attachmentName) attachmentName.textContent = 'No file selected';
       } catch (error) {
         inquiryStatus.textContent = error.message || 'Unable to send your quote request. Please try again.';
         inquiryStatus.className = 'form-submit-status error';
